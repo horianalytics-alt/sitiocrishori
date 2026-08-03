@@ -150,7 +150,13 @@ function Index() {
 
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229] selection:bg-[#FE8330] selection:text-white">
+    <div 
+      className="min-h-screen bg-[#FAF8F5] text-[#1E2229] selection:bg-[#FE8330] selection:text-white"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerLeave={onPointerUp}
+    >
       <main>
         {/* Hero Section */}
         <section className="relative min-h-[100svh] flex items-center justify-center py-20 overflow-hidden">
