@@ -572,7 +572,7 @@ function Index() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="max-w-3xl mx-auto space-y-4"
+                    className="max-w-3xl mx-auto space-y-4 list-field"
                   >
                     {(galleryData || []).map((src, i) => (
                       <motion.div
