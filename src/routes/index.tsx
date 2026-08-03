@@ -47,7 +47,7 @@ function Index() {
   const { data: infrastructure } = useSuspenseQuery({ queryKey: ['site-content', 'infrastructure'], queryFn: () => getSiteContent({ data: 'infrastructure' }) }) as { data: InfrastructureItem[] };
   const { data: faq } = useSuspenseQuery({ queryKey: ['site-content', 'faq'], queryFn: () => getSiteContent({ data: 'faq' }) }) as { data: FAQItem[] };
   const { data: galleryData } = useSuspenseQuery({ queryKey: ['site-content', 'gallery'], queryFn: () => getSiteContent({ data: 'gallery' }) }) as { data: string[] };
-  console.log("Gallery Data:", galleryData);
+
 
   const { data: reservas } = useSuspenseQuery({ queryKey: ['reservas'], queryFn: () => getReservas() }) as { data: any[] };
   const { data: depoimentos } = useSuspenseQuery({ queryKey: ['depoimentos'], queryFn: () => getDepoimentos() }) as { data: any[] };
@@ -466,10 +466,21 @@ function Index() {
                             zIndex: (galleryData || []).length - i
                           }}
                           animate={{
-                            x: `calc(-50% + ${pos.x}px)`,
-                            y: `calc(-50% + ${pos.y}px)`,
+                            x: pos.x,
+                            y: pos.y,
                             rotate: pos.tilt,
                           }}
+                          initial={{ x: 0, y: 0, rotate: 0 }}
+                          style={{
+                            width: SPIRAL_CONFIG.cardWidth,
+                            height: SPIRAL_CONFIG.cardHeight,
+                            left: "50%",
+                            top: "50%",
+                            translateX: "-50%",
+                            translateY: "-50%",
+                            zIndex: (galleryData || []).length - i
+                          }}
+
                           whileHover={{ scale: 1.1, zIndex: 50, rotate: 0 }}
                           transition={{ type: "spring", stiffness: 100, damping: 20 }}
 
