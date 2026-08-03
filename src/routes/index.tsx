@@ -87,6 +87,7 @@ function Index() {
     
     // Raio usa baseAngle (não rotaciona — preserva a forma da espiral)
     const r = SPIRAL_CONFIG.radiusStart + (baseAngle / (Math.PI * 2)) * SPIRAL_CONFIG.radiusGrowth;
+    // ↑ usa baseAngle, não o angle com globalRotation
     
     // Inclinação sutil perpendicular à tangente da espiral
     const tilt = ((angle * 180 / Math.PI) % 10) - 5;
