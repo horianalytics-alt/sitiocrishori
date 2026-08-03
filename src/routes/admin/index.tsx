@@ -300,10 +300,14 @@ function AdminDashboard() {
               <form className="grid md:grid-cols-2 gap-6" onSubmit={e => {
                 e.preventDefault();
                 const form = e.target as HTMLFormElement;
+                const nomeInput = form.elements.namedItem('nome') as HTMLInputElement;
+                const eventoInput = form.elements.namedItem('evento') as HTMLInputElement;
+                const txtInput = form.elements.namedItem('txt') as HTMLTextAreaElement;
+                if (!nomeInput || !txtInput) return;
                 const data = {
-                  nome: (form.elements.namedItem('nome') as HTMLInputElement).value,
-                  evento: (form.elements.namedItem('evento') as HTMLInputElement).value,
-                  depoimento: (form.elements.namedItem('txt') as HTMLTextAreaElement).value,
+                  nome: nomeInput.value,
+                  evento: eventoInput?.value || "",
+                  depoimento: txtInput.value,
                   estrelas: 5,
                 };
                 depMutation.mutate(data);
@@ -315,6 +319,7 @@ function AdminDashboard() {
                 <button type="submit" className="md:col-span-2 py-4 bg-[#FE8330] text-white font-black rounded-2xl">ADICIONAR DEPOIMENTO</button>
               </form>
             </div>
+
 
             <div className="grid md:grid-cols-2 gap-6">
               {depoimentos.map(dep => (
