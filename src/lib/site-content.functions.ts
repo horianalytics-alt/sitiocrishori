@@ -9,6 +9,7 @@ export type HeroContent = {
   cta_text: string;
   whatsapp_number: string;
   whatsapp_message: string;
+  badges?: string[];
 };
 
 export type InfrastructureItem = {
@@ -22,6 +23,11 @@ export type FAQItem = {
   answer: string;
 };
 
+// Generic types for the client to handle until types are re-generated
+export type Reserva = any;
+export type Depoimento = any;
+
+// Site Content Functions
 export const getSiteContent = createServerFn({ method: "GET" })
   .validator((section: string) => section)
   .handler(async ({ data: section }) => {
@@ -41,6 +47,97 @@ export const getSiteContent = createServerFn({ method: "GET" })
     }
   });
 
+// Reservations Functions
+export const getReservas = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { data, error } = await supabase
+      .from("reservas" as any)
+      .select("*")
+      .order("data_inicio", { ascending: true });
+    if (error) throw error;
+    return data as any[];
+  });
+
+export const upsertReserva = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: any) => data)
+  .handler(async ({ data, context }) => {
+    // Admin check
+    const { data: roleData } = await context.supabase
+      .from('user_roles' as any)
+      .select('role')
+      .eq('user_id', context.userId)
+      .eq('role', 'admin')
+      .maybeSingle();
+
+    if (!roleData) throw new Error("Unauthorized");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await (supabaseAdmin as any)
+      .from("reservas")
+      .upsert(data);
+    
+    if (error) throw error;
+    return { success: true };
+  });
+
+export const deleteReserva = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((id: string) => id)
+  .handler(async ({ data: id, context }) => {
+    const { data: roleData } = await context.supabase
+      .from('user_roles' as any)
+      .select('role')
+      .eq('user_id', context.userId)
+      .eq('role', 'admin')
+      .maybeSingle();
+
+    if (!roleData) throw new Error("Unauthorized");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await (supabaseAdmin as any)
+      .from("reservas")
+      .delete()
+      .eq("id", id);
+    
+    if (error) throw error;
+    return { success: true };
+  });
+
+// Testimonials Functions
+export const getDepoimentos = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { data, error } = await supabase
+      .from("depoimentos" as any)
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data as any[];
+  });
+
+export const upsertDepoimento = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: any) => data)
+  .handler(async ({ data, context }) => {
+    const { data: roleData } = await context.supabase
+      .from('user_roles' as any)
+      .select('role')
+      .eq('user_id', context.userId)
+      .eq('role', 'admin')
+      .maybeSingle();
+
+    if (!roleData) throw new Error("Unauthorized");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await (supabaseAdmin as any)
+      .from("depoimentos")
+      .upsert(data);
+    
+    if (error) throw error;
+    return { success: true };
+  });
+
+// Schema Validations for site_content
 const heroSchema = z.object({
   headline: z.string().max(300),
   subheadline: z.string().max(1000),
@@ -50,117 +147,53 @@ const heroSchema = z.object({
   badges: z.array(z.string().max(120)).max(20).optional(),
 });
 
-const infrastructureSchema = z
-  .array(
-    z.object({
-      title: z.string().max(200),
-      description: z.string().max(1000),
-      image: z.string().max(2000),
-    }),
-  )
-  .max(50);
+const infrastructureSchema = z.array(z.object({
+  title: z.string().max(200),
+  description: z.string().max(1000),
+  image: z.string().max(2000),
+})).max(50);
 
-const faqSchema = z
-  .array(
-    z.object({
-      question: z.string().max(500),
-      answer: z.string().max(2000),
-    }),
-  )
-  .max(50);
+const faqSchema = z.array(z.object({
+  question: z.string().max(500),
+  answer: z.string().max(2000),
+})).max(50);
 
-const gallerySchema = z
-  .array(
-    z.union([
-      z.string().max(2000),
-      z.object({
-        url: z.string().max(2000),
-        caption: z.string().max(300).optional(),
-      }),
-    ]),
-  )
-  .max(100);
-
-const rentalsSchema = z
-  .array(
-    z.object({
-      title: z.string().max(200),
-      description: z.string().max(2000),
-      price: z.string().max(120).optional(),
-      features: z.array(z.string().max(300)).max(30).optional(),
-      image: z.string().max(2000).optional(),
-    }),
-  )
-  .max(30);
-
-const testimonialsSchema = z
-  .array(
-    z.object({
-      name: z.string().max(200),
-      text: z.string().max(2000),
-      rating: z.number().min(0).max(5).optional(),
-      avatar: z.string().max(2000).optional(),
-    }),
-  )
-  .max(50);
+const gallerySchema = z.array(z.string().max(2000)).max(100);
 
 const sectionSchemas = {
   hero: heroSchema,
   infrastructure: infrastructureSchema,
   faq: faqSchema,
   gallery: gallerySchema,
-  rentals: rentalsSchema,
-  testimonials: testimonialsSchema,
 } as const;
-
-const updateInputSchema = z
-  .object({
-    section: z.enum([
-      "hero",
-      "infrastructure",
-      "faq",
-      "gallery",
-      "rentals",
-      "testimonials",
-    ]),
-    content: z.unknown(),
-  })
-  .superRefine((val, ctx) => {
-    const result = sectionSchemas[val.section].safeParse(val.content);
-    if (!result.success) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `Invalid content for section "${val.section}"`,
-        path: ["content"],
-      });
-    }
-  });
 
 export const updateSiteContent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((data: { section: string; content: unknown }) =>
-    updateInputSchema.parse(data),
-  )
+  .validator((data: { section: string; content: unknown }) => {
+    const section = data.section as keyof typeof sectionSchemas;
+    if (sectionSchemas[section]) {
+      sectionSchemas[section].parse(data.content);
+    }
+    return data;
+  })
   .handler(async ({ data, context }) => {
-
-    // Check for admin role directly in user_roles table
-    const { data: roleData, error: roleError } = await context.supabase
-      .from('user_roles')
+    const { data: roleData } = await context.supabase
+      .from('user_roles' as any)
       .select('role')
       .eq('user_id', context.userId)
       .eq('role', 'admin')
       .maybeSingle();
 
-    if (roleError || !roleData) {
-      throw new Error("Unauthorized: Admin role required");
-    }
+    if (!roleData) throw new Error("Unauthorized");
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
+    const { error } = await (supabaseAdmin as any)
       .from("site_content")
-      .update({ content: data.content as never })
+      .update({ content: data.content as any })
       .eq("section", data.section);
     
     if (error) throw error;
     return { success: true };
   });
+
+
