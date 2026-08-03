@@ -69,7 +69,7 @@ function Index() {
     <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229]">
       <main>
         {/* Hero Section */}
-        <section className="relative h-[95vh] flex items-center justify-center overflow-hidden">
+        <section className="relative min-h-screen flex items-center justify-center py-20 overflow-hidden">
           <div className="absolute inset-0 bg-black/40 z-10" />
           <div className="absolute inset-0 z-0">
             <img src={HERO_IMAGE} alt="Hero" className="w-full h-full object-cover anim-photo-reveal" />
