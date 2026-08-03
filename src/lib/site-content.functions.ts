@@ -10,6 +10,17 @@ export type HeroContent = {
   whatsapp_message: string;
 };
 
+export type InfrastructureItem = {
+  title: string;
+  description: string;
+  image: string;
+};
+
+export type FAQItem = {
+  question: string;
+  answer: string;
+};
+
 export const getSiteContent = createServerFn({ method: "GET" })
   .validator((section: string) => section)
   .handler(async ({ data: section }) => {
