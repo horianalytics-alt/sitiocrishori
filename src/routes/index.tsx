@@ -53,6 +53,40 @@ function Index() {
   const [selectedRange, setSelectedRange] = useState<DateRange | undefined>();
   const [activeTab, setActiveTab] = useState("finais-de-semana");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"masonry" | "spiral" | "list">("masonry");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const SPIRAL_CONFIG = {
+    itemsPerRotation: 3.5,
+    radiusStart: 120,
+    radiusGrowth: 180,
+    cardWidth: 180,
+    cardHeight: 140,
+  };
+
+  const getSpiralPositions = (count: number) => {
+    const { itemsPerRotation, radiusStart, radiusGrowth } = SPIRAL_CONFIG;
+    const ANGLE_STEP = (Math.PI * 2) / itemsPerRotation;
+    return Array.from({ length: count }, (_, i) => {
+      const angle = i * ANGLE_STEP - Math.PI / 2;
+      const rotations = angle / (Math.PI * 2);
+      const radius = radiusStart + rotations * radiusGrowth;
+      const tangentAngle = angle + Math.PI / 2;
+      const tiltDeg = (tangentAngle * 180) / Math.PI;
+      const clampedTilt = ((tiltDeg % 12) - 6) * 0.5;
+      return {
+        x: Math.cos(angle) * radius,
+        y: Math.sin(angle) * radius,
+        tilt: clampedTilt,
+      };
+    });
+  };
+
+  const spiralPositions = getSpiralPositions((galleryData || []).length);
 
   useEffect(() => {
     import('aos').then((AOS) => { AOS.init({ duration: 1000, easing: 'ease-out-back', once: true }); });
@@ -64,6 +98,7 @@ function Index() {
   }));
 
   const isDayReserved = (day: Date) => reservedDays.some(range => isWithinInterval(startOfDay(day), { start: range.from, end: range.to }));
+
 
 
   return (
@@ -349,19 +384,130 @@ function Index() {
           </div>
         </section>
 
-        {/* Gallery Masonry */}
-        <section id="galeria" className="py-32 bg-white px-6">
-          <div className="max-w-7xl mx-auto columns-1 md:columns-3 lg:columns-4 gap-8 space-y-8">
-            {(galleryData || []).map((src, i) => (
-              <div key={i} className="relative group cursor-pointer overflow-hidden rounded-[2.5rem] shadow-lg hover:shadow-2xl transition-all duration-700" onClick={() => setSelectedImage(src)} data-aos="fade-up" data-aos-delay={i*50}>
-                <img src={src} className="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-110" alt="Galeria" />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
-                  <span className="text-white font-bold bg-[#FE8330] px-8 py-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">AMPLIAR</span>
-                </div>
+        {/* Gallery Section */}
+        <section id="galeria" className="py-32 bg-white px-6 overflow-hidden">
+          <div className="max-w-7xl mx-auto space-y-16">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="text-left space-y-4">
+                <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-right">Galeria de Fotos</h2>
+                <p className="text-sm md:text-lg text-muted-foreground font-medium" data-aos="fade-right" data-aos-delay="100">Explore cada canto do nosso paraíso.</p>
               </div>
-            ))}
+              
+              <div className="flex items-center bg-[#FAF8F5] p-2 rounded-2xl border" data-aos="fade-left">
+                {[
+                  { id: "masonry", label: "Grade" },
+                  { id: "spiral", label: "Espiral" },
+                  { id: "list", label: "Lista" }
+                ].map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => setViewMode(m.id as any)}
+                    className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
+                      viewMode === m.id 
+                        ? "bg-[#FE8330] text-white shadow-lg" 
+                        : "text-gray-400 hover:text-gray-600"
+                    }`}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative min-h-[600px]">
+              <AnimatePresence mode="wait">
+                {viewMode === "masonry" && (
+                  <motion.div 
+                    key="masonry"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="columns-1 md:columns-3 lg:columns-4 gap-8 space-y-8"
+                  >
+                    {(galleryData || []).map((src, i) => (
+                      <motion.div 
+                        key={i} 
+                        layoutId={`gallery-${i}`}
+                        className="relative group cursor-pointer overflow-hidden rounded-[2.5rem] shadow-lg hover:shadow-2xl transition-all duration-700" 
+                        onClick={() => setSelectedImage(src)}
+                      >
+                        <img src={src} className="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-110" alt="Galeria" />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
+                          <span className="text-white font-bold bg-[#FE8330] px-8 py-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">AMPLIAR</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+
+                {viewMode === "spiral" && (
+                  <motion.div 
+                    key="spiral"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="relative h-[700px] flex items-center justify-center"
+                  >
+                    {(galleryData || []).map((src, i) => {
+                      const pos = spiralPositions[i];
+                      if (!pos) return null;
+                      return (
+                        <motion.div
+                          key={i}
+                          layoutId={`gallery-${i}`}
+                          className="absolute cursor-pointer rounded-2xl overflow-hidden border-4 border-white shadow-2xl group"
+                          style={{
+                            width: SPIRAL_CONFIG.cardWidth,
+                            height: SPIRAL_CONFIG.cardHeight,
+                            x: pos.x,
+                            y: pos.y,
+                            rotate: pos.tilt,
+                            zIndex: (galleryData || []).length - i
+                          }}
+                          whileHover={{ scale: 1.1, zIndex: 50, rotate: 0 }}
+                          transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                          onClick={() => setSelectedImage(src)}
+                        >
+                          <img src={src} className="w-full h-full object-cover" alt="Espiral" />
+                          <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
+                )}
+
+                {viewMode === "list" && (
+                  <motion.div 
+                    key="list"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="max-w-3xl mx-auto space-y-4"
+                  >
+                    {(galleryData || []).map((src, i) => (
+                      <motion.div
+                        key={i}
+                        layoutId={`gallery-${i}`}
+                        className="flex items-center justify-between p-6 bg-[#FAF8F5] rounded-3xl border hover:border-[#FE8330]/30 transition-all group cursor-pointer"
+                        onClick={() => setSelectedImage(src)}
+                        whileHover={{ x: 10 }}
+                      >
+                        <div className="flex items-center gap-6">
+                          <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-sm">
+                            <img src={src} className="w-full h-full object-cover" alt="Thumb" />
+                          </div>
+                          <span className="text-xl font-black text-gray-700">Foto #{i + 1}</span>
+                        </div>
+                        <span className="text-[#FE8330] font-bold opacity-0 group-hover:opacity-100 transition-opacity">Visualizar →</span>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </section>
+
 
         {/* FAQ */}
         <section className="py-32 px-6 max-w-4xl mx-auto">
