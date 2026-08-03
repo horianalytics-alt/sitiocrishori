@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
 });
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getSiteContent, type HeroContent } from "@/lib/site-content.functions";
+import { getSiteContent, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
 
 function Index() {
   const { data: hero } = useSuspenseQuery({
