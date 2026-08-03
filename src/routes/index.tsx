@@ -509,27 +509,32 @@ function Index() {
                         <motion.div
                           key={i}
                           layoutId={`gallery-${i}`}
-                          className="absolute cursor-pointer rounded-2xl overflow-hidden border-4 border-white shadow-2xl group"
+                          className="absolute cursor-pointer rounded-2xl overflow-hidden border-4 border-white shadow-2xl group s-card"
                           style={{
                             width: SPIRAL_CONFIG.cardWidth,
                             height: SPIRAL_CONFIG.cardHeight,
                             left: "50%",
                             top: "50%",
-                            translateX: "-50%",
-                            translateY: "-50%",
-                            zIndex: (galleryData || []).length - i
+                            zIndex: (galleryData || []).length - i,
+                            opacity: mounted ? 1 : 0,
+                            willChange: "transform",
                           }}
                           animate={{
-                            x: pos.x,
-                            y: pos.y,
+                            x: `calc(-50% + ${pos.x}px)`,
+                            y: `calc(-50% + ${pos.y}px)`,
                             rotate: pos.tilt,
                           }}
-                          initial={{ x: 0, y: 0, rotate: 0 }}
-
-
-                          whileHover={{ scale: 1.1, zIndex: 50, rotate: 0 }}
-                          transition={{ type: "spring", stiffness: 100, damping: 20 }}
-
+                          initial={{ x: "-50%", y: "-50%", rotate: 0 }}
+                          whileHover={{ 
+                            scale: 1.07, 
+                            zIndex: 50, 
+                            rotate: 0,
+                            boxShadow: "0 12px 40px rgba(0,0,0,0.5)"
+                          }}
+                          transition={{ 
+                            duration: 0.55,
+                            ease: [0.16, 1, 0.3, 1] // Approximate ease-spring/expo-out
+                          }}
                           onClick={() => setSelectedImage(src)}
                         >
                           <img src={src} className="w-full h-full object-cover" alt="Espiral" />
