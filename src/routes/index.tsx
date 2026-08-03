@@ -290,7 +290,7 @@ function Index() {
         {/* FAQ */}
         <section className="py-32 px-6 max-w-4xl mx-auto">
           <div className="text-center mb-20 space-y-4">
-            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tighter" data-aos="fade-up">Dúvidas Frequentes</h2>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Dúvidas Frequentes</h2>
             <p className="text-xl text-muted-foreground font-medium" data-aos="fade-up" data-aos-delay="100">Tudo o que você precisa saber para planejar sua estadia.</p>
           </div>
           <Accordion className="space-y-6">
@@ -319,7 +319,7 @@ function Index() {
         <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-white/10 to-transparent" />
         <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-16 relative z-10">
           <div className="space-y-8">
-            <h2 className="text-4xl font-extrabold text-[#FE8330] tracking-tighter">Sítio de Eventos</h2>
+            <h2 className="text-3xl font-black text-[#FE8330] tracking-tight">Sítio de Eventos</h2>
             <p className="text-gray-400 text-lg leading-relaxed font-medium">O cenário perfeito para transformar seus momentos em memórias inesquecíveis.</p>
           </div>
           
