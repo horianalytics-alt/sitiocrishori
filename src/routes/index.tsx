@@ -1,422 +1,241 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { getSiteContent, getReservas, getDepoimentos, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
 import { useState, useEffect } from "react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { getSiteContent, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
+import { Star, Instagram, Calendar as CalendarIcon, MapPin, Users, CheckCircle } from "lucide-react";
+import { DayPicker } from "react-day-picker";
+import { ptBR } from "date-fns/locale";
+import { format, isSameDay, isWithinInterval, addDays, startOfDay } from "date-fns";
+import "react-day-picker/dist/style.css";
 
 const SITE_URL = "https://sitiocrishori.lovable.app";
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000";
+const HERO_IMAGE = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000";
 
 export const Route = createFileRoute("/")({
   head: (ctx: { loaderData?: { faq?: FAQItem[] } | undefined }) => {
     const faqItems = ctx.loaderData?.faq ?? [];
-
-
-    const scripts: Array<{ type: string; children: string }> = [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "EventVenue",
-          name: "Sítio de Eventos",
-          description:
-            "Locação de sítio premium para eventos, festas, casamentos, day use e finais de semana.",
-          url: SITE_URL,
-          image: HERO_IMAGE,
-          telephone: "+55 11 97300-0753",
-          address: {
-            "@type": "PostalAddress",
-            addressCountry: "BR",
-            addressRegion: "SP",
-          },
-        }),
-      },
-    ];
-
-    if (faqItems.length > 0) {
-      scripts.push({
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: faqItems.map((item) => ({
-            "@type": "Question",
-            name: item.question,
-            acceptedAnswer: { "@type": "Answer", text: item.answer },
-          })),
-        }),
-      });
-    }
-
     return {
       meta: [
         { title: "Sítio Para Eventos | Festas, Casamentos e Finais de Semana" },
-        { name: "description", content: "Locação de sítio premium para eventos, festas, casamentos e lazer em família. Piscina aquecida, campo de futebol, área gourmet e suítes completas." },
-        { property: "og:title", content: "Sítio Para Eventos | O Cenário Perfeito Para Seus Momentos Especiais" },
-        { property: "og:description", content: "Estrutura premium para casamentos, eventos corporativos e finais de semana inesquecíveis. Reserve sua data!" },
-        { property: "og:type", content: "website" },
+        { name: "description", content: "Locação de sítio premium para eventos, festas e lazer. Piscina aquecida, campo de futebol e suítes completas." },
+        { property: "og:title", content: "Sítio Para Eventos | O Cenário Perfeito" },
         { property: "og:url", content: `${SITE_URL}/` },
         { property: "og:image", content: HERO_IMAGE },
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:image", content: HERO_IMAGE },
       ],
       links: [{ rel: "canonical", href: `${SITE_URL}/` }],
-      scripts,
     };
   },
   loader: async ({ context }) => {
-    const [, , faq] = await Promise.all([
-      context.queryClient.ensureQueryData({
-        queryKey: ['site-content', 'hero'],
-        queryFn: () => getSiteContent({ data: 'hero' }),
-      }),
-      context.queryClient.ensureQueryData({
-        queryKey: ['site-content', 'infrastructure'],
-        queryFn: () => getSiteContent({ data: 'infrastructure' }),
-      }),
-      context.queryClient.ensureQueryData({
-        queryKey: ['site-content', 'faq'],
-        queryFn: () => getSiteContent({ data: 'faq' }),
-      }),
-      context.queryClient.ensureQueryData({
-        queryKey: ['site-content', 'gallery'],
-        queryFn: () => getSiteContent({ data: 'gallery' }),
-      })
+    await Promise.all([
+      context.queryClient.ensureQueryData({ queryKey: ['site-content', 'hero'], queryFn: () => getSiteContent({ data: 'hero' }) }),
+      context.queryClient.ensureQueryData({ queryKey: ['site-content', 'infrastructure'], queryFn: () => getSiteContent({ data: 'infrastructure' }) }),
+      context.queryClient.ensureQueryData({ queryKey: ['site-content', 'faq'], queryFn: () => getSiteContent({ data: 'faq' }) }),
+      context.queryClient.ensureQueryData({ queryKey: ['site-content', 'gallery'], queryFn: () => getSiteContent({ data: 'gallery' }) }),
+      context.queryClient.ensureQueryData({ queryKey: ['reservas'], queryFn: () => getReservas() }),
+      context.queryClient.ensureQueryData({ queryKey: ['depoimentos'], queryFn: () => getDepoimentos() }),
     ]);
-    return { faq: (faq ?? []) as FAQItem[] };
   },
   component: Index,
 });
 
-
 function Index() {
-  const { data: hero } = useSuspenseQuery({
-    queryKey: ['site-content', 'hero'],
-    queryFn: () => getSiteContent({ data: 'hero' }),
-  }) as { data: HeroContent & { badges?: string[] } };
+  const { data: hero } = useSuspenseQuery({ queryKey: ['site-content', 'hero'], queryFn: () => getSiteContent({ data: 'hero' }) }) as { data: HeroContent };
+  const { data: infrastructure } = useSuspenseQuery({ queryKey: ['site-content', 'infrastructure'], queryFn: () => getSiteContent({ data: 'infrastructure' }) }) as { data: InfrastructureItem[] };
+  const { data: faq } = useSuspenseQuery({ queryKey: ['site-content', 'faq'], queryFn: () => getSiteContent({ data: 'faq' }) }) as { data: FAQItem[] };
+  const { data: galleryData } = useSuspenseQuery({ queryKey: ['site-content', 'gallery'], queryFn: () => getSiteContent({ data: 'gallery' }) }) as { data: string[] };
+  const { data: reservas } = useSuspenseQuery({ queryKey: ['reservas'], queryFn: () => getReservas() }) as { data: any[] };
+  const { data: depoimentos } = useSuspenseQuery({ queryKey: ['depoimentos'], queryFn: () => getDepoimentos() }) as { data: any[] };
 
-  const { data: infrastructure } = useSuspenseQuery({
-    queryKey: ['site-content', 'infrastructure'],
-    queryFn: () => getSiteContent({ data: 'infrastructure' }),
-  }) as { data: InfrastructureItem[] };
-
-  const { data: faq } = useSuspenseQuery({
-    queryKey: ['site-content', 'faq'],
-    queryFn: () => getSiteContent({ data: 'faq' }),
-  }) as { data: FAQItem[] };
-
+  const [selectedRange, setSelectedRange] = useState<{ from?: Date; to?: Date }>({});
   const [activeTab, setActiveTab] = useState("finais-de-semana");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
-    import('aos').then((AOS) => {
-      AOS.init({
-        duration: 1000,
-        easing: 'ease-out-back',
-        once: true,
-      });
-    });
+    import('aos').then((AOS) => { AOS.init({ duration: 1000, easing: 'ease-out-back', once: true }); });
   }, []);
 
-  const { data: galleryData } = useSuspenseQuery({
-    queryKey: ['site-content', 'gallery'],
-    queryFn: () => getSiteContent({ data: 'gallery' }),
-  }) as { data: string[] };
+  const reservedDays = (reservas || []).map(r => ({
+    from: startOfDay(new Date(r.data_inicio)),
+    to: startOfDay(new Date(r.data_fim))
+  }));
 
-  const galleryImages = galleryData && galleryData.length > 0 ? galleryData : [
-    "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=800",
-    "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800",
-    "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=800",
-    "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=800",
-    "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=800",
-  ];
+  const isDayReserved = (day: Date) => reservedDays.some(range => isWithinInterval(startOfDay(day), { start: range.from, end: range.to }));
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229]">
-      {/* Main Content Area */}
       <main>
         {/* Hero Section */}
-        <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-black/40 z-10" />
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000" 
-            alt="Vista aérea do sítio de eventos com piscina e área verde ao pôr do sol"
-            className="w-full h-full object-cover anim-photo-reveal"
-          />
-        </div>
-        
-        <div className="relative z-20 text-center px-4 max-w-4xl mx-auto space-y-8">
-          <div className="flex flex-wrap justify-center gap-3 mb-4" data-aos="fade-down">
-            {(hero?.badges || ["Piscina Aquecida", "Campo de Futebol", "Área Gourmet", "Pernoite"]).map((badge, i) => (
-              <button 
-                key={i} 
-                onClick={() => {
-                  const targetId = badge === "Piscina Aquecida" ? "galeria" : "infraestrutura";
-                  const section = document.getElementById(targetId);
-                  if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }}
-                className="group relative bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 hover:bg-[#FE8330] hover:scale-110 active:scale-95 overflow-hidden"
-              >
-                <span className="relative z-10">• {badge}</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-              </button>
-            ))}
+        <section className="relative h-[95vh] flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 bg-black/40 z-10" />
+          <div className="absolute inset-0 z-0">
+            <img src={HERO_IMAGE} alt="Hero" className="w-full h-full object-cover anim-photo-reveal" />
           </div>
-          
-          <h1 className="text-4xl md:text-7xl font-bold text-white leading-tight" data-aos="zoom-out">
-            {hero?.headline || "O cenário perfeito para os teus melhores momentos."}
-          </h1>
-          <p className="text-lg md:text-2xl text-white/90 font-light max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
-            {hero?.subheadline || "Eventos, finais de semana e Day Use inesquecíveis."}
-          </p>
-          
-          <div data-aos="fade-up" data-aos-delay="400" className="flex justify-center pt-4">
-            <WhatsAppButton 
-              phoneNumber={hero?.whatsapp_number || "00000000000"} 
-              label={hero?.cta_text || "Verificar Disponibilidade de Data"}
-              message={hero?.whatsapp_message}
-              className="px-10 py-5 text-lg shadow-xl animate-pulse"
-            />
+          <div className="relative z-20 text-center px-4 max-w-5xl mx-auto space-y-8">
+            <div className="flex flex-wrap justify-center gap-3" data-aos="fade-down">
+              {(hero?.badges || ["Piscina Aquecida", "Campo", "Área Gourmet"]).map((b, i) => (
+                <span key={i} className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-bold">• {b}</span>
+              ))}
+            </div>
+            <h1 className="text-5xl md:text-8xl font-black text-white leading-tight" data-aos="zoom-out">{hero?.headline}</h1>
+            <p className="text-xl md:text-3xl text-white/90 font-light max-w-3xl mx-auto" data-aos="fade-up">{hero?.subheadline}</p>
+            <div data-aos="fade-up" data-aos-delay="400" className="flex justify-center pt-6">
+              <button onClick={() => document.getElementById('calendario')?.scrollIntoView({behavior: 'smooth'})} className="px-12 py-6 bg-[#FE8330] text-white text-xl font-black rounded-full shadow-2xl hover:scale-105 transition-all animate-bounce-slow">{hero?.cta_text || "VERIFICAR DISPONIBILIDADE"}</button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Infrastructure Grid */}
-      <section id="infraestrutura" className="py-24 px-4 max-w-7xl mx-auto">
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight" data-aos="fade-up">Visão Geral da Infraestrutura</h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Cada detalhe pensado para o seu conforto e lazer, com estrutura completa para qualquer evento.</p>
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {(infrastructure || []).map((item, idx) => (
-            <div 
-              key={idx} 
-              className="group relative bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 border border-gray-100/50 hover:-translate-y-4"
-              data-aos="fade-up"
-              data-aos-delay={idx * 100}
-            >
-              <div className="aspect-[4/3] overflow-hidden relative">
-                <img 
-                  src={item.image} 
-                  alt={`${item.title} — estrutura disponível no sítio de eventos`} 
-                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        {/* Airbnb Style Calendar Section */}
+        <section id="calendario" className="py-32 px-4 max-w-6xl mx-auto">
+          <div className="bg-white p-8 md:p-16 rounded-[3rem] shadow-2xl border border-gray-100 flex flex-col lg:flex-row gap-16 items-start" data-aos="fade-up">
+            <div className="flex-1 space-y-8">
+              <div className="space-y-4">
+                <h2 className="text-4xl md:text-5xl font-black tracking-tighter">Escolha suas datas</h2>
+                <p className="text-lg text-muted-foreground">Selecione o período desejado no calendário para consultar valores e disponibilidade instantânea.</p>
               </div>
-              <div className="p-8">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-8 h-px bg-[#FE8330]/40" />
-                  <h3 className="text-2xl font-bold group-hover:text-[#FE8330] transition-colors duration-500">{item.title}</h3>
-                </div>
-                <p className="text-muted-foreground leading-relaxed text-balance">{item.description}</p>
+              <div className="inline-block p-4 bg-[#FAF8F5] rounded-3xl border">
+                <DayPicker
+                  mode="range"
+                  selected={{ from: selectedRange.from, to: selectedRange.to }}
+                  onSelect={(range) => setSelectedRange({ from: range?.from, to: range?.to })}
+                  locale={ptBR}
+                  disabled={isDayReserved}
+                  modifiers={{ reserved: isDayReserved }}
+                  modifiersClassNames={{ reserved: "bg-[#FE8330] text-white rounded-full line-through opacity-50" }}
+                  className="mx-auto"
+                />
               </div>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Immersive Gallery / Lookbook */}
-      <section id="galeria" className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">Galeria Imersiva</h2>
-            <p className="text-muted-foreground text-lg" data-aos="fade-up">Sinta a atmosfera do nosso paraíso.</p>
+            
+            <div className="lg:w-[400px] w-full bg-[#FAF8F5] p-10 rounded-[2.5rem] border-2 border-[#FE8330]/10 space-y-8 sticky top-10">
+              <h3 className="text-2xl font-black flex items-center gap-3"><CheckCircle className="text-[#FE8330]" /> Reserva Garantida</h3>
+              {selectedRange.from ? (
+                <div className="space-y-6 animate-fade-in">
+                  <div className="p-6 bg-white rounded-2xl border shadow-sm space-y-2">
+                    <p className="text-xs font-black uppercase tracking-widest text-[#FE8330]">Período Selecionado</p>
+                    <p className="text-lg font-bold">
+                      {format(selectedRange.from, "dd/MM/yyyy")} 
+                      {selectedRange.to && ` até ${format(selectedRange.to, "dd/MM/yyyy")}`}
+                    </p>
+                  </div>
+                  <WhatsAppButton 
+                    phoneNumber={hero?.whatsapp_number || ""}
+                    label="Solicitar Orçamento Agora"
+                    message={`Olá! Gostaria de um orçamento para o período de ${format(selectedRange.from, "dd/MM/yyyy")} ${selectedRange.to ? `até ${format(selectedRange.to, "dd/MM/yyyy")}` : ""}. O site mostra que está livre!`}
+                    className="w-full py-6 text-xl"
+                  />
+                </div>
+              ) : (
+                <p className="text-center py-10 text-muted-foreground font-medium italic">Selecione uma data no calendário para continuar</p>
+              )}
+            </div>
           </div>
-          
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-            {galleryImages.filter(src => src && src.trim() !== "").map((src, i) => (
-              <div 
-                key={i} 
-                className="relative group cursor-pointer overflow-hidden rounded-3xl shadow-md transition-all hover:-translate-y-2 hover:shadow-xl"
-                onClick={() => setSelectedImage(src)}
-                data-aos="fade-up"
-                data-aos-delay={i * 50}
-              >
-                <img 
-                  src={src} 
-                  alt={`Foto ${i + 1} da estrutura de lazer do sítio para festas e eventos`} 
-                  className="w-full h-auto object-cover" 
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).parentElement?.classList.add('hidden');
-                  }}
-                />
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="text-white text-sm font-bold bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/30">Ampliar</span>
+        </section>
+
+        {/* Infrastructure Grid */}
+        <section id="infraestrutura" className="py-24 px-4 max-w-7xl mx-auto">
+          <h2 className="text-4xl md:text-6xl font-black text-center mb-16" data-aos="fade-up">Estrutura Completa</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {infrastructure?.map((item, i) => (
+              <div key={i} className="group bg-white rounded-[2.5rem] overflow-hidden shadow-xl hover:-translate-y-4 transition-all duration-500 border border-gray-100" data-aos="fade-up" data-aos-delay={i*100}>
+                <div className="aspect-[4/3] overflow-hidden"><img src={item.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
+                <div className="p-8 space-y-2">
+                  <h3 className="text-2xl font-bold">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Lightbox Modal */}
+        {/* Tabs Modalidades */}
+        <section className="py-24 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-4xl md:text-6xl font-black text-center mb-16">Modalidades</h2>
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="flex flex-wrap h-auto gap-4 justify-center bg-transparent mb-12">
+                {["finais-de-semana", "festas-eventos", "day-use"].map(t => (
+                  <TabsTrigger key={t} value={t} activeValue={activeTab} onClick={setActiveTab} className="px-8 py-4 rounded-full font-bold uppercase tracking-widest border data-[state=active]:bg-[#FE8330] data-[state=active]:text-white transition-all">{t.replace('-', ' ')}</TabsTrigger>
+                ))}
+              </TabsList>
+              <TabsContent value="finais-de-semana" activeValue={activeTab}>
+                <div className="p-10 bg-[#FAF8F5] rounded-[3rem] border flex flex-col md:flex-row gap-12 items-center">
+                  <div className="flex-1 space-y-6">
+                    <h3 className="text-4xl font-black">Finais de Semana</h3>
+                    <p className="text-xl text-muted-foreground">Privacidade e lazer total para sua família com pernoite completo.</p>
+                    <ul className="space-y-3 font-bold">
+                      <li className="flex items-center gap-2"><CheckCircle className="text-[#FE8330] w-5 h-5" /> Até 20 pessoas no pernoite</li>
+                      <li className="flex items-center gap-2"><CheckCircle className="text-[#FE8330] w-5 h-5" /> Cozinha industrial completa</li>
+                      <li className="flex items-center gap-2"><CheckCircle className="text-[#FE8330] w-5 h-5" /> Suítes climatizadas</li>
+                    </ul>
+                  </div>
+                  <div className="md:w-1/3"><img src={HERO_IMAGE} className="rounded-3xl shadow-xl" /></div>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </section>
+
+        {/* Testimonials */}
+        <section className="py-24 bg-[#FAF8F5]">
+          <div className="max-w-7xl mx-auto px-4">
+            <h2 className="text-4xl md:text-6xl font-black text-center mb-16">O que dizem nossos clientes</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              {(depoimentos || []).map((dep, i) => (
+                <div key={i} className="bg-white p-10 rounded-[2.5rem] shadow-xl space-y-6 border border-gray-100" data-aos="fade-up" data-aos-delay={i*100}>
+                  <div className="flex text-[#FE8330]">{Array.from({length: dep.estrelas}).map((_, j) => <Star key={j} className="w-5 h-5 fill-current" />)}</div>
+                  <p className="text-lg italic leading-relaxed text-gray-600">"{dep.depoimento}"</p>
+                  <div>
+                    <p className="font-black text-xl">{dep.nome}</p>
+                    <p className="text-[#FE8330] font-bold text-xs uppercase tracking-widest">{dep.evento}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Gallery Masonry */}
+        <section className="py-24 bg-white px-4">
+          <div className="max-w-7xl mx-auto columns-1 md:columns-3 lg:columns-4 gap-6 space-y-6">
+            {(galleryData || []).map((src, i) => (
+              <div key={i} className="relative group cursor-pointer overflow-hidden rounded-3xl" onClick={() => setSelectedImage(src)} data-aos="fade-up">
+                <img src={src} className="w-full h-auto object-cover transition-all duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"><span className="text-white font-black bg-white/20 backdrop-blur-md px-6 py-2 rounded-full border border-white/40">VER</span></div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="py-24 px-4 max-w-4xl mx-auto">
+          <h2 className="text-4xl font-black text-center mb-16">Dúvidas Frequentes</h2>
+          <Accordion className="space-y-4">
+            {(faq || []).map((item, i) => (
+              <AccordionItem key={i} title={item.question} className="bg-white px-8 py-2 rounded-3xl shadow-sm border-none">{item.answer}</AccordionItem>
+            ))}
+          </Accordion>
+        </section>
+      </main>
+
+      {/* Lightbox */}
       {selectedImage && (
-        <div 
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 cursor-pointer"
-          onClick={() => setSelectedImage(null)}
-        >
-          <img src={selectedImage} className="max-w-full max-h-full rounded-2xl shadow-2xl" alt="Foto ampliada da estrutura do sítio de eventos" />
-          <button aria-label="Fechar imagem ampliada" className="absolute top-8 right-8 text-white text-4xl">&times;</button>
-
+        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4" onClick={() => setSelectedImage(null)}>
+          <img src={selectedImage} className="max-w-full max-h-full rounded-2xl shadow-2xl" />
         </div>
       )}
 
-      {/* Rental Type Tabs */}
-      <section className="py-24 bg-[#FAF8F5]">
-        <div className="max-w-4xl mx-auto px-4">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight" data-aos="fade-up">Tipos de Locação</h2>
-              <p className="text-muted-foreground text-lg max-w-xl mx-auto" data-aos="fade-up">A modalidade ideal para cada necessidade, com flexibilidade total.</p>
-            </div>
-          
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-white/50 border border-gray-200 p-2 h-auto rounded-3xl mb-12 flex-wrap sm:flex-nowrap">
-              <TabsTrigger value="finais-de-semana" activeValue={activeTab} onClick={setActiveTab} className="flex-1 py-4 text-sm font-bold uppercase tracking-wider data-[state=active]:bg-[#FE8330] data-[state=active]:text-white rounded-2xl transition-all">
-                Finais de Semana
-              </TabsTrigger>
-              <TabsTrigger value="festas-eventos" activeValue={activeTab} onClick={setActiveTab} className="flex-1 py-4 text-sm font-bold uppercase tracking-wider data-[state=active]:bg-[#FE8330] data-[state=active]:text-white rounded-2xl transition-all">
-                Festas & Casamentos
-              </TabsTrigger>
-              <TabsTrigger value="day-use" activeValue={activeTab} onClick={setActiveTab} className="flex-1 py-4 text-sm font-bold uppercase tracking-wider data-[state=active]:bg-[#FE8330] data-[state=active]:text-white rounded-2xl transition-all">
-                Day Use
-              </TabsTrigger>
-              <TabsTrigger value="final-de-ano" activeValue={activeTab} onClick={setActiveTab} className="flex-1 py-4 text-sm font-bold uppercase tracking-wider data-[state=active]:bg-[#FE8330] data-[state=active]:text-white rounded-2xl transition-all">
-                Feriados & Réveillon
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="finais-de-semana" activeValue={activeTab}>
-              <div className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 flex flex-col md:flex-row gap-8 items-center" data-aos="fade-up">
-                <div className="flex-1 space-y-4">
-                  <h3 className="text-3xl font-bold">Finais de Semana & Feriados</h3>
-                  <p className="text-muted-foreground text-lg leading-relaxed">Privacidade total para você e sua família. Check-in na sexta e check-out no domingo.</p>
-                  <ul className="grid grid-cols-2 gap-3 text-sm font-medium">
-                    <li>✓ Pernoite para até 20 pessoas</li>
-                    <li>✓ Acesso total à área de lazer</li>
-                    <li>✓ Estacionamento privativo</li>
-                    <li>✓ Cozinha equipada</li>
-                  </ul>
-                  <div className="pt-6">
-                    <WhatsAppButton phoneNumber={hero?.whatsapp_number || "00000000000"} label="Consultar Valores" message={hero?.whatsapp_message} className="bg-[#1E2229] hover:bg-gray-800" />
-                  </div>
-                </div>
-                <div className="md:w-1/3 w-full">
-                  <img src="https://images.unsplash.com/photo-1520245647217-b48632c0c7b7?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Casa de campo com varanda para finais de semana em família" />
-                </div>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="festas-eventos" activeValue={activeTab}>
-              <div className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 flex flex-col md:flex-row gap-8 items-center" data-aos="fade-up">
-                <div className="flex-1 space-y-4">
-                  <h3 className="text-3xl font-bold">Festas & Casamentos</h3>
-                  <p className="text-muted-foreground text-lg leading-relaxed">O cenário de sonhos para celebrar datas marcantes.</p>
-                  <ul className="grid grid-cols-2 gap-3 text-sm font-medium">
-                    <li>✓ Capacidade para 150 convidados</li>
-                    <li>✓ Gazebo para cerimônias</li>
-                    <li>✓ Área de buffet integrada</li>
-                    <li>✓ Banheiros acessíveis</li>
-                  </ul>
-                  <div className="pt-6">
-                    <WhatsAppButton phoneNumber={hero?.whatsapp_number || "00000000000"} label="Solicitar Orçamento" message={hero?.whatsapp_message} className="bg-[#1E2229] hover:bg-gray-800" />
-                  </div>
-                </div>
-                <div className="md:w-1/3 w-full">
-                  <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Salão decorado para festas e casamentos no sítio" />
-                </div>
-              </div>
-            </TabsContent>
+      <WhatsAppButton phoneNumber={hero?.whatsapp_number || ""} floating message={hero?.whatsapp_message} label="Falar com a Administração" />
 
-            <TabsContent value="day-use" activeValue={activeTab}>
-              <div className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 flex flex-col md:flex-row gap-8 items-center" data-aos="fade-up">
-                <div className="flex-1 space-y-4">
-                  <h3 className="text-3xl font-bold">Day Use</h3>
-                  <p className="text-muted-foreground text-lg leading-relaxed">Um dia de lazer completo sem precisar pernoitar.</p>
-                  <ul className="grid grid-cols-2 gap-3 text-sm font-medium">
-                    <li>✓ Horário: 08:00 às 18:00</li>
-                    <li>✓ Churrasqueira e Piscina</li>
-                    <li>✓ Campo e Vestiários</li>
-                    <li>✓ Playground</li>
-                  </ul>
-                  <div className="pt-6">
-                    <WhatsAppButton phoneNumber={hero?.whatsapp_number || "00000000000"} label="Reservar meu dia" message={hero?.whatsapp_message} className="bg-[#1E2229] hover:bg-gray-800" />
-                  </div>
-                </div>
-                <div className="md:w-1/3 w-full">
-                  <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Piscina e área de lazer para day use durante o dia" />
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="final-de-ano" activeValue={activeTab}>
-              <div className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 flex flex-col md:flex-row gap-8 items-center" data-aos="fade-up">
-                <div className="flex-1 space-y-4">
-                  <h3 className="text-3xl font-bold">Natal, Réveillon & Carnaval</h3>
-                  <p className="text-muted-foreground text-lg leading-relaxed">Pacotes exclusivos para as datas mais esperadas do ano.</p>
-                  <ul className="grid grid-cols-2 gap-3 text-sm font-medium">
-                    <li>✓ Pacotes de 4 a 5 dias</li>
-                    <li>✓ Ceia opcional</li>
-                    <li>✓ Decoração temática</li>
-                    <li>✓ Conforto absoluto</li>
-                  </ul>
-                  <div className="pt-6">
-                    <WhatsAppButton phoneNumber={hero?.whatsapp_number || "00000000000"} label="Consultar Pacotes" message={hero?.whatsapp_message} className="bg-[#1E2229] hover:bg-gray-800" />
-                  </div>
-                </div>
-                <div className="md:w-1/3 w-full">
-                  <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Mesa preparada para ceia de Natal e Réveillon no sítio" />
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="py-24 px-4 max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight" data-aos="fade-up">Dúvidas Frequentes</h2>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto" data-aos="fade-up">Informações rápidas e transparentes para facilitar seu planejamento.</p>
+      <footer className="py-20 bg-[#1E2229] text-white">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-10">
+          <div className="space-y-4 text-center md:text-left">
+            <h2 className="text-4xl font-black text-[#FE8330]">Sítio de Eventos</h2>
+            <p className="text-gray-400">O cenário perfeito para seus melhores momentos.</p>
           </div>
-        <Accordion className="space-y-6" data-aos="fade-up">
-          {(faq || []).map((item, idx) => (
-            <AccordionItem 
-              key={idx} 
-              title={item.question}
-              className="px-4 border-none shadow-md hover:shadow-lg transition-shadow bg-white rounded-2xl"
-            >
-              <div className="py-4 text-lg">
-                {item.answer}
-              </div>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </section>
-      </main>
-
-      {/* WhatsApp Floating Button */}
-      <WhatsAppButton 
-        phoneNumber={hero?.whatsapp_number || "00000000000"} 
-        floating 
-        message={hero?.whatsapp_message}
-        label="Fale direto com a administração"
-      />
-
-      {/* Footer */}
-      <footer className="py-16 border-t bg-white">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="text-center md:text-left">
-            <h3 className="text-2xl font-bold text-[#FE8330] mb-2">Sítio de Eventos</h3>
-            <p className="text-muted-foreground">© 2026 Todos os direitos reservados.</p>
-          </div>
-          <div className="flex gap-6">
-            {/* Admin link removed from public view as requested */}
-          </div>
+          <div className="flex gap-8"><Instagram className="w-8 h-8 cursor-pointer hover:text-[#FE8330] transition-all" /><Link to="/admin" className="text-xs text-gray-600 hover:text-white transition-all">Painel Restrito</Link></div>
         </div>
       </footer>
     </div>
