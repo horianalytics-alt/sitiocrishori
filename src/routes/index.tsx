@@ -521,7 +521,7 @@ function Index() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="relative h-[700px] flex items-center justify-center"
+                    className="relative h-[700px] flex items-center justify-center spiral-field"
                   >
                     {(galleryData || []).map((src, i) => {
                       const pos = positions[i];
