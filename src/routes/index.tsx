@@ -16,8 +16,7 @@ const SITE_URL = "https://sitiocrishori.lovable.app";
 const HERO_IMAGE = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000";
 
 export const Route = createFileRoute("/")({
-  head: (ctx: { loaderData?: { faq?: FAQItem[] } | undefined }) => {
-    const faqItems = ctx.loaderData?.faq ?? [];
+  head: () => {
     return {
       meta: [
         { title: "Sítio Para Eventos | Festas, Casamentos e Finais de Semana" },
@@ -50,7 +49,7 @@ function Index() {
   const { data: reservas } = useSuspenseQuery({ queryKey: ['reservas'], queryFn: () => getReservas() }) as { data: any[] };
   const { data: depoimentos } = useSuspenseQuery({ queryKey: ['depoimentos'], queryFn: () => getDepoimentos() }) as { data: any[] };
 
-  const [selectedRange, setSelectedRange] = useState<{ from?: Date; to?: Date }>({});
+  const [selectedRange, setSelectedRange] = useState<DateRange | undefined>();
   const [activeTab, setActiveTab] = useState("finais-de-semana");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -64,6 +63,7 @@ function Index() {
   }));
 
   const isDayReserved = (day: Date) => reservedDays.some(range => isWithinInterval(startOfDay(day), { start: range.from, end: range.to }));
+
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229]">
