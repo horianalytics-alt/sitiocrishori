@@ -1,24 +1,95 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { Accordion, AccordionItem } from "@/components/ui/accordion";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  const [activeTab, setActiveTab] = useState("finais-de-semana");
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229]">
+      {/* Hero Section */}
+      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-gray-900/40 z-10" />
+        <img 
+          src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000" 
+          alt="Sítio de Eventos"
+          className="absolute inset-0 w-full h-full object-cover anim-photo-reveal"
+        />
+        <div className="relative z-20 text-center px-4 max-w-4xl mx-auto space-y-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight">
+            O cenário perfeito para os teus melhores momentos: Festas, Finais de Semana e Day Use.
+          </h1>
+          <p className="text-lg md:text-xl text-white/90">
+            Estrutura completa com piscina, área gourmet, suítes e muito mais.
+          </p>
+          <WhatsAppButton phoneNumber="00000000000" />
+        </div>
+      </section>
+
+      {/* Infrastructure Grid */}
+      <section className="py-20 px-4 max-w-6xl mx-auto">
+        <h2 className="text-3xl font-bold mb-12 text-center">Nossa Estrutura</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            { title: "Área de Festas", img: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800" },
+            { title: "Piscina", img: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=800" },
+            { title: "Suítes", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800" },
+          ].map((item) => (
+            <div key={item.title} className="group transition-card card-interactive bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md">
+              <img src={item.img} alt={item.title} className="w-full h-48 object-cover card-media" />
+              <div className="p-6">
+                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                <p className="text-muted-foreground text-sm">Espaço aconchegante e completo para aproveitar.</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Rental Tabs */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList>
+              {["finais-de-semana", "festas-eventos", "day-use"].map((t) => (
+                <TabsTrigger key={t} value={t} activeValue={activeTab} onClick={setActiveTab}>
+                  {t.replace(/-/g, " ").toUpperCase()}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            <TabsContent value="finais-de-semana" activeValue={activeTab}>
+              <div className="p-8 rounded-2xl bg-gray-50 border border-gray-100">
+                <h3 className="text-2xl font-bold mb-4">Finais de Semana</h3>
+                <p className="text-muted-foreground mb-6">Desfrute de dois dias completos com total privacidade e conforto.</p>
+                <WhatsAppButton phoneNumber="00000000000" label="Consultar Valores" className="bg-[#1E2229] hover:bg-gray-800" />
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-20 px-4 max-w-3xl mx-auto">
+        <h2 className="text-3xl font-bold mb-12 text-center">Perguntas Frequentes</h2>
+        <Accordion className="space-y-4">
+          <AccordionItem title="Qual a capacidade máxima?">
+            Podemos acomodar confortavelmente até 50 pessoas para festas e 20 para pernoite.
+          </AccordionItem>
+          <AccordionItem title="Como funciona o horário de som?">
+            Respeitamos a legislação local, com restrições após as 22h para garantir o descanso de todos.
+          </AccordionItem>
+        </Accordion>
+      </section>
+
+      <WhatsAppButton phoneNumber="00000000000" floating />
     </div>
   );
 }
+EOF
