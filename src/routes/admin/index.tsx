@@ -157,7 +157,7 @@ function AdminDashboard() {
                     value={item.title || ""} 
                     onChange={e => {
                       const newInfra = [...infraForm];
-                      newInfra[idx] = { ...newInfra[idx], title: e.target.value };
+                      newInfra[idx] = { title: e.target.value, description: item.description, image: item.image };
                       setInfraForm(newInfra);
                     }}
                   />
@@ -166,7 +166,7 @@ function AdminDashboard() {
                     value={item.description || ""} 
                     onChange={e => {
                       const newInfra = [...infraForm];
-                      newInfra[idx] = { ...newInfra[idx], description: e.target.value };
+                      newInfra[idx] = { title: item.title, description: e.target.value, image: item.image };
                       setInfraForm(newInfra);
                     }}
                   />
@@ -175,7 +175,7 @@ function AdminDashboard() {
                     value={item.image || ""} 
                     onChange={e => {
                       const newInfra = [...infraForm];
-                      newInfra[idx] = { ...newInfra[idx], image: e.target.value };
+                      newInfra[idx] = { title: item.title, description: item.description, image: e.target.value };
                       setInfraForm(newInfra);
                     }}
                   />
@@ -184,7 +184,7 @@ function AdminDashboard() {
             </div>
             <div className="flex justify-between">
               <button 
-                onClick={() => setInfraForm([...infraForm, { title: "Novo Espaço", description: "Descrição...", image: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800" }])}
+                onClick={() => setInfraForm([...infraForm, { title: "Novo Espaço", description: "Descrição...", image: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800" } as InfrastructureItem])}
                 className="flex items-center gap-2 bg-white border-2 border-dashed border-gray-200 px-6 py-3 rounded-xl hover:border-[#FE8330] hover:text-[#FE8330] transition-all"
               >
                 <Plus className="w-5 h-5" /> Adicionar Card
@@ -207,7 +207,7 @@ function AdminDashboard() {
                       value={item.question || ""} 
                       onChange={e => {
                         const newFaq = [...faqForm];
-                        newFaq[idx] = { ...newFaq[idx], question: e.target.value };
+                        newFaq[idx] = { question: e.target.value, answer: item.answer };
                         setFaqForm(newFaq);
                       }}
                     />
@@ -218,7 +218,7 @@ function AdminDashboard() {
                     value={item.answer || ""} 
                     onChange={e => {
                       const newFaq = [...faqForm];
-                      newFaq[idx] = { ...newFaq[idx], answer: e.target.value };
+                      newFaq[idx] = { question: item.question, answer: e.target.value };
                       setFaqForm(newFaq);
                     }}
                   />
@@ -226,7 +226,7 @@ function AdminDashboard() {
               ))}
               <div className="flex justify-between pt-4">
                 <button 
-                  onClick={() => setFaqForm([...faqForm, { question: "Nova Pergunta?", answer: "Sua resposta aqui..." }])}
+                  onClick={() => setFaqForm([...faqForm, { question: "Nova Pergunta?", answer: "Sua resposta aqui..." } as FAQItem])}
                   className="text-[#FE8330] font-bold flex items-center gap-2"
                 >
                   <Plus className="w-4 h-4" /> Adicionar Pergunta
