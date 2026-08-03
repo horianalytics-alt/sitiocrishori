@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getSiteContent, updateSiteContent, type HeroContent, type InfrastructureItem, type FAQItem } from '@/lib/site-content.functions'
 import { toast } from 'sonner'
 import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Accordion, AccordionItem } from "@/components/ui/accordion"
 
 export const Route = createFileRoute('/admin/')({
   loader: async ({ context }) => {
