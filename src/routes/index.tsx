@@ -242,6 +242,66 @@ function Index() {
                   </div>
                 </div>
               </TabsContent>
+
+              <TabsContent value="festas-eventos" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
+                <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                  <div className="flex-1 space-y-8">
+                    <div className="space-y-4">
+                      <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Celebrações Memoráveis</span>
+                      <h3 className="text-2xl md:text-5xl font-black tracking-tight">Festas & Eventos</h3>
+                    </div>
+                    <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">O cenário ideal para casamentos, aniversários e eventos corporativos com suporte completo.</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {[
+                        "Salão de festas coberto",
+                        "Área para cerimônias",
+                        "Iluminação decorativa",
+                        "Buffet parceiro opcional",
+                        "Som e Projeção",
+                        "Equipe de limpeza inclusa"
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
+                          <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
+                          <span className="font-bold text-sm">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Festas e Eventos" />
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="day-use" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
+                <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                  <div className="flex-1 space-y-8">
+                    <div className="space-y-4">
+                      <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Lazer e Diversão</span>
+                      <h3 className="text-2xl md:text-5xl font-black tracking-tight">Day Use</h3>
+                    </div>
+                    <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Aproveite toda a nossa infraestrutura de lazer por um dia inteiro com amigos e família.</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {[
+                        "Acesso total à piscina",
+                        "Campo de futebol liberado",
+                        "Uso da área gourmet",
+                        "Vestiários completos",
+                        "Playground para crianças",
+                        "Das 08h às 18h"
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
+                          <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
+                          <span className="font-bold text-sm">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Day Use" />
+                  </div>
+                </div>
+              </TabsContent>
             </Tabs>
           </div>
         </section>
