@@ -14,7 +14,6 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
-import { Route as ApiPublicImageRouteImport } from './routes/api/public/image'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -41,11 +40,6 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const ApiPublicImageRoute = ApiPublicImageRouteImport.update({
-  id: '/api/public/image',
-  path: '/api/public/image',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -53,14 +47,12 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
-  '/api/public/image': typeof ApiPublicImageRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin': typeof AdminIndexRoute
-  '/api/public/image': typeof ApiPublicImageRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -69,34 +61,19 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
-  '/api/public/image': typeof ApiPublicImageRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/admin'
-    | '/sitemap.xml'
-    | '/admin/login'
-    | '/admin/'
-    | '/api/public/image'
+  fullPaths: '/' | '/admin' | '/sitemap.xml' | '/admin/login' | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sitemap.xml' | '/admin/login' | '/admin' | '/api/public/image'
-  id:
-    | '__root__'
-    | '/'
-    | '/admin'
-    | '/sitemap.xml'
-    | '/admin/login'
-    | '/admin/'
-    | '/api/public/image'
+  to: '/' | '/sitemap.xml' | '/admin/login' | '/admin'
+  id: '__root__' | '/' | '/admin' | '/sitemap.xml' | '/admin/login' | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  ApiPublicImageRoute: typeof ApiPublicImageRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -136,13 +113,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/api/public/image': {
-      id: '/api/public/image'
-      path: '/api/public/image'
-      fullPath: '/api/public/image'
-      preLoaderRoute: typeof ApiPublicImageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -164,7 +134,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  ApiPublicImageRoute: ApiPublicImageRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
