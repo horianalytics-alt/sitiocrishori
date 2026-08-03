@@ -15,22 +15,43 @@ export const Route = createFileRoute("/")({
     ],
   }),
   loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData({
-      queryKey: ['site-content', 'hero'],
-      queryFn: () => getSiteContent({ data: 'hero' }),
-    })
+    await Promise.all([
+      context.queryClient.ensureQueryData({
+        queryKey: ['site-content', 'hero'],
+        queryFn: () => getSiteContent({ data: 'hero' }),
+      }),
+      context.queryClient.ensureQueryData({
+        queryKey: ['site-content', 'infrastructure'],
+        queryFn: () => getSiteContent({ data: 'infrastructure' }),
+      }),
+      context.queryClient.ensureQueryData({
+        queryKey: ['site-content', 'faq'],
+        queryFn: () => getSiteContent({ data: 'faq' }),
+      })
+    ])
   },
   component: Index,
 });
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getSiteContent, type HeroContent } from "@/lib/site-content.functions";
+import { getSiteContent, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
 
 function Index() {
   const { data: hero } = useSuspenseQuery({
     queryKey: ['site-content', 'hero'],
     queryFn: () => getSiteContent({ data: 'hero' }),
   }) as { data: HeroContent };
+
+  const { data: infrastructure } = useSuspenseQuery({
+    queryKey: ['site-content', 'infrastructure'],
+    queryFn: () => getSiteContent({ data: 'infrastructure' }),
+  }) as { data: InfrastructureItem[] };
+
+  const { data: faq } = useSuspenseQuery({
+    queryKey: ['site-content', 'faq'],
+    queryFn: () => getSiteContent({ data: 'faq' }),
+  }) as { data: FAQItem[] };
+
   const [activeTab, setActiveTab] = useState("finais-de-semana");
 
   useEffect(() => {
@@ -73,22 +94,18 @@ function Index() {
       {/* Infrastructure Grid */}
       <section className="py-20 px-4 max-w-6xl mx-auto overflow-hidden">
         <h2 className="text-3xl font-bold mb-12 text-center" data-aos="fade-up">Nossa Estrutura</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            { title: "Área de Festas", img: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800", delay: 0 },
-            { title: "Piscina", img: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=800", delay: 100 },
-            { title: "Suítes", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800", delay: 200 },
-          ].map((item) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {(infrastructure || []).map((item, idx) => (
             <div 
-              key={item.title} 
-              className="group transition-card card-interactive bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md"
+              key={idx} 
+              className="group transition-card card-interactive bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md border border-gray-100"
               data-aos="fade-up"
-              data-aos-delay={item.delay}
+              data-aos-delay={idx * 100}
             >
-              <img src={item.img} alt={item.title} className="w-full h-48 object-cover card-media" />
+              <img src={item.image} alt={item.title} className="w-full h-56 object-cover card-media" />
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                <p className="text-muted-foreground text-sm">Espaço aconchegante e completo para aproveitar.</p>
+                <p className="text-muted-foreground text-sm">{item.description}</p>
               </div>
             </div>
           ))}
@@ -121,12 +138,11 @@ function Index() {
       <section className="py-20 px-4 max-w-3xl mx-auto">
         <h2 className="text-3xl font-bold mb-12 text-center">Perguntas Frequentes</h2>
         <Accordion className="space-y-4" data-aos="fade-up">
-          <AccordionItem title="Qual a capacidade máxima?">
-            Podemos acomodar confortavelmente até 50 pessoas para festas e 20 para pernoite.
-          </AccordionItem>
-          <AccordionItem title="Como funciona o horário de som?">
-            Respeitamos a legislação local, com restrições após as 22h para garantir o descanso de todos.
-          </AccordionItem>
+          {(faq || []).map((item, idx) => (
+            <AccordionItem key={idx} title={item.question}>
+              {item.answer}
+            </AccordionItem>
+          ))}
         </Accordion>
       </section>
 
