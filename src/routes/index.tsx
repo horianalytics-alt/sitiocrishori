@@ -522,7 +522,11 @@ function Index() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="relative h-[700px] flex items-center justify-center spiral-field"
+                    className="relative h-[800px] flex items-center justify-center spiral-field overflow-visible w-full max-w-4xl mx-auto"
+                    onPointerDown={onPointerDown}
+                    onPointerMove={onPointerMove}
+                    onPointerUp={onPointerUp}
+                    onPointerLeave={onPointerUp}
                   >
                     {(galleryData || []).map((src, i) => {
                       const pos = positions[i];
@@ -542,8 +546,8 @@ function Index() {
                             willChange: "transform",
                           }}
                           animate={{
-                            x: `calc(-50% + ${pos.x}px)`,
-                            y: `calc(-50% + ${pos.y}px)`,
+                            x: pos.x,
+                            y: pos.y,
                             rotate: pos.tilt,
                           }}
                           initial={{ x: "-50%", y: "-50%", rotate: 0 }}
