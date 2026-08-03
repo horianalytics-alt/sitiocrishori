@@ -2,7 +2,7 @@
 @source "../src";
 @import "tw-animate-css";
 
-/* Fonts */
+/* Fonts - Must be before any other rules in Tailwind v4 */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Syne:wght@400..800&display=swap');
 
 @custom-variant dark (&:is(.dark *));
