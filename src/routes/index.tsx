@@ -578,7 +578,7 @@ function Index() {
                       <motion.div
                         key={i}
                         layoutId={`gallery-${i}`}
-                        className="flex items-center justify-between p-6 bg-[#FAF8F5] rounded-3xl border hover:border-[#FE8330]/30 transition-all group cursor-pointer"
+                        className="l-row ul-link flex items-center justify-between p-6 bg-[#FAF8F5] rounded-3xl border hover:border-[#FE8330]/30 transition-all group cursor-pointer"
                         onClick={() => setSelectedImage(src)}
                         whileHover={{ x: 10 }}
                       >
