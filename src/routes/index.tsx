@@ -17,7 +17,7 @@ function Index() {
     import('aos').then((AOS) => {
       AOS.init({
         duration: 1000,
-        easing: 'ease-out-quint',
+        easing: 'ease-out-back',
         once: true,
       });
     });
