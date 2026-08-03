@@ -2,8 +2,16 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 
+export type HeroContent = {
+  headline: string;
+  subheadline: string;
+  cta_text: string;
+  whatsapp_number: string;
+  whatsapp_message: string;
+};
+
 export const getSiteContent = createServerFn({ method: "GET" })
-  .inputValidator((data) => z.string().parse(data))
+  .validator((section: string) => section)
   .handler(async ({ data: section }) => {
     const { data, error } = await supabase
       .from("site_content")
@@ -12,14 +20,11 @@ export const getSiteContent = createServerFn({ method: "GET" })
       .single();
     
     if (error) throw error;
-    return data.content;
+    return data.content as any;
   });
 
 export const updateSiteContent = createServerFn({ method: "POST" })
-  .inputValidator((data) => z.object({
-    section: z.string(),
-    content: z.any()
-  }).parse(data))
+  .validator((data: { section: string; content: any }) => data)
   .handler(async ({ data }) => {
     // This will be wrapped with auth check in the UI / protected route logic
     const { error } = await supabase
