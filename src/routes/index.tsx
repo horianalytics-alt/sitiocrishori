@@ -29,6 +29,10 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData({
         queryKey: ['site-content', 'faq'],
         queryFn: () => getSiteContent({ data: 'faq' }),
+      }),
+      context.queryClient.ensureQueryData({
+        queryKey: ['site-content', 'gallery'],
+        queryFn: () => getSiteContent({ data: 'gallery' }),
       })
     ])
   },
@@ -64,7 +68,12 @@ function Index() {
     });
   }, []);
 
-  const galleryImages = [
+  const { data: galleryData } = useSuspenseQuery({
+    queryKey: ['site-content', 'gallery'],
+    queryFn: () => getSiteContent({ data: 'gallery' }),
+  }) as { data: string[] };
+
+  const galleryImages = galleryData && galleryData.length > 0 ? galleryData : [
     "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=800",
     "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800",
     "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=800",
