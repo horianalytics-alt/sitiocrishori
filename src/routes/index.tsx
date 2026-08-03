@@ -7,17 +7,67 @@ import { cn } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getSiteContent, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
 
+const SITE_URL = "https://sitiocrishori.lovable.app";
+const HERO_IMAGE =
+  "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000";
+
 export const Route = createFileRoute("/")({
-  head: () => ({
-    title: "Sítio Para Eventos | Festas, Casamentos e Finais de Semana",
-    meta: [
-      { name: "description", content: "Locação de sítio premium para eventos, festas, casamentos e lazer em família. Piscina aquecida, campo de futebol, área gourmet e suítes completas." },
-      { property: "og:title", content: "Sítio Para Eventos | O Cenário Perfeito Para Seus Momentos Especiais" },
-      { property: "og:description", content: "Estrutura premium para casamentos, eventos corporativos e finais de semana inesquecíveis. Reserve sua data!" },
-    ],
-  }),
+  head: ({ loaderData }) => {
+    const faqItems = (loaderData?.faq ?? []) as FAQItem[];
+    const scripts: Array<{ type: string; children: string }> = [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "EventVenue",
+          name: "Sítio de Eventos",
+          description:
+            "Locação de sítio premium para eventos, festas, casamentos, day use e finais de semana.",
+          url: SITE_URL,
+          image: HERO_IMAGE,
+          telephone: "+55 11 97300-0753",
+          address: {
+            "@type": "PostalAddress",
+            addressCountry: "BR",
+            addressRegion: "SP",
+          },
+        }),
+      },
+    ];
+
+    if (faqItems.length > 0) {
+      scripts.push({
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqItems.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: { "@type": "Answer", text: item.answer },
+          })),
+        }),
+      });
+    }
+
+    return {
+      meta: [
+        { title: "Sítio Para Eventos | Festas, Casamentos e Finais de Semana" },
+        { name: "description", content: "Locação de sítio premium para eventos, festas, casamentos e lazer em família. Piscina aquecida, campo de futebol, área gourmet e suítes completas." },
+        { property: "og:title", content: "Sítio Para Eventos | O Cenário Perfeito Para Seus Momentos Especiais" },
+        { property: "og:description", content: "Estrutura premium para casamentos, eventos corporativos e finais de semana inesquecíveis. Reserve sua data!" },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: `${SITE_URL}/` },
+        { property: "og:image", content: HERO_IMAGE },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: HERO_IMAGE },
+      ],
+      links: [{ rel: "canonical", href: `${SITE_URL}/` }],
+      scripts,
+    };
+  },
   loader: async ({ context }) => {
-    await Promise.all([
+    const [, , faq] = await Promise.all([
       context.queryClient.ensureQueryData({
         queryKey: ['site-content', 'hero'],
         queryFn: () => getSiteContent({ data: 'hero' }),
@@ -34,10 +84,12 @@ export const Route = createFileRoute("/")({
         queryKey: ['site-content', 'gallery'],
         queryFn: () => getSiteContent({ data: 'gallery' }),
       })
-    ])
+    ]);
+    return { faq: (faq ?? []) as FAQItem[] };
   },
   component: Index,
 });
+
 
 function Index() {
   const { data: hero } = useSuspenseQuery({
