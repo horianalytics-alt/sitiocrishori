@@ -145,10 +145,9 @@ function AdminDashboard() {
           item.image = publicUrl;
           setInfraForm(newInfra);
         }
+      } else if (type === 'hero' && heroForm) {
+        setHeroForm({ ...heroForm, hero_image: publicUrl });
       } else if (type === 'gallery' && galleryForm) {
-
-
-
         setGalleryForm([...galleryForm, publicUrl])
       }
 
