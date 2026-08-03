@@ -102,8 +102,9 @@ function Index() {
               <button 
                 key={i} 
                 onClick={() => {
-                  const gallerySection = document.getElementById('galeria');
-                  if (gallerySection) gallerySection.scrollIntoView({ behavior: 'smooth' });
+                  const targetId = badge === "Piscina Aquecida" ? "galeria" : "infraestrutura";
+                  const section = document.getElementById(targetId);
+                  if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
                 className="group relative bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 hover:bg-[#FE8330] hover:scale-110 active:scale-95 overflow-hidden"
               >
