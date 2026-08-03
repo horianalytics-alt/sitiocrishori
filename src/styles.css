@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Syne:wght@400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss" source(none);
 @import "tw-animate-css";
 @source "../src";
@@ -114,13 +114,13 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: "Plus Jakarta Sans", sans-serif;
+    font-family: "Inter", sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: "Syne", sans-serif;
+    font-family: "Inter", sans-serif;
     letter-spacing: -0.04em;
     line-height: 1.1;
   }
