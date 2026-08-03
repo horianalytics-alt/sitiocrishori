@@ -80,7 +80,7 @@ function Index() {
                 <span key={i} className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-bold">• {b}</span>
               ))}
             </div>
-            <h1 className="text-5xl md:text-8xl font-black text-white leading-tight" data-aos="zoom-out">{hero?.headline}</h1>
+            <h1 className="text-4xl md:text-8xl font-black text-white leading-tight" data-aos="zoom-out">{hero?.headline}</h1>
             <p className="text-xl md:text-3xl text-white/90 font-light max-w-3xl mx-auto" data-aos="fade-up">{hero?.subheadline}</p>
             <div data-aos="fade-up" data-aos-delay="400" className="flex justify-center pt-6">
               <button onClick={() => document.getElementById('calendario')?.scrollIntoView({behavior: 'smooth'})} className="px-12 py-6 bg-[#FE8330] text-white text-xl font-black rounded-full shadow-2xl hover:scale-105 transition-all animate-bounce-slow">{hero?.cta_text || "VERIFICAR DISPONIBILIDADE"}</button>
