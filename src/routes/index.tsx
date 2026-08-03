@@ -57,38 +57,84 @@ function Index() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"masonry" | "spiral" | "list">("spiral");
   const [mounted, setMounted] = useState(false);
+  const [globalRot, setGlobalRot] = useState(0);
+
+  // Ref para o valor atual sem causar re-render no RAF
+  const rotRef = useRef(0);
+  const velRef = useRef(0); // velocidade atual (inércia)
+  const rafRef = useRef<number | null>(null);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const SPIRAL_CONFIG = {
-    itemsPerRotation: 3.5,
-    radiusStart: 120,
-    radiusGrowth: 180,
-    cardWidth: 180,
-    cardHeight: 140,
+    itemsPerRotation: 3.5,   // cards por volta completa
+    radiusStart: 120,         // raio do 1º card (px)
+    radiusGrowth: 180,        // crescimento por volta completa (px)
+    scrollSensitivity: 0.0008, // velocidade de rotação por pixel de scroll
+    cardWidth: 160,
+    cardHeight: 110,
   };
 
-  const getSpiralPositions = (count: number) => {
-    const { itemsPerRotation, radiusStart, radiusGrowth } = SPIRAL_CONFIG;
-    const ANGLE_STEP = (Math.PI * 2) / itemsPerRotation;
-    return Array.from({ length: count }, (_, i) => {
-      const angle = i * ANGLE_STEP - Math.PI / 2;
-      const rotations = angle / (Math.PI * 2);
-      const radius = radiusStart + rotations * radiusGrowth;
-      const tangentAngle = angle + Math.PI / 2;
-      const tiltDeg = (tangentAngle * 180) / Math.PI;
-      const clampedTilt = ((tiltDeg % 12) - 6) * 0.5;
-      return {
-        x: Math.cos(angle) * radius,
-        y: Math.sin(angle) * radius,
-        tilt: clampedTilt,
-      };
-    });
-  };
+  const getSpiralPos = useCallback((index: number, rotation = 0) => {
+    const ANGLE_STEP = (Math.PI * 2) / SPIRAL_CONFIG.itemsPerRotation;
+    const baseAngle = index * ANGLE_STEP; // posição fixa do card na sequência
+    
+    // globalRotation gira o sistema inteiro
+    const angle = baseAngle + rotation - Math.PI / 2;
+    
+    // Raio usa baseAngle (não rotaciona — preserva a forma da espiral)
+    const r = SPIRAL_CONFIG.radiusStart + (baseAngle / (Math.PI * 2)) * SPIRAL_CONFIG.radiusGrowth;
+    
+    // Inclinação sutil perpendicular à tangente da espiral
+    const tilt = ((angle * 180 / Math.PI) % 10) - 5;
+    
+    return { x: Math.cos(angle) * r, y: Math.sin(angle) * r, tilt };
+  }, []);
 
-  const spiralPositions = getSpiralPositions((galleryData || []).length);
+  // Loop de animação com inércia
+  const animate = useCallback(() => {
+    velRef.current *= 0.92;
+    rotRef.current += velRef.current;
+    setGlobalRot(rotRef.current);
+    rafRef.current = requestAnimationFrame(animate);
+  }, []);
+
+  useEffect(() => {
+    rafRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [animate]);
+
+  // Scroll dirige a rotação
+  useEffect(() => {
+    const onScroll = () => {
+      const delta = window.scrollY - lastScrollY.current;
+      lastScrollY.current = window.scrollY;
+      // Cada pixel de scroll adiciona velocidade à rotação
+      velRef.current += delta * SPIRAL_CONFIG.scrollSensitivity;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Drag/swipe também rotaciona
+  const dragStart = useRef<{ x: number; y: number; rot: number } | null>(null);
+  const onPointerDown = (e: React.PointerEvent) => {
+    dragStart.current = { x: e.clientX, y: e.clientY, rot: rotRef.current };
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragStart.current) return;
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    velRef.current = (dx + dy) * 0.0015;
+  };
+  const onPointerUp = () => { dragStart.current = null; };
+
+  const positions = (galleryData || []).map((_, i) => getSpiralPos(i, globalRot));
 
   useEffect(() => {
     import('aos').then((AOS) => { AOS.init({ duration: 1000, easing: 'ease-out-back', once: true }); });
