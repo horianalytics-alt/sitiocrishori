@@ -138,11 +138,12 @@ function AdminDashboard() {
       if (error) throw error
       const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path)
       
-      if (type === 'infra' && index !== undefined) {
+      if (type === 'infra' && index !== undefined && infraForm) {
         const newInfra = [...infraForm]; newInfra[index].image = publicUrl; setInfraForm(newInfra)
-      } else if (type === 'gallery') {
+      } else if (type === 'gallery' && galleryForm) {
         setGalleryForm([...galleryForm, publicUrl])
       }
+
       toast.success('Upload concluído!')
     } catch (e: any) { toast.error(e.message) } finally { setIsUploading(null) }
   }
@@ -255,11 +256,12 @@ function AdminDashboard() {
 
         <TabsContent value="infra" activeValue={activeTab}>
           <div className="grid md:grid-cols-2 gap-6">
-            {infraForm.map((item, idx) => (
+            {infraForm?.map((item, idx) => (
               <div key={idx} className="bg-white p-6 rounded-[2rem] border shadow-sm space-y-4">
-                <input className="w-full text-xl font-bold bg-transparent" value={item.title} onChange={e => { const f = [...infraForm]; f[idx].title = e.target.value; setInfraForm(f) }} />
-                <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.description} onChange={e => { const f = [...infraForm]; f[idx].description = e.target.value; setInfraForm(f) }} />
+                <input className="w-full text-xl font-bold bg-transparent" value={item.title || ""} onChange={e => { const f = [...(infraForm || [])]; f[idx].title = e.target.value; setInfraForm(f) }} />
+                <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.description || ""} onChange={e => { const f = [...(infraForm || [])]; f[idx].description = e.target.value; setInfraForm(f) }} />
                 <div className="flex gap-2">
+
                   <input className="flex-1 text-xs p-2 bg-gray-50 rounded-lg" value={item.image} onChange={e => { const f = [...infraForm]; f[idx].image = e.target.value; setInfraForm(f) }} />
                   <label className="cursor-pointer bg-gray-100 p-2 rounded-lg">
                     <Upload className="w-4 h-4" />
@@ -345,8 +347,9 @@ function AdminDashboard() {
           <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
             {faqForm?.map((item, idx) => (
               <div key={idx} className="p-6 bg-gray-50 rounded-3xl space-y-3 relative">
-                <input className="w-full font-bold bg-transparent pr-10" value={item.question || ""} onChange={e => { const f = [...faqForm]; f[idx].question = e.target.value; setFaqForm(f) }} />
-                <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.answer || ""} onChange={e => { const f = [...faqForm]; f[idx].answer = e.target.value; setFaqForm(f) }} />
+                <input className="w-full font-bold bg-transparent pr-10" value={item.question || ""} onChange={e => { const f = [...(faqForm || [])]; f[idx].question = e.target.value; setFaqForm(f) }} />
+                <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.answer || ""} onChange={e => { const f = [...(faqForm || [])]; f[idx].answer = e.target.value; setFaqForm(f) }} />
+
                 <button onClick={() => setFaqForm(faqForm.filter((_, i) => i !== idx))} className="absolute top-6 right-6 text-red-400"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
