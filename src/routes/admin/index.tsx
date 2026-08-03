@@ -58,7 +58,7 @@ function AdminDashboard() {
   const { data: heroContent } = useSuspenseQuery({
     queryKey: ['site-content', 'hero'],
     queryFn: () => getSiteContent({ data: 'hero' }),
-  }) as { data: HeroContent & { badges?: string[] } }
+  }) as { data: HeroContent }
 
   const { data: infrastructureContent } = useSuspenseQuery({
     queryKey: ['site-content', 'infrastructure'],
@@ -145,10 +145,9 @@ function AdminDashboard() {
           item.image = publicUrl;
           setInfraForm(newInfra);
         }
+      } else if (type === 'hero' && heroForm) {
+        setHeroForm({ ...heroForm, hero_image: publicUrl });
       } else if (type === 'gallery' && galleryForm) {
-
-
-
         setGalleryForm([...galleryForm, publicUrl])
       }
 
@@ -210,6 +209,22 @@ function AdminDashboard() {
               <div className="space-y-2">
                 <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Badges (Separados por vírgula)</label>
                 <input className="w-full p-4 rounded-2xl border" value={heroForm?.badges?.join(", ") || ""} onChange={e => setHeroForm({...heroForm, badges: e.target.value.split(",").map(s => s.trim())})} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Imagem de Fundo (Hero)</label>
+                <div className="flex gap-4 items-center">
+                  <input className="flex-1 p-4 rounded-2xl border" value={heroForm?.hero_image || ""} onChange={e => setHeroForm({...heroForm, hero_image: e.target.value})} placeholder="URL da imagem ou faça upload..." />
+                  <label className="cursor-pointer bg-[#FE8330]/10 text-[#FE8330] p-4 rounded-2xl hover:bg-[#FE8330]/20 transition-colors flex items-center gap-2">
+                    {isUploading === 'hero' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
+                    <span className="font-bold text-sm uppercase">Upload</span>
+                    <input type="file" className="hidden" accept="image/*" onChange={e => handleFileUpload(e, 'hero')} />
+                  </label>
+                </div>
+                {heroForm?.hero_image && (
+                  <div className="mt-4 rounded-2xl overflow-hidden border w-full max-w-md aspect-video bg-gray-50">
+                    <img src={heroForm.hero_image} className="w-full h-full object-cover" alt="Preview Hero" />
+                  </div>
+                )}
               </div>
             </div>
             <button onClick={() => updateContentMutation.mutate({ section: 'hero', content: heroForm })} className="w-full py-4 bg-[#FE8330] text-white font-black rounded-2xl hover:bg-[#E06B1B] transition-colors flex items-center justify-center gap-2">
