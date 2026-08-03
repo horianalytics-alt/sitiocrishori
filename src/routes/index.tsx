@@ -80,19 +80,22 @@ function Index() {
 
   const getSpiralPos = useCallback((index: number, rotation = 0) => {
     const ANGLE_STEP = (Math.PI * 2) / SPIRAL_CONFIG.itemsPerRotation;
-    const baseAngle = index * ANGLE_STEP; // posição fixa do card na sequência
+    const baseAngle = index * ANGLE_STEP; 
     
     // globalRotation gira o sistema inteiro
     const angle = baseAngle + rotation - Math.PI / 2;
     
     // Raio usa baseAngle (não rotaciona — preserva a forma da espiral)
     const r = SPIRAL_CONFIG.radiusStart + (baseAngle / (Math.PI * 2)) * SPIRAL_CONFIG.radiusGrowth;
-    // ↑ usa baseAngle, não o angle com globalRotation
+    
+    // Posição centralizada: subtraímos metade da largura/altura do card para centralizar
+    const x = Math.cos(angle) * r - SPIRAL_CONFIG.cardWidth / 2;
+    const y = Math.sin(angle) * r - SPIRAL_CONFIG.cardHeight / 2;
     
     // Inclinação sutil perpendicular à tangente da espiral
     const tilt = ((angle * 180 / Math.PI) % 10) - 5;
     
-    return { x: Math.cos(angle) * r, y: Math.sin(angle) * r, tilt };
+    return { x, y, tilt };
   }, []);
 
   // Loop de animação com inércia
