@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getSiteContent, getReservas, getDepoimentos, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -206,102 +207,117 @@ function Index() {
                     value={t.id} 
                     activeValue={activeTab}
                     onClick={setActiveTab}
-                    className="px-10 py-5 rounded-full font-bold uppercase tracking-[0.2em] text-xs border-2 border-transparent data-[state=active]:border-[#FE8330] data-[state=active]:bg-[#FE8330]/5 data-[state=active]:text-[#FE8330] hover:bg-gray-50 transition-all duration-500"
+                    className="px-6 py-4 md:px-10 md:py-5 rounded-full"
                   >
                     {t.label}
                   </TabsTrigger>
                 ))}
               </TabsList>
               
-              <TabsContent value="finais-de-semana" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
-                  <div className="flex-1 space-y-8">
-                    <div className="space-y-4">
-                      <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Experiência Completa</span>
-                      <h3 className="text-2xl md:text-5xl font-black tracking-tight">Finais de Semana</h3>
-                    </div>
-                    <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Privacidade absoluta e lazer total para sua família com pernoite completo e infraestrutura de hotel fazenda premium.</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {[
-                        "Até 20 pessoas no pernoite",
-                        "Cozinha industrial completa",
-                        "Suítes climatizadas",
-                        "Área VIP com vista",
-                        "Estacionamento privativo",
-                        "Check-in flexível"
-                      ].map((item, i) => (
-                        <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
-                          <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
-                          <span className="font-bold text-sm">{item}</span>
+              <div className="relative overflow-hidden min-h-[500px]">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+                    transition={{ 
+                      duration: 0.5, 
+                      ease: [0.16, 1, 0.3, 1] // easeOutExpo
+                    }}
+                  >
+                    <TabsContent value="finais-de-semana" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
+                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                        <div className="flex-1 space-y-8">
+                          <div className="space-y-4">
+                            <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Experiência Completa</span>
+                            <h3 className="text-2xl md:text-5xl font-black tracking-tight">Finais de Semana</h3>
+                          </div>
+                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Privacidade absoluta e lazer total para sua família com pernoite completo e infraestrutura de hotel fazenda premium.</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[
+                              "Até 20 pessoas no pernoite",
+                              "Cozinha industrial completa",
+                              "Suítes climatizadas",
+                              "Área VIP com vista",
+                              "Estacionamento privativo",
+                              "Check-in flexível"
+                            ].map((item, i) => (
+                              <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
+                                <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
+                                <span className="font-bold text-sm">{item}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
-                    <img src={HERO_IMAGE} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Finais de Semana" />
-                  </div>
-                </div>
-              </TabsContent>
+                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                          <img src={HERO_IMAGE} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Finais de Semana" />
+                        </div>
+                      </div>
+                    </TabsContent>
 
-              <TabsContent value="festas-eventos" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
-                  <div className="flex-1 space-y-8">
-                    <div className="space-y-4">
-                      <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Celebrações Memoráveis</span>
-                      <h3 className="text-2xl md:text-5xl font-black tracking-tight">Festas & Eventos</h3>
-                    </div>
-                    <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">O cenário ideal para casamentos, aniversários e eventos corporativos com suporte completo.</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {[
-                        "Salão de festas coberto",
-                        "Área para cerimônias",
-                        "Iluminação decorativa",
-                        "Buffet parceiro opcional",
-                        "Som e Projeção",
-                        "Equipe de limpeza inclusa"
-                      ].map((item, i) => (
-                        <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
-                          <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
-                          <span className="font-bold text-sm">{item}</span>
+                    <TabsContent value="festas-eventos" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
+                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                        <div className="flex-1 space-y-8">
+                          <div className="space-y-4">
+                            <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Celebrações Memoráveis</span>
+                            <h3 className="text-2xl md:text-5xl font-black tracking-tight">Festas & Eventos</h3>
+                          </div>
+                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">O cenário ideal para casamentos, aniversários e eventos corporativos com suporte completo.</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[
+                              "Salão de festas coberto",
+                              "Área para cerimônias",
+                              "Iluminação decorativa",
+                              "Buffet parceiro opcional",
+                              "Som e Projeção",
+                              "Equipe de limpeza inclusa"
+                            ].map((item, i) => (
+                              <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
+                                <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
+                                <span className="font-bold text-sm">{item}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
-                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Festas e Eventos" />
-                  </div>
-                </div>
-              </TabsContent>
+                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                          <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Festas e Eventos" />
+                        </div>
+                      </div>
+                    </TabsContent>
 
-              <TabsContent value="day-use" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
-                  <div className="flex-1 space-y-8">
-                    <div className="space-y-4">
-                      <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Lazer e Diversão</span>
-                      <h3 className="text-2xl md:text-5xl font-black tracking-tight">Day Use</h3>
-                    </div>
-                    <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Aproveite toda a nossa infraestrutura de lazer por um dia inteiro com amigos e família.</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {[
-                        "Acesso total à piscina",
-                        "Campo de futebol liberado",
-                        "Uso da área gourmet",
-                        "Vestiários completos",
-                        "Playground para crianças",
-                        "Das 08h às 18h"
-                      ].map((item, i) => (
-                        <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
-                          <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
-                          <span className="font-bold text-sm">{item}</span>
+                    <TabsContent value="day-use" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
+                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                        <div className="flex-1 space-y-8">
+                          <div className="space-y-4">
+                            <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Lazer e Diversão</span>
+                            <h3 className="text-2xl md:text-5xl font-black tracking-tight">Day Use</h3>
+                          </div>
+                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Aproveite toda a nossa infraestrutura de lazer por um dia inteiro com amigos e família.</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[
+                              "Acesso total à piscina",
+                              "Campo de futebol liberado",
+                              "Uso da área gourmet",
+                              "Vestiários completos",
+                              "Playground para crianças",
+                              "Das 08h às 18h"
+                            ].map((item, i) => (
+                              <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
+                                <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
+                                <span className="font-bold text-sm">{item}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
-                    <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Day Use" />
-                  </div>
-                </div>
-              </TabsContent>
+                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                          <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Day Use" />
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </Tabs>
           </div>
         </section>
