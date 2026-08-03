@@ -1,16 +1,35 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    title: "Sítio de Eventos | Festas, Finais de Semana e Day Use",
+    meta: [
+      { name: "description", content: "O cenário perfeito para seus melhores momentos. Piscina, área gourmet e suítes completas." },
+      { property: "og:title", content: "Sítio de Eventos | Locação para Festas e Lazer" },
+      { property: "og:description", content: "Estrutura premium para eventos e finais de semana inesquecíveis." },
+    ],
+  }),
   component: Index,
 });
 
 function Index() {
   const [activeTab, setActiveTab] = useState("finais-de-semana");
+
+  useEffect(() => {
+    // Import and init AOS only on client
+    import('aos').then((AOS) => {
+      AOS.init({
+        duration: 1000,
+        easing: 'ease-out-back',
+        once: true,
+      });
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229]">
@@ -23,26 +42,33 @@ function Index() {
           className="absolute inset-0 w-full h-full object-cover anim-photo-reveal"
         />
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto space-y-6">
-          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight">
+          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight" data-aos="zoom-out">
             O cenário perfeito para os teus melhores momentos: Festas, Finais de Semana e Day Use.
           </h1>
-          <p className="text-lg md:text-xl text-white/90">
+          <p className="text-lg md:text-xl text-white/90" data-aos="fade-up" data-aos-delay="200">
             Estrutura completa com piscina, área gourmet, suítes e muito mais.
           </p>
-          <WhatsAppButton phoneNumber="00000000000" />
+          <div data-aos="fade-up" data-aos-delay="400">
+            <WhatsAppButton phoneNumber="00000000000" />
+          </div>
         </div>
       </section>
 
       {/* Infrastructure Grid */}
-      <section className="py-20 px-4 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold mb-12 text-center">Nossa Estrutura</h2>
+      <section className="py-20 px-4 max-w-6xl mx-auto overflow-hidden">
+        <h2 className="text-3xl font-bold mb-12 text-center" data-aos="fade-up">Nossa Estrutura</h2>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            { title: "Área de Festas", img: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800" },
-            { title: "Piscina", img: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=800" },
-            { title: "Suítes", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800" },
+            { title: "Área de Festas", img: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800", delay: 0 },
+            { title: "Piscina", img: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=800", delay: 100 },
+            { title: "Suítes", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800", delay: 200 },
           ].map((item) => (
-            <div key={item.title} className="group transition-card card-interactive bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md">
+            <div 
+              key={item.title} 
+              className="group transition-card card-interactive bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md"
+              data-aos="fade-up"
+              data-aos-delay={item.delay}
+            >
               <img src={item.img} alt={item.title} className="w-full h-48 object-cover card-media" />
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
@@ -65,7 +91,7 @@ function Index() {
               ))}
             </TabsList>
             <TabsContent value="finais-de-semana" activeValue={activeTab}>
-              <div className="p-8 rounded-2xl bg-gray-50 border border-gray-100">
+              <div className="p-8 rounded-2xl bg-gray-50 border border-gray-100" data-aos="fade-left">
                 <h3 className="text-2xl font-bold mb-4">Finais de Semana</h3>
                 <p className="text-muted-foreground mb-6">Desfrute de dois dias completos com total privacidade e conforto.</p>
                 <WhatsAppButton phoneNumber="00000000000" label="Consultar Valores" className="bg-[#1E2229] hover:bg-gray-800" />
@@ -78,7 +104,7 @@ function Index() {
       {/* FAQ */}
       <section className="py-20 px-4 max-w-3xl mx-auto">
         <h2 className="text-3xl font-bold mb-12 text-center">Perguntas Frequentes</h2>
-        <Accordion className="space-y-4">
+        <Accordion className="space-y-4" data-aos="fade-up">
           <AccordionItem title="Qual a capacidade máxima?">
             Podemos acomodar confortavelmente até 50 pessoas para festas e 20 para pernoite.
           </AccordionItem>
@@ -89,6 +115,14 @@ function Index() {
       </section>
 
       <WhatsAppButton phoneNumber="00000000000" floating />
+
+      {/* Admin Quick Access Footer (Only for development/admin visibility) */}
+      <footer className="py-6 border-t bg-white">
+        <div className="max-w-6xl mx-auto px-4 flex justify-between items-center text-sm text-muted-foreground">
+          <p>© 2026 Sítio de Eventos. Todos os direitos reservados.</p>
+          <Link to="/admin" className="hover:text-[#FE8330] transition-colors">Acesso Administrativo</Link>
+        </div>
+      </footer>
     </div>
   );
 }
