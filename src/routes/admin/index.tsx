@@ -129,13 +129,37 @@ function AdminDashboard() {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'infra' | 'hero' | 'gallery' | 'testimonial', index?: number) => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    // Validação de tipo e tamanho (ex: max 5MB)
+    if (!file.type.startsWith('image/')) {
+      toast.error('Por favor, selecione apenas arquivos de imagem.')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('A imagem deve ter no máximo 5MB.')
+      return
+    }
+
     const uploadId = index !== undefined ? `${type}-${index}` : type
     setIsUploading(uploadId)
+    
     try {
       const fileExt = file.name.split('.').pop()
       const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`
+      
       const { data, error } = await supabase.storage.from('images').upload(fileName, file)
-      if (error) throw error
+      
+      if (error) {
+        console.error('Erro no upload:', error)
+        if (error.message.includes('bucket not found')) {
+          throw new Error('Erro de configuração: Bucket "images" não encontrado. Contate o suporte.')
+        }
+        if (error.status === 403) {
+          throw new Error('Sem permissão para upload. Verifique seu acesso administrativo.')
+        }
+        throw error
+      }
+
       const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path)
       
       if (type === 'infra' && index !== undefined && infraForm && infraForm[index]) {
@@ -151,8 +175,12 @@ function AdminDashboard() {
         setGalleryForm([...galleryForm, publicUrl])
       }
 
-      toast.success('Upload concluído!')
-    } catch (e: any) { toast.error(e.message) } finally { setIsUploading(null) }
+      toast.success('Upload concluído com sucesso!')
+    } catch (e: any) { 
+      toast.error(`Falha no upload: ${e.message}`) 
+    } finally { 
+      setIsUploading(null) 
+    }
   }
 
   return (
