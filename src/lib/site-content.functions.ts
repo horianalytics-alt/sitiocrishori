@@ -158,7 +158,7 @@ export const updateSiteContent = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("site_content")
-      .update({ content: data.content })
+      .update({ content: data.content as never })
       .eq("section", data.section);
     
     if (error) throw error;
