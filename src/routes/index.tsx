@@ -39,7 +39,7 @@ function Index() {
   const { data: hero } = useSuspenseQuery({
     queryKey: ['site-content', 'hero'],
     queryFn: () => getSiteContent({ data: 'hero' }),
-  }) as { data: HeroContent };
+  }) as { data: HeroContent & { badges?: string[] } };
 
   const { data: infrastructure } = useSuspenseQuery({
     queryKey: ['site-content', 'infrastructure'],
@@ -88,7 +88,7 @@ function Index() {
         
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto space-y-8">
           <div className="flex flex-wrap justify-center gap-3 mb-4" data-aos="fade-down">
-            {["Piscina Aquecida", "Campo de Futebol", "Área Gourmet", "Pernoite"].map((badge, i) => (
+            {(hero?.badges || ["Piscina Aquecida", "Campo de Futebol", "Área Gourmet", "Pernoite"]).map((badge, i) => (
               <span key={i} className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-semibold">
                 • {badge}
               </span>
