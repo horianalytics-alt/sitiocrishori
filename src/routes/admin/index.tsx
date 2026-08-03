@@ -100,7 +100,11 @@ function AdminDashboard() {
 
       if (type === 'infra' && index !== undefined) {
         const newInfra = [...infraForm]
-        newInfra[index] = { ...newInfra[index], image: publicUrl }
+        newInfra[index] = { 
+          title: newInfra[index].title || '', 
+          description: newInfra[index].description || '', 
+          image: publicUrl 
+        }
         setInfraForm(newInfra)
       }
       
@@ -228,7 +232,11 @@ function AdminDashboard() {
                         value={item.image || ""} 
                         onChange={e => {
                           const newInfra = [...infraForm];
-                          newInfra[idx] = { ...item, image: e.target.value };
+                          newInfra[idx] = { 
+                            title: item.title || '', 
+                            description: item.description || '', 
+                            image: e.target.value 
+                          };
                           setInfraForm(newInfra);
                         }}
                         placeholder="https://..."
