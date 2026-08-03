@@ -195,14 +195,16 @@
 
 /* New Hover Effects */
 @utility hover-lift {
-  @apply transition-transform duration-500 ease-out-expo;
+  @apply transition-transform duration-500;
+  transition-timing-function: var(--ease-out-expo);
   &:hover {
     transform: translateY(-5px);
   }
 }
 
 @utility hover-glow {
-  @apply transition-shadow duration-500 ease-out-expo;
+  @apply transition-shadow duration-500;
+  transition-timing-function: var(--ease-out-expo);
   &:hover {
     box-shadow: 0 0 20px 2px rgba(254, 131, 48, 0.15);
   }
