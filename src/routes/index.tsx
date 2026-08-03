@@ -53,7 +53,7 @@ function Index() {
   const [selectedRange, setSelectedRange] = useState<DateRange | undefined>();
   const [activeTab, setActiveTab] = useState("finais-de-semana");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<"masonry" | "spiral" | "list">("masonry");
+  const [viewMode, setViewMode] = useState<"masonry" | "spiral" | "list">("spiral");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
