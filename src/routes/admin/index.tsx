@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 export const Route = createFileRoute('/admin/')({
   loader: async ({ context }) => {
@@ -30,6 +31,13 @@ export const Route = createFileRoute('/admin/')({
 function AdminDashboard() {
   const queryClient = useQueryClient()
   const [activeTab, setActiveTab] = useState("hero")
+  const [galleryForm, setGalleryForm] = useState<string[]>([])
+
+  useEffect(() => {
+    getSiteContent({ data: 'gallery' }).then(data => {
+      if (Array.isArray(data)) setGalleryForm(data)
+    }).catch(() => setGalleryForm([]))
+  }, [])
 
   const { data: heroContent } = useSuspenseQuery({
     queryKey: ['site-content', 'hero'],
@@ -76,7 +84,11 @@ function AdminDashboard() {
     mutation.mutate({ section: 'faq', content: faqForm })
   }
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'infra' | 'hero', index?: number) => {
+  const saveGallery = () => {
+    mutation.mutate({ section: 'gallery', content: galleryForm })
+  }
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'infra' | 'hero' | 'gallery', index?: number) => {
     const file = e.target.files?.[0]
     if (!file) return
 
@@ -107,6 +119,8 @@ function AdminDashboard() {
           image: publicUrl 
         }
         setInfraForm(newInfra)
+      } else if (type === 'gallery') {
+        setGalleryForm([...galleryForm, publicUrl])
       }
       
       toast.success('Imagem enviada com sucesso!')
@@ -134,6 +148,9 @@ function AdminDashboard() {
           </TabsTrigger>
           <TabsTrigger value="infra" activeValue={activeTab} onClick={setActiveTab} className="py-3 rounded-xl data-[state=active]:bg-[#FE8330] data-[state=active]:text-white">
             <Grid className="w-4 h-4 mr-2" /> Infraestrutura
+          </TabsTrigger>
+          <TabsTrigger value="gallery" activeValue={activeTab} onClick={setActiveTab} className="py-3 rounded-xl data-[state=active]:bg-[#FE8330] data-[state=active]:text-white">
+            <ImageIcon className="w-4 h-4 mr-2" /> Galeria
           </TabsTrigger>
           <TabsTrigger value="faq" activeValue={activeTab} onClick={setActiveTab} className="py-3 rounded-xl data-[state=active]:bg-[#FE8330] data-[state=active]:text-white">
             <MessageCircle className="w-4 h-4 mr-2" /> FAQ
@@ -270,6 +287,46 @@ function AdminDashboard() {
               </button>
               <button onClick={saveInfra} disabled={mutation.isPending} className="flex items-center gap-2 bg-[#FE8330] text-white px-8 py-3 rounded-xl font-bold">
                 <Save className="w-5 h-5" /> Salvar Tudo
+              </button>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="gallery" activeValue={activeTab}>
+          <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {galleryForm.map((src, i) => (
+                <div key={i} className="relative group aspect-square rounded-xl overflow-hidden border">
+                  <img src={src} className="w-full h-full object-cover" />
+                  <button 
+                    onClick={() => setGalleryForm(galleryForm.filter((_, idx) => idx !== i))}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+              <label className="flex flex-col items-center justify-center aspect-square rounded-xl border-2 border-dashed border-gray-200 hover:border-[#FE8330] cursor-pointer transition-all">
+                {isUploading === 'gallery' ? (
+                  <Loader2 className="w-8 h-8 animate-spin text-[#FE8330]" />
+                ) : (
+                  <>
+                    <Plus className="w-8 h-8 text-gray-300" />
+                    <span className="text-xs font-bold text-gray-400 mt-2">Upload</span>
+                  </>
+                )}
+                <input 
+                  type="file" 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={(e) => handleFileUpload(e, 'gallery')}
+                  disabled={!!isUploading}
+                />
+              </label>
+            </div>
+            <div className="flex justify-end pt-4">
+              <button onClick={saveGallery} disabled={mutation.isPending} className="bg-[#FE8330] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2">
+                <Save className="w-5 h-5" /> Salvar Galeria
               </button>
             </div>
           </div>
