@@ -503,7 +503,7 @@ function Index() {
                     className="relative h-[700px] flex items-center justify-center"
                   >
                     {(galleryData || []).map((src, i) => {
-                      const pos = spiralPositions[i];
+                      const pos = positions[i];
                       if (!pos) return null;
                       return (
                         <motion.div
