@@ -200,6 +200,15 @@ function AdminDashboard() {
                 </div>
               </div>
               <div className="space-y-2">
+                <label className="text-sm font-semibold">Mensagem Padrão WhatsApp</label>
+                <textarea 
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 min-h-[80px]"
+                  value={heroForm.whatsapp_message || ""}
+                  onChange={e => setHeroForm({ ...heroForm, whatsapp_message: e.target.value })}
+                  placeholder="Olá! Gostaria de saber mais sobre a disponibilidade do sítio."
+                />
+              </div>
+              <div className="space-y-2">
                 <label className="text-sm font-semibold">Badges (Separados por vírgula)</label>
                 <input 
                   type="text"
