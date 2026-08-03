@@ -119,65 +119,76 @@
 
 /* Custom Animation Classes */
 @utility transition-btn {
-  transition: transform 0.8s var(--ease-out-quint), box-shadow 0.8s var(--ease-out-quint);
-  will-change: transform;
+  transition: all 0.5s var(--ease-out-quint);
+  will-change: transform, box-shadow;
 }
 
-@utility btn-pill-interactive {
+@utility btn-premium {
+  @apply transition-btn focus-ring;
   &:hover {
-    transform: scale(1.015);
-    box-shadow: 0 3px 32px rgba(0, 0, 0, 0.13);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px -10px rgba(254, 131, 48, 0.4);
   }
   &:active {
-    transform: scale(0.97);
-    box-shadow: none;
+    transform: translateY(1px);
   }
 }
 
 @utility focus-ring {
   &:focus-visible {
-    outline: 2px solid currentColor;
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
 }
 
 @utility transition-card {
-  transition: transform var(--hover-speed) cubic-bezier(.175, .885, .32, 1.275), box-shadow var(--hover-speed) cubic-bezier(.175, .885, .32, 1.275);
+  transition: all 0.6s var(--ease-out-expo);
 }
 
-@utility card-interactive {
+@utility card-premium {
+  @apply transition-card border border-white/50 bg-white/80 backdrop-blur-sm;
   &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
-  }
-  &:active {
-    transform: scale(0.97);
+    transform: translateY(-8px);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.08), 0 18px 36px -18px rgba(0, 0, 0, 0.08);
+    @apply border-primary/20 bg-white;
   }
 }
 
 @keyframes photoGroupReveal {
-  0% { transform: scale(1.05); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  0% { transform: scale(1.1) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
-@keyframes label-fade-in {
-  0% { opacity: 0; transform: translateY(8px); }
-  100% { opacity: 1; transform: none; }
+@keyframes textReveal {
+  0% { transform: translateY(30px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
 }
 
 @utility anim-photo-reveal {
-  animation: photoGroupReveal 0.8s var(--ease-out-expo) both;
+  animation: photoGroupReveal 1.2s var(--ease-out-expo) both;
 }
 
-@utility anim-label-in {
-  animation: label-fade-in 0.8s var(--ease-out-expo) both;
+@utility anim-text-reveal {
+  animation: textReveal 1s var(--ease-out-expo) both;
 }
 
-@keyframes livePulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+@keyframes bounceSlow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
 }
 
-@utility live-dot {
-  animation: livePulse 2s ease-in-out infinite;
+@utility anim-bounce-slow {
+  animation: bounceSlow 2s ease-in-out infinite;
+}
+
+@utility glass-morphism {
+  @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-sm;
+}
+
+@utility section-padding {
+  @apply py-20 md:py-32;
+}
+
+@utility container-custom {
+  @apply max-w-7xl mx-auto px-6 md:px-12;
 }
