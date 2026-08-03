@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Star, Instagram, Calendar as CalendarIcon, MapPin, Users, CheckCircle } from "lucide-react";
+import { Star, Calendar as CalendarIcon, MapPin, Users, CheckCircle } from "lucide-react";
 import { DayPicker, type DateRange } from "react-day-picker";
 import { ptBR } from "date-fns/locale";
 import { format, isWithinInterval, startOfDay } from "date-fns";
