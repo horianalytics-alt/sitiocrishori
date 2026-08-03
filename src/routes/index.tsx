@@ -12,8 +12,9 @@ const HERO_IMAGE =
   "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000";
 
 export const Route = createFileRoute("/")({
-  head: ({ loaderData }: { loaderData?: { faq?: FAQItem[] } }) => {
-    const faqItems = loaderData?.faq ?? [];
+  head: (ctx: { loaderData?: { faq?: FAQItem[] } | undefined }) => {
+    const faqItems = ctx.loaderData?.faq ?? [];
+
 
     const scripts: Array<{ type: string; children: string }> = [
       {
