@@ -345,7 +345,7 @@ function Index() {
             <p className="text-muted-foreground">© 2026 Todos os direitos reservados.</p>
           </div>
           <div className="flex gap-6">
-            <Link to="/admin" className="text-sm font-bold text-[#1E2229] hover:text-[#FE8330] transition-colors uppercase tracking-widest">Acesso Administrativo</Link>
+            {/* Admin link removed from public view as requested */}
           </div>
         </div>
       </footer>
