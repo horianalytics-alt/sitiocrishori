@@ -553,7 +553,7 @@ function Index() {
                             y: pos.y,
                             rotate: pos.tilt,
                           }}
-                          initial={{ x: "-50%", y: "-50%", rotate: 0 }}
+                          initial={false}
                           whileHover={{ 
                             scale: 1.07, 
                             zIndex: 50, 
