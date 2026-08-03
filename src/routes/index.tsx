@@ -99,8 +99,8 @@ function Index() {
               <div className="inline-block p-4 bg-[#FAF8F5] rounded-3xl border">
                 <DayPicker
                   mode="range"
-                  selected={{ from: selectedRange.from, to: selectedRange.to }}
-                  onSelect={(range) => setSelectedRange({ from: range?.from, to: range?.to })}
+                  selected={selectedRange}
+                  onSelect={setSelectedRange}
                   locale={ptBR}
                   disabled={isDayReserved}
                   modifiers={{ reserved: isDayReserved }}
@@ -112,7 +112,7 @@ function Index() {
             
             <div className="lg:w-[400px] w-full bg-[#FAF8F5] p-10 rounded-[2.5rem] border-2 border-[#FE8330]/10 space-y-8 sticky top-10">
               <h3 className="text-2xl font-black flex items-center gap-3"><CheckCircle className="text-[#FE8330]" /> Reserva Garantida</h3>
-              {selectedRange.from ? (
+              {selectedRange?.from ? (
                 <div className="space-y-6 animate-fade-in">
                   <div className="p-6 bg-white rounded-2xl border shadow-sm space-y-2">
                     <p className="text-xs font-black uppercase tracking-widest text-[#FE8330]">Período Selecionado</p>
@@ -127,6 +127,7 @@ function Index() {
                     message={`Olá! Gostaria de um orçamento para o período de ${format(selectedRange.from, "dd/MM/yyyy")} ${selectedRange.to ? `até ${format(selectedRange.to, "dd/MM/yyyy")}` : ""}. O site mostra que está livre!`}
                     className="w-full py-6 text-xl"
                   />
+
                 </div>
               ) : (
                 <p className="text-center py-10 text-muted-foreground font-medium italic">Selecione uma data no calendário para continuar</p>
