@@ -47,13 +47,15 @@ function Index() {
   const { data: infrastructure } = useSuspenseQuery({ queryKey: ['site-content', 'infrastructure'], queryFn: () => getSiteContent({ data: 'infrastructure' }) }) as { data: InfrastructureItem[] };
   const { data: faq } = useSuspenseQuery({ queryKey: ['site-content', 'faq'], queryFn: () => getSiteContent({ data: 'faq' }) }) as { data: FAQItem[] };
   const { data: galleryData } = useSuspenseQuery({ queryKey: ['site-content', 'gallery'], queryFn: () => getSiteContent({ data: 'gallery' }) }) as { data: string[] };
+
+
   const { data: reservas } = useSuspenseQuery({ queryKey: ['reservas'], queryFn: () => getReservas() }) as { data: any[] };
   const { data: depoimentos } = useSuspenseQuery({ queryKey: ['depoimentos'], queryFn: () => getDepoimentos() }) as { data: any[] };
 
   const [selectedRange, setSelectedRange] = useState<DateRange | undefined>();
   const [activeTab, setActiveTab] = useState("finais-de-semana");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<"masonry" | "spiral" | "list">("masonry");
+  const [viewMode, setViewMode] = useState<"masonry" | "spiral" | "list">("spiral");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -459,13 +461,23 @@ function Index() {
                           style={{
                             width: SPIRAL_CONFIG.cardWidth,
                             height: SPIRAL_CONFIG.cardHeight,
+                            left: "50%",
+                            top: "50%",
+                            translateX: "-50%",
+                            translateY: "-50%",
+                            zIndex: (galleryData || []).length - i
+                          }}
+                          animate={{
                             x: pos.x,
                             y: pos.y,
                             rotate: pos.tilt,
-                            zIndex: (galleryData || []).length - i
                           }}
+                          initial={{ x: 0, y: 0, rotate: 0 }}
+
+
                           whileHover={{ scale: 1.1, zIndex: 50, rotate: 0 }}
                           transition={{ type: "spring", stiffness: 100, damping: 20 }}
+
                           onClick={() => setSelectedImage(src)}
                         >
                           <img src={src} className="w-full h-full object-cover" alt="Espiral" />
