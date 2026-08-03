@@ -204,6 +204,8 @@ function Index() {
                   <TabsTrigger 
                     key={t.id} 
                     value={t.id} 
+                    activeValue={activeTab}
+                    onClick={setActiveTab}
                     className="px-10 py-5 rounded-full font-bold uppercase tracking-[0.2em] text-xs border-2 border-transparent data-[state=active]:border-[#FE8330] data-[state=active]:bg-[#FE8330]/5 data-[state=active]:text-[#FE8330] hover:bg-gray-50 transition-all duration-500"
                   >
                     {t.label}
@@ -211,7 +213,7 @@ function Index() {
                 ))}
               </TabsList>
               
-              <TabsContent value="finais-de-semana" className="mt-0 focus-visible:outline-none">
+              <TabsContent value="finais-de-semana" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
                 <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
                   <div className="flex-1 space-y-8">
                     <div className="space-y-4">
@@ -272,12 +274,14 @@ function Index() {
         </section>
 
         {/* Gallery Masonry */}
-        <section className="py-24 bg-white px-4">
-          <div className="max-w-7xl mx-auto columns-1 md:columns-3 lg:columns-4 gap-6 space-y-6">
+        <section id="galeria" className="py-32 bg-white px-6">
+          <div className="max-w-7xl mx-auto columns-1 md:columns-3 lg:columns-4 gap-8 space-y-8">
             {(galleryData || []).map((src, i) => (
-              <div key={i} className="relative group cursor-pointer overflow-hidden rounded-3xl" onClick={() => setSelectedImage(src)} data-aos="fade-up">
-                <img src={src} className="w-full h-auto object-cover transition-all duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"><span className="text-white font-black bg-white/20 backdrop-blur-md px-6 py-2 rounded-full border border-white/40">VER</span></div>
+              <div key={i} className="relative group cursor-pointer overflow-hidden rounded-[2.5rem] shadow-lg hover:shadow-2xl transition-all duration-700" onClick={() => setSelectedImage(src)} data-aos="fade-up" data-aos-delay={i*50}>
+                <img src={src} className="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-110" alt="Galeria" />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
+                  <span className="text-white font-bold bg-[#FE8330] px-8 py-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">AMPLIAR</span>
+                </div>
               </div>
             ))}
           </div>
