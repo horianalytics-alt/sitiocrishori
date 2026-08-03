@@ -45,27 +45,15 @@ export const updateSiteContent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((data: { section: string; content: any }) => data)
   .handler(async ({ data, context }) => {
-    // Check for admin role
-    const { data: hasRole, error: roleError } = await context.supabase.rpc('has_role', {
-      _user_id: context.userId,
-      _role: 'admin'
-    });
+    // Check for admin role directly in user_roles table
+    const { data: roleData, error: roleError } = await context.supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', context.userId)
+      .eq('role', 'admin')
+      .maybeSingle();
 
-    // If RPC is in private schema, we might need a direct query since the standard client 
-    // might not have 'private' in its search path by default. 
-    // Let's try direct query as a fallback or if rpc fails.
-    let isAdmin = hasRole;
-    if (roleError || hasRole === null) {
-      const { data: roleData } = await context.supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', context.userId)
-        .eq('role', 'admin')
-        .maybeSingle();
-      isAdmin = !!roleData;
-    }
-
-    if (!isAdmin) {
+    if (roleError || !roleData) {
       throw new Error("Unauthorized: Admin role required");
     }
 
