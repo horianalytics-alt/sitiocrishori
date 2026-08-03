@@ -145,7 +145,7 @@ function Index() {
         <div className="absolute inset-0 z-0">
           <img 
             src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000" 
-            alt="Sítio de Eventos"
+            alt="Vista aérea do sítio de eventos com piscina e área verde ao pôr do sol"
             className="w-full h-full object-cover anim-photo-reveal"
           />
         </div>
@@ -239,7 +239,7 @@ function Index() {
               >
                 <img 
                   src={src} 
-                  alt={`Galeria ${i}`} 
+                  alt={`Foto ${i + 1} da estrutura de lazer do sítio para festas e eventos`} 
                   className="w-full h-auto object-cover" 
                   onError={(e) => {
                     (e.target as HTMLImageElement).parentElement?.classList.add('hidden');
@@ -260,8 +260,9 @@ function Index() {
           className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 cursor-pointer"
           onClick={() => setSelectedImage(null)}
         >
-          <img src={selectedImage} className="max-w-full max-h-full rounded-2xl shadow-2xl" alt="Enlarged" />
-          <button className="absolute top-8 right-8 text-white text-4xl">&times;</button>
+          <img src={selectedImage} className="max-w-full max-h-full rounded-2xl shadow-2xl" alt="Foto ampliada da estrutura do sítio de eventos" />
+          <button aria-label="Fechar imagem ampliada" className="absolute top-8 right-8 text-white text-4xl">&times;</button>
+
         </div>
       )}
 
