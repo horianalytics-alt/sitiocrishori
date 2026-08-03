@@ -182,30 +182,31 @@ function AdminDashboard() {
             <div className="grid gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Título (Headline)</label>
-                <textarea className="w-full p-4 rounded-2xl border focus:ring-2 ring-[#FE8330]/20 min-h-[100px]" value={heroForm.headline} onChange={e => setHeroForm({...heroForm, headline: e.target.value})} />
+                <textarea className="w-full p-4 rounded-2xl border focus:ring-2 ring-[#FE8330]/20 min-h-[100px]" value={heroForm?.headline || ""} onChange={e => setHeroForm({...heroForm, headline: e.target.value})} />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Subtítulo</label>
-                <textarea className="w-full p-4 rounded-2xl border focus:ring-2 ring-[#FE8330]/20 min-h-[80px]" value={heroForm.subheadline} onChange={e => setHeroForm({...heroForm, subheadline: e.target.value})} />
+                <textarea className="w-full p-4 rounded-2xl border focus:ring-2 ring-[#FE8330]/20 min-h-[80px]" value={heroForm?.subheadline || ""} onChange={e => setHeroForm({...heroForm, subheadline: e.target.value})} />
               </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Número WhatsApp</label>
-                  <input className="w-full p-4 rounded-2xl border" value={heroForm.whatsapp_number} onChange={e => setHeroForm({...heroForm, whatsapp_number: e.target.value})} />
+                  <input className="w-full p-4 rounded-2xl border" value={heroForm?.whatsapp_number || ""} onChange={e => setHeroForm({...heroForm, whatsapp_number: e.target.value})} />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Texto do Botão (CTA)</label>
-                  <input className="w-full p-4 rounded-2xl border" value={heroForm.cta_text} onChange={e => setHeroForm({...heroForm, cta_text: e.target.value})} />
+                  <input className="w-full p-4 rounded-2xl border" value={heroForm?.cta_text || ""} onChange={e => setHeroForm({...heroForm, cta_text: e.target.value})} />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Badges (Separados por vírgula)</label>
-                <input className="w-full p-4 rounded-2xl border" value={heroForm.badges?.join(", ")} onChange={e => setHeroForm({...heroForm, badges: e.target.value.split(",").map(s => s.trim())})} />
+                <input className="w-full p-4 rounded-2xl border" value={heroForm?.badges?.join(", ") || ""} onChange={e => setHeroForm({...heroForm, badges: e.target.value.split(",").map(s => s.trim())})} />
               </div>
             </div>
             <button onClick={() => updateContentMutation.mutate({ section: 'hero', content: heroForm })} className="w-full py-4 bg-[#FE8330] text-white font-black rounded-2xl hover:bg-[#E06B1B] transition-colors flex items-center justify-center gap-2">
               <Save className="w-5 h-5" /> SALVAR HERO
             </button>
+
           </div>
         </TabsContent>
 
@@ -342,17 +343,18 @@ function AdminDashboard() {
 
         <TabsContent value="faq" activeValue={activeTab}>
           <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
-            {faqForm.map((item, idx) => (
+            {faqForm?.map((item, idx) => (
               <div key={idx} className="p-6 bg-gray-50 rounded-3xl space-y-3 relative">
-                <input className="w-full font-bold bg-transparent pr-10" value={item.question} onChange={e => { const f = [...faqForm]; f[idx].question = e.target.value; setFaqForm(f) }} />
-                <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.answer} onChange={e => { const f = [...faqForm]; f[idx].answer = e.target.value; setFaqForm(f) }} />
+                <input className="w-full font-bold bg-transparent pr-10" value={item.question || ""} onChange={e => { const f = [...faqForm]; f[idx].question = e.target.value; setFaqForm(f) }} />
+                <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.answer || ""} onChange={e => { const f = [...faqForm]; f[idx].answer = e.target.value; setFaqForm(f) }} />
                 <button onClick={() => setFaqForm(faqForm.filter((_, i) => i !== idx))} className="absolute top-6 right-6 text-red-400"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
-            <button onClick={() => setFaqForm([...faqForm, { question: "Nova Pergunta", answer: "" }])} className="w-full py-4 border-2 border-dashed rounded-3xl text-gray-400 font-bold hover:border-[#FE8330] hover:text-[#FE8330] transition-all">+ ADICIONAR PERGUNTA</button>
+            <button onClick={() => setFaqForm([...(faqForm || []), { question: "Nova Pergunta", answer: "" }])} className="w-full py-4 border-2 border-dashed rounded-3xl text-gray-400 font-bold hover:border-[#FE8330] hover:text-[#FE8330] transition-all">+ ADICIONAR PERGUNTA</button>
             <button onClick={() => updateContentMutation.mutate({ section: 'faq', content: faqForm })} className="w-full py-4 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR FAQ</button>
           </div>
         </TabsContent>
+
       </Tabs>
     </div>
   )
