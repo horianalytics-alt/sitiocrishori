@@ -23,27 +23,11 @@ export type FAQItem = {
   answer: string;
 };
 
-export type Reserva = {
-  id?: string;
-  data_inicio: string;
-  data_fim: string;
-  cliente_nome: string;
-  cliente_telefone: string;
-  valor_total: number;
-  sinal_pago: boolean;
-  status: string;
-};
+// Generic types for the client to handle until types are re-generated
+export type Reserva = any;
+export type Depoimento = any;
 
-export type Depoimento = {
-  id?: string;
-  nome: string;
-  evento: string;
-  depoimento: string;
-  estrelas: number;
-  foto_url?: string;
-};
-
-// Site Content Functions (Legacy but maintained for compatibility)
+// Site Content Functions
 export const getSiteContent = createServerFn({ method: "GET" })
   .validator((section: string) => section)
   .handler(async ({ data: section }) => {
@@ -67,20 +51,20 @@ export const getSiteContent = createServerFn({ method: "GET" })
 export const getReservas = createServerFn({ method: "GET" })
   .handler(async () => {
     const { data, error } = await supabase
-      .from("reservas")
+      .from("reservas" as any)
       .select("*")
       .order("data_inicio", { ascending: true });
     if (error) throw error;
-    return data as Reserva[];
+    return data as any[];
   });
 
 export const upsertReserva = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((data: Reserva) => data)
+  .validator((data: any) => data)
   .handler(async ({ data, context }) => {
     // Admin check
     const { data: roleData } = await context.supabase
-      .from('user_roles')
+      .from('user_roles' as any)
       .select('role')
       .eq('user_id', context.userId)
       .eq('role', 'admin')
@@ -89,7 +73,7 @@ export const upsertReserva = createServerFn({ method: "POST" })
     if (!roleData) throw new Error("Unauthorized");
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
+    const { error } = await (supabaseAdmin as any)
       .from("reservas")
       .upsert(data);
     
@@ -102,7 +86,7 @@ export const deleteReserva = createServerFn({ method: "POST" })
   .validator((id: string) => id)
   .handler(async ({ data: id, context }) => {
     const { data: roleData } = await context.supabase
-      .from('user_roles')
+      .from('user_roles' as any)
       .select('role')
       .eq('user_id', context.userId)
       .eq('role', 'admin')
@@ -111,7 +95,7 @@ export const deleteReserva = createServerFn({ method: "POST" })
     if (!roleData) throw new Error("Unauthorized");
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
+    const { error } = await (supabaseAdmin as any)
       .from("reservas")
       .delete()
       .eq("id", id);
@@ -124,19 +108,19 @@ export const deleteReserva = createServerFn({ method: "POST" })
 export const getDepoimentos = createServerFn({ method: "GET" })
   .handler(async () => {
     const { data, error } = await supabase
-      .from("depoimentos")
+      .from("depoimentos" as any)
       .select("*")
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return data as Depoimento[];
+    return data as any[];
   });
 
 export const upsertDepoimento = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((data: Depoimento) => data)
+  .validator((data: any) => data)
   .handler(async ({ data, context }) => {
     const { data: roleData } = await context.supabase
-      .from('user_roles')
+      .from('user_roles' as any)
       .select('role')
       .eq('user_id', context.userId)
       .eq('role', 'admin')
@@ -145,7 +129,7 @@ export const upsertDepoimento = createServerFn({ method: "POST" })
     if (!roleData) throw new Error("Unauthorized");
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
+    const { error } = await (supabaseAdmin as any)
       .from("depoimentos")
       .upsert(data);
     
@@ -194,7 +178,7 @@ export const updateSiteContent = createServerFn({ method: "POST" })
   })
   .handler(async ({ data, context }) => {
     const { data: roleData } = await context.supabase
-      .from('user_roles')
+      .from('user_roles' as any)
       .select('role')
       .eq('user_id', context.userId)
       .eq('role', 'admin')
@@ -203,7 +187,7 @@ export const updateSiteContent = createServerFn({ method: "POST" })
     if (!roleData) throw new Error("Unauthorized");
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
+    const { error } = await (supabaseAdmin as any)
       .from("site_content")
       .update({ content: data.content as any })
       .eq("section", data.section);
@@ -211,4 +195,5 @@ export const updateSiteContent = createServerFn({ method: "POST" })
     if (error) throw error;
     return { success: true };
   });
+
 
