@@ -9,6 +9,7 @@ export type HeroContent = {
   cta_text: string;
   whatsapp_number: string;
   whatsapp_message: string;
+  hero_image?: string;
   badges?: string[];
 };
 
@@ -161,6 +162,7 @@ const heroSchema = z.object({
   cta_text: z.string().max(120),
   whatsapp_number: z.string().max(30),
   whatsapp_message: z.string().max(500),
+  hero_image: z.string().max(2000).optional(),
   badges: z.array(z.string().max(120)).max(20).optional(),
 });
 

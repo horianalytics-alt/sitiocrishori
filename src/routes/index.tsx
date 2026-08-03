@@ -87,7 +87,7 @@ function Index() {
           <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/30 to-black/60 z-10" />
           <div className="absolute inset-0 z-0">
             <img 
-              src={HERO_IMAGE} 
+              src={hero?.hero_image || HERO_IMAGE} 
               alt="Hero" 
               className="w-full h-full object-cover anim-photo-reveal scale-105" 
             />
