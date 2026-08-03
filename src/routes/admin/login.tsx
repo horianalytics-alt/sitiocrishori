@@ -17,14 +17,23 @@ function AdminLogin() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
     
-    if (error) {
-      toast.error("Erro ao entrar: " + error.message)
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ 
+        email: email.trim(), 
+        password: password.trim() 
+      })
+      
+      if (error) {
+        toast.error("Erro ao entrar: " + error.message)
+      } else if (data.session) {
+        toast.success("Login realizado com sucesso!")
+        navigate({ to: '/admin' })
+      }
+    } catch (err) {
+      toast.error("Ocorreu um erro inesperado.")
+    } finally {
       setLoading(false)
-    } else {
-      toast.success("Login realizado com sucesso!")
-      navigate({ to: '/admin' })
     }
   }
 
@@ -68,6 +77,7 @@ function AdminLogin() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FE8330]/20 focus:border-[#FE8330] transition-all"
+              placeholder="seu@email.com"
             />
           </div>
           <div className="space-y-2">
@@ -78,6 +88,7 @@ function AdminLogin() {
               value={password}
               onChange={e => setPassword(e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FE8330]/20 focus:border-[#FE8330] transition-all"
+              placeholder="••••••••"
             />
           </div>
           <button 
