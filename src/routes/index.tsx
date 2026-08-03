@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -12,6 +12,17 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [activeTab, setActiveTab] = useState("finais-de-semana");
 
+  useEffect(() => {
+    // Import and init AOS only on client
+    import('aos').then((AOS) => {
+      AOS.init({
+        duration: 1000,
+        easing: 'ease-out-quint',
+        once: true,
+      });
+    });
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229]">
       {/* Hero Section */}
@@ -23,7 +34,7 @@ function Index() {
           className="absolute inset-0 w-full h-full object-cover anim-photo-reveal"
         />
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto space-y-6">
-          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight">
+          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight" data-aos="zoom-out">
             O cenário perfeito para os teus melhores momentos: Festas, Finais de Semana e Day Use.
           </h1>
           <p className="text-lg md:text-xl text-white/90">
@@ -34,15 +45,20 @@ function Index() {
       </section>
 
       {/* Infrastructure Grid */}
-      <section className="py-20 px-4 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold mb-12 text-center">Nossa Estrutura</h2>
+      <section className="py-20 px-4 max-w-6xl mx-auto overflow-hidden">
+        <h2 className="text-3xl font-bold mb-12 text-center" data-aos="fade-up">Nossa Estrutura</h2>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            { title: "Área de Festas", img: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800" },
-            { title: "Piscina", img: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=800" },
-            { title: "Suítes", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800" },
+            { title: "Área de Festas", img: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800", delay: 0 },
+            { title: "Piscina", img: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=800", delay: 100 },
+            { title: "Suítes", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800", delay: 200 },
           ].map((item) => (
-            <div key={item.title} className="group transition-card card-interactive bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md">
+            <div 
+              key={item.title} 
+              className="group transition-card card-interactive bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md"
+              data-aos="fade-up"
+              data-aos-delay={item.delay}
+            >
               <img src={item.img} alt={item.title} className="w-full h-48 object-cover card-media" />
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
@@ -89,6 +105,14 @@ function Index() {
       </section>
 
       <WhatsAppButton phoneNumber="00000000000" floating />
+
+      {/* Admin Quick Access Footer (Only for development/admin visibility) */}
+      <footer className="py-6 border-t bg-white">
+        <div className="max-w-6xl mx-auto px-4 flex justify-between items-center text-sm text-muted-foreground">
+          <p>© 2026 Sítio de Eventos. Todos os direitos reservados.</p>
+          <Link to="/admin" className="hover:text-[#FE8330] transition-colors">Acesso Administrativo</Link>
+        </div>
+      </footer>
     </div>
   );
 }
