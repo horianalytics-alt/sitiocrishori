@@ -3,7 +3,8 @@ import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import { useState } from 'react'
 import { getSiteContent, updateSiteContent, type HeroContent, type InfrastructureItem, type FAQItem } from '@/lib/site-content.functions'
 import { toast } from 'sonner'
-import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle } from 'lucide-react'
+import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon } from 'lucide-react'
+import { supabase } from '@/integrations/supabase/client'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 
 export const Route = createFileRoute('/admin/')({
@@ -49,6 +50,8 @@ function AdminDashboard() {
   const [infraForm, setInfraForm] = useState<InfrastructureItem[]>(infrastructureContent)
   const [faqForm, setFaqForm] = useState<FAQItem[]>(faqContent)
 
+  const [isUploading, setIsUploading] = useState<string | null>(null)
+
   const mutation = useMutation({
     mutationFn: (data: { section: string; content: any }) => updateSiteContent({ data }),
     onSuccess: (_, variables) => {
@@ -71,6 +74,43 @@ function AdminDashboard() {
 
   const saveFAQ = () => {
     mutation.mutate({ section: 'faq', content: faqForm })
+  }
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'infra' | 'hero', index?: number) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const uploadId = index !== undefined ? `${type}-${index}` : type
+    setIsUploading(uploadId)
+
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`
+      const filePath = `${fileName}`
+
+      const { data, error } = await supabase.storage
+        .from('images')
+        .upload(filePath, file)
+
+      if (error) throw error
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('images')
+        .getPublicUrl(data.path)
+
+      if (type === 'infra' && index !== undefined) {
+        const newInfra = [...infraForm]
+        newInfra[index] = { ...newInfra[index], image: publicUrl }
+        setInfraForm(newInfra)
+      }
+      
+      toast.success('Imagem enviada com sucesso!')
+    } catch (error: any) {
+      console.error('Error uploading:', error)
+      toast.error('Erro ao enviar imagem: ' + error.message)
+    } finally {
+      setIsUploading(null)
+    }
   }
 
   return (
@@ -180,15 +220,35 @@ function AdminDashboard() {
                       setInfraForm(newInfra);
                     }}
                   />
-                  <input 
-                    className="w-full px-4 py-2 rounded-lg border text-xs" 
-                    value={item.image || ""} 
-                    onChange={e => {
-                      const newInfra = [...infraForm];
-                      newInfra[idx] = { title: item.title, description: item.description, image: e.target.value };
-                      setInfraForm(newInfra);
-                    }}
-                  />
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-gray-500">URL da Imagem</label>
+                    <div className="flex gap-2">
+                      <input 
+                        className="flex-1 px-4 py-2 rounded-lg border text-xs" 
+                        value={item.image || ""} 
+                        onChange={e => {
+                          const newInfra = [...infraForm];
+                          newInfra[idx] = { ...item, image: e.target.value };
+                          setInfraForm(newInfra);
+                        }}
+                        placeholder="https://..."
+                      />
+                      <label className="cursor-pointer flex items-center justify-center bg-gray-100 hover:bg-gray-200 p-2 rounded-lg transition-colors">
+                        {isUploading === `infra-${idx}` ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Upload className="w-4 h-4" />
+                        )}
+                        <input 
+                          type="file" 
+                          className="hidden" 
+                          accept="image/*"
+                          onChange={(e) => handleFileUpload(e, 'infra', idx)}
+                          disabled={!!isUploading}
+                        />
+                      </label>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
