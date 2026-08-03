@@ -138,9 +138,10 @@ function AdminDashboard() {
       if (error) throw error
       const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path)
       
-      if (type === 'infra' && index !== undefined && infraForm) {
+      if (type === 'infra' && index !== undefined && infraForm?.[index]) {
         const newInfra = [...infraForm]; newInfra[index].image = publicUrl; setInfraForm(newInfra)
       } else if (type === 'gallery' && galleryForm) {
+
         setGalleryForm([...galleryForm, publicUrl])
       }
 
@@ -347,8 +348,9 @@ function AdminDashboard() {
           <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
             {faqForm?.map((item, idx) => (
               <div key={idx} className="p-6 bg-gray-50 rounded-3xl space-y-3 relative">
-                <input className="w-full font-bold bg-transparent pr-10" value={item.question || ""} onChange={e => { const f = [...(faqForm || [])]; f[idx].question = e.target.value; setFaqForm(f) }} />
-                <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.answer || ""} onChange={e => { const f = [...(faqForm || [])]; f[idx].answer = e.target.value; setFaqForm(f) }} />
+                <input className="w-full font-bold bg-transparent pr-10" value={item.question || ""} onChange={e => { const f = [...(faqForm || [])]; if(f[idx]) f[idx].question = e.target.value; setFaqForm(f) }} />
+                <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.answer || ""} onChange={e => { const f = [...(faqForm || [])]; if(f[idx]) f[idx].answer = e.target.value; setFaqForm(f) }} />
+
 
                 <button onClick={() => setFaqForm(faqForm.filter((_, i) => i !== idx))} className="absolute top-6 right-6 text-red-400"><Trash2 className="w-4 h-4" /></button>
               </div>
