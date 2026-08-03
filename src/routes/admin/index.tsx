@@ -3,7 +3,7 @@ import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import { useState, useEffect } from 'react'
 import { getSiteContent, updateSiteContent, type HeroContent, type InfrastructureItem, type FAQItem } from '@/lib/site-content.functions'
 import { toast } from 'sonner'
-import { Loader2, Save, Plus, Trash2, Home, Grid, MessageSquareCircle } from 'lucide-react'
+import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 
 export const Route = createFileRoute('/admin/')({
@@ -91,7 +91,7 @@ function AdminDashboard() {
             <Grid className="w-4 h-4 mr-2" /> Infraestrutura
           </TabsTrigger>
           <TabsTrigger value="faq" activeValue={activeTab} onClick={setActiveTab} className="py-3 rounded-xl data-[state=active]:bg-[#FE8330] data-[state=active]:text-white">
-            <MessageSquareCircle className="w-4 h-4 mr-2" /> FAQ
+            <MessageCircle className="w-4 h-4 mr-2" /> FAQ
           </TabsTrigger>
         </TabsList>
 
@@ -154,28 +154,28 @@ function AdminDashboard() {
                   </div>
                   <input 
                     className="w-full px-4 py-2 rounded-lg border text-lg font-bold" 
-                    value={item.title} 
+                    value={item.title || ""} 
                     onChange={e => {
                       const newInfra = [...infraForm];
-                      newInfra[idx].title = e.target.value;
+                      newInfra[idx] = { ...newInfra[idx], title: e.target.value };
                       setInfraForm(newInfra);
                     }}
                   />
                   <textarea 
                     className="w-full px-4 py-2 rounded-lg border text-sm text-muted-foreground" 
-                    value={item.description} 
+                    value={item.description || ""} 
                     onChange={e => {
                       const newInfra = [...infraForm];
-                      newInfra[idx].description = e.target.value;
+                      newInfra[idx] = { ...newInfra[idx], description: e.target.value };
                       setInfraForm(newInfra);
                     }}
                   />
                   <input 
                     className="w-full px-4 py-2 rounded-lg border text-xs" 
-                    value={item.image} 
+                    value={item.image || ""} 
                     onChange={e => {
                       const newInfra = [...infraForm];
-                      newInfra[idx].image = e.target.value;
+                      newInfra[idx] = { ...newInfra[idx], image: e.target.value };
                       setInfraForm(newInfra);
                     }}
                   />
@@ -204,10 +204,10 @@ function AdminDashboard() {
                   <div className="flex justify-between">
                     <input 
                       className="w-full bg-transparent font-bold text-lg focus:outline-none" 
-                      value={item.question} 
+                      value={item.question || ""} 
                       onChange={e => {
                         const newFaq = [...faqForm];
-                        newFaq[idx].question = e.target.value;
+                        newFaq[idx] = { ...newFaq[idx], question: e.target.value };
                         setFaqForm(newFaq);
                       }}
                     />
@@ -215,10 +215,10 @@ function AdminDashboard() {
                   </div>
                   <textarea 
                     className="w-full bg-transparent text-muted-foreground focus:outline-none" 
-                    value={item.answer} 
+                    value={item.answer || ""} 
                     onChange={e => {
                       const newFaq = [...faqForm];
-                      newFaq[idx].answer = e.target.value;
+                      newFaq[idx] = { ...newFaq[idx], answer: e.target.value };
                       setFaqForm(newFaq);
                     }}
                   />
