@@ -130,6 +130,8 @@ function AdminDashboard() {
     const file = e.target.files?.[0]
     if (!file) return
 
+    console.log('Iniciando upload:', file.name, 'Tipo:', file.type)
+
     // Validação de tipo e tamanho (ex: max 5MB)
     if (!file.type.startsWith('image/')) {
       toast.error('Por favor, selecione apenas arquivos de imagem.')
@@ -147,15 +149,22 @@ function AdminDashboard() {
       const fileExt = file.name.split('.').pop()
       const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`
       
-      const { data, error } = await supabase.storage.from('images').upload(fileName, file)
+      console.log('Tentando upload para bucket "images"...')
+      const { data, error } = await supabase.storage.from('images').upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false
+      })
       
       if (error) {
-        console.error('Erro no upload:', error)
-        if (error.message.includes('bucket not found')) {
-          throw new Error('Erro de configuração: Bucket "images" não encontrado. Contate o suporte.')
+        console.error('Erro de Storage detalhado:', error)
+        if (error.message.includes('Bucket not found') || error.message.includes('not_found')) {
+          // Tenta listar buckets para ver se "images" aparece
+          const { data: buckets } = await supabase.storage.listBuckets()
+          console.log('Buckets visíveis:', buckets)
+          throw new Error('O bucket "images" não está acessível. Verifique as configurações de Storage.')
         }
         if (error.status === 403) {
-          throw new Error('Sem permissão para upload. Verifique seu acesso administrativo.')
+          throw new Error('Sem permissão (403). Verifique se o RLS permite uploads para este bucket.')
         }
         throw error
       }
