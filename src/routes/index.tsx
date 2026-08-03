@@ -447,24 +447,45 @@ function Index() {
                 <p className="text-sm md:text-lg text-muted-foreground font-medium" data-aos="fade-right" data-aos-delay="100">Explore cada canto do nosso paraíso.</p>
               </div>
               
-              <div className="flex items-center bg-[#FAF8F5] p-2 rounded-2xl border" data-aos="fade-left">
-                {[
-                  { id: "masonry", label: "Grade" },
-                  { id: "spiral", label: "Espiral" },
-                  { id: "list", label: "Lista" }
-                ].map((m) => (
-                  <button
-                    key={m.id}
-                    onClick={() => setViewMode(m.id as any)}
-                    className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
-                      viewMode === m.id 
-                        ? "bg-[#FE8330] text-white shadow-lg" 
-                        : "text-gray-400 hover:text-gray-600"
-                    }`}
-                  >
-                    {m.label}
-                  </button>
-                ))}
+              <div className="flex items-center bg-[#FAF8F5] p-2 rounded-2xl border gap-4" data-aos="fade-left">
+                <button
+                  onClick={() => setViewMode("masonry")}
+                  className="slide-btn"
+                  style={{
+                    fontSize: 14, fontWeight: 500, letterSpacing: "-0.03em",
+                    color: viewMode === "masonry" ? "rgba(30,34,41,1)" : "rgba(30,34,41,0.38)",
+                    transition: "color .3s ease",
+                  }}
+                >
+                  <span className="t1">grade</span>
+                  <span className="t2">grade</span>
+                </button>
+                <span className="w-1.5 h-1.5 rounded-full bg-black/10" />
+                <button
+                  onClick={() => setViewMode("spiral")}
+                  className="slide-btn"
+                  style={{
+                    fontSize: 14, fontWeight: 500, letterSpacing: "-0.03em",
+                    color: viewMode === "spiral" ? "rgba(30,34,41,1)" : "rgba(30,34,41,0.38)",
+                    transition: "color .3s ease",
+                  }}
+                >
+                  <span className="t1">espiral</span>
+                  <span className="t2">espiral</span>
+                </button>
+                <span className="w-1.5 h-1.5 rounded-full bg-black/10" />
+                <button
+                  onClick={() => setViewMode("list")}
+                  className="slide-btn"
+                  style={{
+                    fontSize: 14, fontWeight: 500, letterSpacing: "-0.03em",
+                    color: viewMode === "list" ? "rgba(30,34,41,1)" : "rgba(30,34,41,0.38)",
+                    transition: "color .3s ease",
+                  }}
+                >
+                  <span className="t1">lista</span>
+                  <span className="t2">lista</span>
+                </button>
               </div>
             </div>
 
