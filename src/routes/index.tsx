@@ -89,16 +89,16 @@ function Index() {
                 </span>
               ))}
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-tight tracking-tight" data-aos="zoom-out" data-aos-duration="1200">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight" data-aos="zoom-out" data-aos-duration="1200">
               {hero?.headline}
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-white/90 font-medium max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="400">
+            <p className="text-sm sm:text-base md:text-lg text-white/90 font-medium max-w-2xl mx-auto leading-relaxed px-4" data-aos="fade-up" data-aos-delay="400">
               {hero?.subheadline}
             </p>
             <div data-aos="fade-up" data-aos-delay="600" className="flex justify-center pt-8">
               <button 
                 onClick={() => document.getElementById('calendario')?.scrollIntoView({behavior: 'smooth'})} 
-                className="group relative px-14 py-7 bg-[#FE8330] text-white text-xl font-bold rounded-full shadow-[0_20px_50px_rgba(254,131,48,0.3)] hover:scale-105 hover:shadow-[0_25px_60px_rgba(254,131,48,0.4)] transition-all duration-500 overflow-hidden"
+                className="group relative px-8 py-5 md:px-14 md:py-7 bg-[#FE8330] text-lg md:text-xl font-bold rounded-full shadow-[0_20px_50px_rgba(254,131,48,0.3)] hover:scale-105 hover:shadow-[0_25px_60px_rgba(254,131,48,0.4)] transition-all duration-500 overflow-hidden"
               >
                 <span className="relative z-10">{hero?.cta_text || "VERIFICAR DISPONIBILIDADE"}</span>
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
@@ -117,8 +117,8 @@ function Index() {
           <div className="bg-white p-10 md:p-20 rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-20 items-stretch" data-aos="fade-up">
             <div className="flex-1 space-y-8">
               <div className="space-y-4">
-                <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Escolha suas datas</h2>
-                <p className="text-base md:text-lg text-muted-foreground">Selecione o período desejado no calendário para consultar valores e disponibilidade instantânea.</p>
+                <h2 className="text-2xl md:text-5xl font-black tracking-tight">Escolha suas datas</h2>
+                <p className="text-sm md:text-lg text-muted-foreground">Selecione o período desejado no calendário para consultar valores e disponibilidade instantânea.</p>
               </div>
               <div className="inline-block p-4 bg-[#FAF8F5] rounded-3xl border">
                 <DayPicker
@@ -163,8 +163,8 @@ function Index() {
         {/* Infrastructure Grid */}
         <section id="infraestrutura" className="py-32 px-6 max-w-7xl mx-auto">
           <div className="text-center mb-20 space-y-4">
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Estrutura de Alto Padrão</h2>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Cada detalhe foi planejado para oferecer o máximo conforto e diversão para você e seus convidados.</p>
+            <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Estrutura de Alto Padrão</h2>
+            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">Cada detalhe foi planejado para oferecer o máximo conforto e diversão para você e seus convidados.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {infrastructure?.map((item, i) => (
@@ -190,8 +190,8 @@ function Index() {
           <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-gray-200 to-transparent" />
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">Escolha sua Modalidade</h2>
-              <p className="text-lg md:text-xl text-muted-foreground font-medium">Temos o formato ideal para cada tipo de celebração.</p>
+              <h2 className="text-2xl md:text-5xl font-black tracking-tight mb-4">Escolha sua Modalidade</h2>
+              <p className="text-sm md:text-lg text-muted-foreground font-medium px-4">Temos o formato ideal para cada tipo de celebração.</p>
             </div>
             
             <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -218,7 +218,7 @@ function Index() {
                   <div className="flex-1 space-y-8">
                     <div className="space-y-4">
                       <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Experiência Completa</span>
-                      <h3 className="text-3xl md:text-5xl font-black tracking-tight">Finais de Semana</h3>
+                      <h3 className="text-2xl md:text-5xl font-black tracking-tight">Finais de Semana</h3>
                     </div>
                     <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Privacidade absoluta e lazer total para sua família com pernoite completo e infraestrutura de hotel fazenda premium.</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -250,8 +250,8 @@ function Index() {
         <section className="py-32 bg-[#FAF8F5] relative">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-20 space-y-4">
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Memórias Inesquecíveis</h2>
-              <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Confira o depoimento de quem já viveu momentos especiais em nosso espaço.</p>
+              <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Memórias Inesquecíveis</h2>
+              <p className="text-sm md:text-lg text-muted-foreground font-medium max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">Confira o depoimento de quem já viveu momentos especiais em nosso espaço.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-10">
               {(depoimentos || []).map((dep, i) => (
@@ -290,8 +290,8 @@ function Index() {
         {/* FAQ */}
         <section className="py-32 px-6 max-w-4xl mx-auto">
           <div className="text-center mb-20 space-y-4">
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Dúvidas Frequentes</h2>
-            <p className="text-xl text-muted-foreground font-medium" data-aos="fade-up" data-aos-delay="100">Tudo o que você precisa saber para planejar sua estadia.</p>
+            <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Dúvidas Frequentes</h2>
+            <p className="text-sm md:text-lg text-muted-foreground font-medium px-4" data-aos="fade-up" data-aos-delay="100">Tudo o que você precisa saber para planejar sua estadia.</p>
           </div>
           <Accordion className="space-y-6">
             {(faq || []).map((item, i) => (
