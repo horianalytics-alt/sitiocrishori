@@ -139,8 +139,14 @@ function AdminDashboard() {
       const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path)
       
       if (type === 'infra' && index !== undefined && infraForm && infraForm[index]) {
-        const newInfra = [...infraForm]; newInfra[index].image = publicUrl; setInfraForm(newInfra)
+        const newInfra = [...infraForm];
+        const item = newInfra[index];
+        if (item) {
+          item.image = publicUrl;
+          setInfraForm(newInfra);
+        }
       } else if (type === 'gallery' && galleryForm) {
+
 
 
         setGalleryForm([...galleryForm, publicUrl])
