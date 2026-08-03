@@ -12,6 +12,20 @@ export const Route = createFileRoute('/admin')({
     if (!session) {
       throw redirect({ to: '/admin/login', replace: true })
     }
+
+    // Verificação adicional de role 'admin'
+    const { data: roleData } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', session.user.id)
+      .eq('role', 'admin')
+      .maybeSingle()
+
+    if (!roleData) {
+      // Se não for admin, faz logout e redireciona para login
+      await supabase.auth.signOut()
+      throw redirect({ to: '/admin/login', replace: true })
+    }
   },
   component: () => (
     <div className="min-h-screen bg-gray-50 flex flex-col">
