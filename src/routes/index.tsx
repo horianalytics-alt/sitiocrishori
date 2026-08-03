@@ -116,6 +116,7 @@ function Index() {
             <WhatsAppButton 
               phoneNumber={hero?.whatsapp_number || "00000000000"} 
               label={hero?.cta_text || "Verificar Disponibilidade de Data"}
+              message={hero?.whatsapp_message}
               className="px-10 py-5 text-lg shadow-xl animate-pulse"
             />
           </div>
@@ -233,7 +234,7 @@ function Index() {
                     <li>✓ Cozinha equipada</li>
                   </ul>
                   <div className="pt-6">
-                    <WhatsAppButton phoneNumber={hero?.whatsapp_number || "00000000000"} label="Consultar Valores" className="bg-[#1E2229] hover:bg-gray-800" />
+                    <WhatsAppButton phoneNumber={hero?.whatsapp_number || "00000000000"} label="Consultar Valores" message={hero?.whatsapp_message} className="bg-[#1E2229] hover:bg-gray-800" />
                   </div>
                 </div>
                 <div className="md:w-1/3 w-full">
@@ -254,7 +255,7 @@ function Index() {
                     <li>✓ Banheiros acessíveis</li>
                   </ul>
                   <div className="pt-6">
-                    <WhatsAppButton phoneNumber={hero?.whatsapp_number || "00000000000"} label="Solicitar Orçamento" className="bg-[#1E2229] hover:bg-gray-800" />
+                    <WhatsAppButton phoneNumber={hero?.whatsapp_number || "00000000000"} label="Solicitar Orçamento" message={hero?.whatsapp_message} className="bg-[#1E2229] hover:bg-gray-800" />
                   </div>
                 </div>
                 <div className="md:w-1/3 w-full">
@@ -275,7 +276,7 @@ function Index() {
                     <li>✓ Playground</li>
                   </ul>
                   <div className="pt-6">
-                    <WhatsAppButton phoneNumber={hero?.whatsapp_number || "00000000000"} label="Reservar meu dia" className="bg-[#1E2229] hover:bg-gray-800" />
+                    <WhatsAppButton phoneNumber={hero?.whatsapp_number || "00000000000"} label="Reservar meu dia" message={hero?.whatsapp_message} className="bg-[#1E2229] hover:bg-gray-800" />
                   </div>
                 </div>
                 <div className="md:w-1/3 w-full">
@@ -296,7 +297,7 @@ function Index() {
                     <li>✓ Conforto absoluto</li>
                   </ul>
                   <div className="pt-6">
-                    <WhatsAppButton phoneNumber={hero?.whatsapp_number || "00000000000"} label="Consultar Pacotes" className="bg-[#1E2229] hover:bg-gray-800" />
+                    <WhatsAppButton phoneNumber={hero?.whatsapp_number || "00000000000"} label="Consultar Pacotes" message={hero?.whatsapp_message} className="bg-[#1E2229] hover:bg-gray-800" />
                   </div>
                 </div>
                 <div className="md:w-1/3 w-full">
@@ -334,6 +335,7 @@ function Index() {
       <WhatsAppButton 
         phoneNumber={hero?.whatsapp_number || "00000000000"} 
         floating 
+        message={hero?.whatsapp_message}
         label="Fale direto com a administração"
       />
 
