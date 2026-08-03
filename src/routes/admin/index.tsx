@@ -100,9 +100,10 @@ function AdminDashboard() {
 
       if (type === 'infra' && index !== undefined) {
         const newInfra = [...infraForm]
+        const currentItem = newInfra[index]
         newInfra[index] = { 
-          title: newInfra[index].title || '', 
-          description: newInfra[index].description || '', 
+          title: currentItem?.title || '', 
+          description: currentItem?.description || '', 
           image: publicUrl 
         }
         setInfraForm(newInfra)
