@@ -132,10 +132,10 @@ function Index() {
       </section>
 
       {/* Infrastructure Grid */}
-      <section className="py-24 px-4 max-w-7xl mx-auto">
+      <section id="infraestrutura" className="py-24 px-4 max-w-7xl mx-auto">
         <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold" data-aos="fade-up">Visão Geral da Infraestrutura</h2>
-          <p className="text-muted-foreground text-lg" data-aos="fade-up" data-aos-delay="100">Cada detalhe pensado para o seu conforto e lazer.</p>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight" data-aos="fade-up">Visão Geral da Infraestrutura</h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Cada detalhe pensado para o seu conforto e lazer, com estrutura completa para qualquer evento.</p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           {(infrastructure || []).map((item, idx) => (
