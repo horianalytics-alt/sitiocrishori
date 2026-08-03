@@ -463,6 +463,8 @@ function Index() {
                             height: SPIRAL_CONFIG.cardHeight,
                             left: "50%",
                             top: "50%",
+                            translateX: "-50%",
+                            translateY: "-50%",
                             zIndex: (galleryData || []).length - i
                           }}
                           animate={{
@@ -471,15 +473,7 @@ function Index() {
                             rotate: pos.tilt,
                           }}
                           initial={{ x: 0, y: 0, rotate: 0 }}
-                          style={{
-                            width: SPIRAL_CONFIG.cardWidth,
-                            height: SPIRAL_CONFIG.cardHeight,
-                            left: "50%",
-                            top: "50%",
-                            translateX: "-50%",
-                            translateY: "-50%",
-                            zIndex: (galleryData || []).length - i
-                          }}
+
 
                           whileHover={{ scale: 1.1, zIndex: 50, rotate: 0 }}
                           transition={{ type: "spring", stiffness: 100, damping: 20 }}
