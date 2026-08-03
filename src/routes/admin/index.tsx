@@ -22,6 +22,10 @@ export const Route = createFileRoute('/admin/')({
       context.queryClient.ensureQueryData({
         queryKey: ['site-content', 'faq'],
         queryFn: () => getSiteContent({ data: 'faq' }),
+      }),
+      context.queryClient.ensureQueryData({
+        queryKey: ['site-content', 'gallery'],
+        queryFn: () => getSiteContent({ data: 'gallery' }),
       })
     ])
   },
@@ -31,13 +35,11 @@ export const Route = createFileRoute('/admin/')({
 function AdminDashboard() {
   const queryClient = useQueryClient()
   const [activeTab, setActiveTab] = useState("hero")
-  const [galleryForm, setGalleryForm] = useState<string[]>([])
 
-  useEffect(() => {
-    getSiteContent({ data: 'gallery' }).then(data => {
-      if (Array.isArray(data)) setGalleryForm(data)
-    }).catch(() => setGalleryForm([]))
-  }, [])
+  const { data: galleryContent } = useSuspenseQuery({
+    queryKey: ['site-content', 'gallery'],
+    queryFn: () => getSiteContent({ data: 'gallery' }),
+  }) as { data: string[] }
 
   const { data: heroContent } = useSuspenseQuery({
     queryKey: ['site-content', 'hero'],
@@ -57,6 +59,7 @@ function AdminDashboard() {
   const [heroForm, setHeroForm] = useState<HeroContent & { badges?: string[] }>(heroContent)
   const [infraForm, setInfraForm] = useState<InfrastructureItem[]>(infrastructureContent)
   const [faqForm, setFaqForm] = useState<FAQItem[]>(faqContent)
+  const [galleryForm, setGalleryForm] = useState<string[]>(Array.isArray(galleryContent) ? galleryContent : [])
 
   const [isUploading, setIsUploading] = useState<string | null>(null)
 
