@@ -207,7 +207,7 @@ function Index() {
                     value={t.id} 
                     activeValue={activeTab}
                     onClick={setActiveTab}
-                    className="px-10 py-5 rounded-full font-bold uppercase tracking-[0.2em] text-xs border-2 border-transparent data-[state=active]:border-[#FE8330] data-[state=active]:bg-[#FE8330]/5 data-[state=active]:text-[#FE8330] hover:bg-gray-50 transition-all duration-500"
+                    className="px-6 py-4 md:px-10 md:py-5 rounded-full"
                   >
                     {t.label}
                   </TabsTrigger>
