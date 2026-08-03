@@ -20,7 +20,7 @@ export const getSiteContent = createServerFn({ method: "GET" })
       .single();
     
     if (error) throw error;
-    return data.content;
+    return data.content as any;
   });
 
 export const updateSiteContent = createServerFn({ method: "POST" })

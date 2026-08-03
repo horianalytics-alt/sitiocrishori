@@ -17,20 +17,20 @@ export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
     await context.queryClient.ensureQueryData({
       queryKey: ['site-content', 'hero'],
-      queryFn: () => getSiteContent('hero'),
+      queryFn: () => getSiteContent({ data: 'hero' }),
     })
   },
   component: Index,
 });
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getSiteContent } from "@/lib/site-content.functions";
+import { getSiteContent, type HeroContent } from "@/lib/site-content.functions";
 
 function Index() {
   const { data: hero } = useSuspenseQuery({
     queryKey: ['site-content', 'hero'],
-    queryFn: () => getSiteContent('hero'),
-  });
+    queryFn: () => getSiteContent({ data: 'hero' }),
+  }) as { data: HeroContent };
   const [activeTab, setActiveTab] = useState("finais-de-semana");
 
   useEffect(() => {

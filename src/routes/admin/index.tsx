@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { getSiteContent, updateSiteContent } from '@/lib/site-content.functions'
+import { getSiteContent, updateSiteContent, type HeroContent } from '@/lib/site-content.functions'
 import { toast } from 'sonner'
 import { Loader2, Save } from 'lucide-react'
 
@@ -9,7 +9,7 @@ export const Route = createFileRoute('/admin/')({
   loader: async ({ context }) => {
     await context.queryClient.ensureQueryData({
       queryKey: ['site-content', 'hero'],
-      queryFn: () => getSiteContent('hero'),
+      queryFn: () => getSiteContent({ data: 'hero' }),
     })
   },
   component: AdminDashboard,
@@ -19,13 +19,13 @@ function AdminDashboard() {
   const queryClient = useQueryClient()
   const { data: heroContent } = useSuspenseQuery({
     queryKey: ['site-content', 'hero'],
-    queryFn: () => getSiteContent('hero'),
-  })
+    queryFn: () => getSiteContent({ data: 'hero' }),
+  }) as { data: HeroContent }
 
-  const [formData, setFormData] = useState(heroContent)
+  const [formData, setFormData] = useState<HeroContent>(heroContent)
 
   const mutation = useMutation({
-    mutationFn: (newContent: any) => updateSiteContent({ section: 'hero', content: newContent }),
+    mutationFn: (newContent: HeroContent) => updateSiteContent({ data: { section: 'hero', content: newContent } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['site-content', 'hero'] })
       toast.success('Conteúdo atualizado com sucesso!')
@@ -39,6 +39,8 @@ function AdminDashboard() {
     e.preventDefault()
     mutation.mutate(formData)
   }
+
+  if (!formData) return null
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
