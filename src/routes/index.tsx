@@ -392,7 +392,7 @@ function Index() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="text-left space-y-4">
                 <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-right">Galeria de Fotos</h2>
-                <p className="text-sm md:text-lg text-muted-foreground font-medium" data-aos="fade-right" data-aos-delay="100">Explore cada canto do nosso paraíso.</p>
+                <p className="text-sm md:text-lg text-muted-foreground font-medium" data-aos="fade-right" data-aos-delay="100">Explore cada canto do nosso paraíso. ({(galleryData || []).length} fotos)</p>
               </div>
               
               <div className="flex items-center bg-[#FAF8F5] p-2 rounded-2xl border" data-aos="fade-left">
