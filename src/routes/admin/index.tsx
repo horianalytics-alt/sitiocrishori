@@ -132,9 +132,6 @@ function AdminDashboard() {
                     value={heroForm.whatsapp_number}
                     onChange={e => setHeroForm({ ...heroForm, whatsapp_number: e.target.value })}
                   />
-                </div>
-                </div>
-              </div>
               <div className="space-y-2">
                 <label className="text-sm font-semibold">Badges (Separados por vírgula)</label>
                 <input 
