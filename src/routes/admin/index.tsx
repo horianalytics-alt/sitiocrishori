@@ -195,6 +195,7 @@ function AdminDashboard() {
                     type="text"
                     className="w-full px-4 py-3 rounded-xl border border-gray-200"
                     value={heroForm.whatsapp_number || ""}
+                    placeholder="Ex: 5511973000753"
                     onChange={e => setHeroForm({ ...heroForm, whatsapp_number: e.target.value })}
                   />
                 </div>
