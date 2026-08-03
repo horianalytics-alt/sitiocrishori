@@ -24,14 +24,20 @@ export type FAQItem = {
 export const getSiteContent = createServerFn({ method: "GET" })
   .validator((section: string) => section)
   .handler(async ({ data: section }) => {
-    const { data, error } = await supabase
-      .from("site_content")
-      .select("content")
-      .eq("section", section)
-      .single();
-    
-    if (error) throw error;
-    return data.content as any;
+    try {
+      const { data, error } = await supabase
+        .from("site_content")
+        .select("content")
+        .eq("section", section)
+        .maybeSingle();
+      
+      if (error) throw error;
+      if (!data) return section === 'gallery' ? [] : null;
+      return data.content as any;
+    } catch (err) {
+      console.error(`Error fetching site content for ${section}:`, err);
+      return section === 'gallery' ? [] : null;
+    }
   });
 
 export const updateSiteContent = createServerFn({ method: "POST" })
