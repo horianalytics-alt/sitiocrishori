@@ -136,7 +136,7 @@ function Index() {
       <footer className="py-6 border-t bg-white">
         <div className="max-w-6xl mx-auto px-4 flex justify-between items-center text-sm text-muted-foreground">
           <p>© 2026 Sítio de Eventos. Todos os direitos reservados.</p>
-          <a href="/admin" className="hover:text-[#FE8330] transition-colors">Acesso Administrativo</a>
+          <Link to="/admin" className="hover:text-[#FE8330] transition-colors">Acesso Administrativo</Link>
         </div>
       </footer>
     </div>
