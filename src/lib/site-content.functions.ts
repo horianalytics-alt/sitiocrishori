@@ -43,8 +43,8 @@ export const getSiteContent = createServerFn({ method: "GET" })
 export const updateSiteContent = createServerFn({ method: "POST" })
   .validator((data: { section: string; content: any }) => data)
   .handler(async ({ data }) => {
-    // This will be wrapped with auth check in the UI / protected route logic
-    const { error } = await supabase
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
       .from("site_content")
       .update({ content: data.content })
       .eq("section", data.section);
