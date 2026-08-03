@@ -288,11 +288,16 @@ function Index() {
         </section>
 
         {/* FAQ */}
-        <section className="py-24 px-4 max-w-4xl mx-auto">
-          <h2 className="text-4xl font-black text-center mb-16">Dúvidas Frequentes</h2>
-          <Accordion className="space-y-4">
+        <section className="py-32 px-6 max-w-4xl mx-auto">
+          <div className="text-center mb-20 space-y-4">
+            <h2 className="text-5xl md:text-6xl font-extrabold tracking-tighter" data-aos="fade-up">Dúvidas Frequentes</h2>
+            <p className="text-xl text-muted-foreground font-medium" data-aos="fade-up" data-aos-delay="100">Tudo o que você precisa saber para planejar sua estadia.</p>
+          </div>
+          <Accordion className="space-y-6">
             {(faq || []).map((item, i) => (
-              <AccordionItem key={i} title={item.question} className="bg-white px-8 py-2 rounded-3xl shadow-sm border-none">{item.answer}</AccordionItem>
+              <AccordionItem key={i} title={item.question} className="bg-white px-10 py-4 rounded-[2rem] shadow-sm border border-gray-100 hover:border-[#FE8330]/20 transition-colors">
+                <div className="text-lg text-muted-foreground leading-relaxed pt-2">{item.answer}</div>
+              </AccordionItem>
             ))}
           </Accordion>
         </section>
@@ -300,21 +305,48 @@ function Index() {
 
       {/* Lightbox */}
       {selectedImage && (
-        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4" onClick={() => setSelectedImage(null)}>
-          <img src={selectedImage} className="max-w-full max-h-full rounded-2xl shadow-2xl" />
+        <div className="fixed inset-0 z-[100] bg-black/98 flex items-center justify-center p-6 backdrop-blur-xl transition-all" onClick={() => setSelectedImage(null)}>
+          <div className="relative group max-w-7xl max-h-[90vh]">
+            <img src={selectedImage} className="w-full h-full object-contain rounded-3xl shadow-[0_0_100px_rgba(0,0,0,0.5)]" alt="Visualização" />
+            <button className="absolute -top-4 -right-4 w-12 h-12 bg-white text-black rounded-full flex items-center justify-center font-black shadow-2xl hover:scale-110 transition-transform">×</button>
+          </div>
         </div>
       )}
 
       <WhatsAppButton phoneNumber={hero?.whatsapp_number || ""} floating message={hero?.whatsapp_message} label="Falar com a Administração" />
 
-      <footer className="py-20 bg-[#1E2229] text-white">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-10">
-          <div className="space-y-4 text-center md:text-left">
-            <h2 className="text-4xl font-black text-[#FE8330]">Sítio de Eventos</h2>
-            <p className="text-gray-400">O cenário perfeito para seus melhores momentos.</p>
+      <footer className="py-32 bg-[#1E2229] text-white relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-white/10 to-transparent" />
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-16 relative z-10">
+          <div className="space-y-8">
+            <h2 className="text-4xl font-extrabold text-[#FE8330] tracking-tighter">Sítio de Eventos</h2>
+            <p className="text-gray-400 text-lg leading-relaxed font-medium">O cenário perfeito para transformar seus momentos em memórias inesquecíveis.</p>
           </div>
-          <div className="flex gap-8"><Link to="/admin" className="text-xs text-gray-600 hover:text-white transition-all">Painel Restrito</Link></div>
+          
+          <div className="space-y-6">
+            <h4 className="text-lg font-bold uppercase tracking-widest text-[#FE8330]/60">Navegação</h4>
+            <ul className="space-y-4 font-medium text-gray-300">
+              <li><button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="hover:text-[#FE8330] transition-colors">Início</button></li>
+              <li><button onClick={() => document.getElementById('infraestrutura')?.scrollIntoView({behavior: 'smooth'})} className="hover:text-[#FE8330] transition-colors">Estrutura</button></li>
+              <li><button onClick={() => document.getElementById('galeria')?.scrollIntoView({behavior: 'smooth'})} className="hover:text-[#FE8330] transition-colors">Galeria</button></li>
+              <li><button onClick={() => document.getElementById('calendario')?.scrollIntoView({behavior: 'smooth'})} className="hover:text-[#FE8330] transition-colors">Reservas</button></li>
+            </ul>
+          </div>
 
+          <div className="space-y-6">
+            <h4 className="text-lg font-bold uppercase tracking-widest text-[#FE8330]/60">Contato</h4>
+            <p className="text-gray-300 font-medium">São Paulo, SP<br />Brasil</p>
+            <p className="text-[#FE8330] font-bold text-lg">{hero?.whatsapp_number}</p>
+          </div>
+
+          <div className="space-y-6">
+            <h4 className="text-lg font-bold uppercase tracking-widest text-[#FE8330]/60">Admin</h4>
+            <Link to="/admin" className="inline-block text-xs text-gray-500 hover:text-white border border-gray-700 px-6 py-2 rounded-full transition-all">Acesso Restrito</Link>
+          </div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-6 mt-20 pt-10 border-t border-white/5 text-center text-gray-500 text-sm">
+          <p>© 2026 Sítio de Eventos. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
