@@ -79,7 +79,6 @@ function Index() {
     "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=800",
     "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=800",
     "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=800",
-    "https://images.unsplash.com/photo-1520245647217-b48632c0c7b7?q=80&w=800",
   ];
 
   return (
@@ -162,7 +161,7 @@ function Index() {
           </div>
           
           <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-            {galleryImages.map((src, i) => (
+            {galleryImages.filter(src => src && src.trim() !== "").map((src, i) => (
               <div 
                 key={i} 
                 className="relative group cursor-pointer overflow-hidden rounded-3xl shadow-md transition-all hover:-translate-y-2 hover:shadow-xl"
@@ -170,7 +169,14 @@ function Index() {
                 data-aos="fade-up"
                 data-aos-delay={i * 50}
               >
-                <img src={src} alt={`Galeria ${i}`} className="w-full h-auto object-cover" />
+                <img 
+                  src={src} 
+                  alt={`Galeria ${i}`} 
+                  className="w-full h-auto object-cover" 
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).parentElement?.classList.add('hidden');
+                  }}
+                />
                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <span className="text-white text-sm font-bold bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/30">Ampliar</span>
                 </div>
