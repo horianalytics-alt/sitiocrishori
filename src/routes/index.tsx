@@ -306,7 +306,7 @@ function Index() {
                   </div>
                 </div>
                 <div className="md:w-1/3 w-full">
-                  <img src="https://images.unsplash.com/photo-1520245647217-b48632c0c7b7?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Finais de semana" />
+                  <img src="https://images.unsplash.com/photo-1520245647217-b48632c0c7b7?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Casa de campo com varanda para finais de semana em família" />
                 </div>
               </div>
             </TabsContent>
@@ -327,7 +327,7 @@ function Index() {
                   </div>
                 </div>
                 <div className="md:w-1/3 w-full">
-                  <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Festas" />
+                  <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Salão decorado para festas e casamentos no sítio" />
                 </div>
               </div>
             </TabsContent>
@@ -348,7 +348,7 @@ function Index() {
                   </div>
                 </div>
                 <div className="md:w-1/3 w-full">
-                  <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Day Use" />
+                  <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Piscina e área de lazer para day use durante o dia" />
                 </div>
               </div>
             </TabsContent>
@@ -369,7 +369,7 @@ function Index() {
                   </div>
                 </div>
                 <div className="md:w-1/3 w-full">
-                  <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Feriados" />
+                  <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Mesa preparada para ceia de Natal e Réveillon no sítio" />
                 </div>
               </div>
             </TabsContent>
