@@ -6,6 +6,14 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    title: "Sítio de Eventos | Festas, Finais de Semana e Day Use",
+    meta: [
+      { name: "description", content: "O cenário perfeito para seus melhores momentos. Piscina, área gourmet e suítes completas." },
+      { property: "og:title", content: "Sítio de Eventos | Locação para Festas e Lazer" },
+      { property: "og:description", content: "Estrutura premium para eventos e finais de semana inesquecíveis." },
+    ],
+  }),
   component: Index,
 });
 
@@ -37,10 +45,12 @@ function Index() {
           <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight" data-aos="zoom-out">
             O cenário perfeito para os teus melhores momentos: Festas, Finais de Semana e Day Use.
           </h1>
-          <p className="text-lg md:text-xl text-white/90">
+          <p className="text-lg md:text-xl text-white/90" data-aos="fade-up" data-aos-delay="200">
             Estrutura completa com piscina, área gourmet, suítes e muito mais.
           </p>
-          <WhatsAppButton phoneNumber="00000000000" />
+          <div data-aos="fade-up" data-aos-delay="400">
+            <WhatsAppButton phoneNumber="00000000000" />
+          </div>
         </div>
       </section>
 
@@ -81,7 +91,7 @@ function Index() {
               ))}
             </TabsList>
             <TabsContent value="finais-de-semana" activeValue={activeTab}>
-              <div className="p-8 rounded-2xl bg-gray-50 border border-gray-100">
+              <div className="p-8 rounded-2xl bg-gray-50 border border-gray-100" data-aos="fade-left">
                 <h3 className="text-2xl font-bold mb-4">Finais de Semana</h3>
                 <p className="text-muted-foreground mb-6">Desfrute de dois dias completos com total privacidade e conforto.</p>
                 <WhatsAppButton phoneNumber="00000000000" label="Consultar Valores" className="bg-[#1E2229] hover:bg-gray-800" />
@@ -94,7 +104,7 @@ function Index() {
       {/* FAQ */}
       <section className="py-20 px-4 max-w-3xl mx-auto">
         <h2 className="text-3xl font-bold mb-12 text-center">Perguntas Frequentes</h2>
-        <Accordion className="space-y-4">
+        <Accordion className="space-y-4" data-aos="fade-up">
           <AccordionItem title="Qual a capacidade máxima?">
             Podemos acomodar confortavelmente até 50 pessoas para festas e 20 para pernoite.
           </AccordionItem>
