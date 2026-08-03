@@ -192,3 +192,36 @@
 @utility container-custom {
   @apply max-w-7xl mx-auto px-6 md:px-12;
 }
+
+/* New Hover Effects */
+@utility hover-lift {
+  @apply transition-transform duration-500 ease-out-expo;
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+@utility hover-glow {
+  @apply transition-shadow duration-500 ease-out-expo;
+  &:hover {
+    box-shadow: 0 0 20px 2px rgba(254, 131, 48, 0.15);
+  }
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 20px;
+}

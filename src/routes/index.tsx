@@ -102,8 +102,9 @@ function Index() {
               <button 
                 key={i} 
                 onClick={() => {
-                  const gallerySection = document.getElementById('galeria');
-                  if (gallerySection) gallerySection.scrollIntoView({ behavior: 'smooth' });
+                  const targetId = badge === "Piscina Aquecida" ? "galeria" : "infraestrutura";
+                  const section = document.getElementById(targetId);
+                  if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
                 className="group relative bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 hover:bg-[#FE8330] hover:scale-110 active:scale-95 overflow-hidden"
               >
@@ -132,29 +133,33 @@ function Index() {
       </section>
 
       {/* Infrastructure Grid */}
-      <section className="py-24 px-4 max-w-7xl mx-auto">
+      <section id="infraestrutura" className="py-24 px-4 max-w-7xl mx-auto">
         <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold" data-aos="fade-up">Visão Geral da Infraestrutura</h2>
-          <p className="text-muted-foreground text-lg" data-aos="fade-up" data-aos-delay="100">Cada detalhe pensado para o seu conforto e lazer.</p>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight" data-aos="fade-up">Visão Geral da Infraestrutura</h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Cada detalhe pensado para o seu conforto e lazer, com estrutura completa para qualquer evento.</p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           {(infrastructure || []).map((item, idx) => (
             <div 
               key={idx} 
-              className="group relative bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100/50"
+              className="group relative bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 border border-gray-100/50 hover:-translate-y-4"
               data-aos="fade-up"
               data-aos-delay={idx * 100}
             >
-              <div className="aspect-[4/3] overflow-hidden">
+              <div className="aspect-[4/3] overflow-hidden relative">
                 <img 
                   src={item.image} 
                   alt={item.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
               <div className="p-8">
-                <h3 className="text-2xl font-bold mb-3 group-hover:text-[#FE8330] transition-colors">{item.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{item.description}</p>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-px bg-[#FE8330]/40" />
+                  <h3 className="text-2xl font-bold group-hover:text-[#FE8330] transition-colors duration-500">{item.title}</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed text-balance">{item.description}</p>
               </div>
             </div>
           ))}
@@ -209,10 +214,10 @@ function Index() {
       {/* Rental Type Tabs */}
       <section className="py-24 bg-[#FAF8F5]">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">Tipos de Locação</h2>
-            <p className="text-muted-foreground text-lg" data-aos="fade-up">A modalidade ideal para cada necessidade.</p>
-          </div>
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight" data-aos="fade-up">Tipos de Locação</h2>
+              <p className="text-muted-foreground text-lg max-w-xl mx-auto" data-aos="fade-up">A modalidade ideal para cada necessidade, com flexibilidade total.</p>
+            </div>
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="bg-white/50 border border-gray-200 p-2 h-auto rounded-3xl mb-12 flex-wrap sm:flex-nowrap">
@@ -319,10 +324,10 @@ function Index() {
 
       {/* FAQ */}
       <section className="py-24 px-4 max-w-4xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">Dúvidas Frequentes</h2>
-          <p className="text-muted-foreground text-lg" data-aos="fade-up">Informações rápidas para facilitar seu planejamento.</p>
-        </div>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight" data-aos="fade-up">Dúvidas Frequentes</h2>
+            <p className="text-muted-foreground text-lg max-w-xl mx-auto" data-aos="fade-up">Informações rápidas e transparentes para facilitar seu planejamento.</p>
+          </div>
         <Accordion className="space-y-6" data-aos="fade-up">
           {(faq || []).map((item, idx) => (
             <AccordionItem 
