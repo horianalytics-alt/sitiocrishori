@@ -7,17 +7,69 @@ import { cn } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getSiteContent, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
 
+const SITE_URL = "https://sitiocrishori.lovable.app";
+const HERO_IMAGE =
+  "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000";
+
 export const Route = createFileRoute("/")({
-  head: () => ({
-    title: "Sítio Para Eventos | Festas, Casamentos e Finais de Semana",
-    meta: [
-      { name: "description", content: "Locação de sítio premium para eventos, festas, casamentos e lazer em família. Piscina aquecida, campo de futebol, área gourmet e suítes completas." },
-      { property: "og:title", content: "Sítio Para Eventos | O Cenário Perfeito Para Seus Momentos Especiais" },
-      { property: "og:description", content: "Estrutura premium para casamentos, eventos corporativos e finais de semana inesquecíveis. Reserve sua data!" },
-    ],
-  }),
+  head: (ctx: { loaderData?: { faq?: FAQItem[] } | undefined }) => {
+    const faqItems = ctx.loaderData?.faq ?? [];
+
+
+    const scripts: Array<{ type: string; children: string }> = [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "EventVenue",
+          name: "Sítio de Eventos",
+          description:
+            "Locação de sítio premium para eventos, festas, casamentos, day use e finais de semana.",
+          url: SITE_URL,
+          image: HERO_IMAGE,
+          telephone: "+55 11 97300-0753",
+          address: {
+            "@type": "PostalAddress",
+            addressCountry: "BR",
+            addressRegion: "SP",
+          },
+        }),
+      },
+    ];
+
+    if (faqItems.length > 0) {
+      scripts.push({
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqItems.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: { "@type": "Answer", text: item.answer },
+          })),
+        }),
+      });
+    }
+
+    return {
+      meta: [
+        { title: "Sítio Para Eventos | Festas, Casamentos e Finais de Semana" },
+        { name: "description", content: "Locação de sítio premium para eventos, festas, casamentos e lazer em família. Piscina aquecida, campo de futebol, área gourmet e suítes completas." },
+        { property: "og:title", content: "Sítio Para Eventos | O Cenário Perfeito Para Seus Momentos Especiais" },
+        { property: "og:description", content: "Estrutura premium para casamentos, eventos corporativos e finais de semana inesquecíveis. Reserve sua data!" },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: `${SITE_URL}/` },
+        { property: "og:image", content: HERO_IMAGE },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: HERO_IMAGE },
+      ],
+      links: [{ rel: "canonical", href: `${SITE_URL}/` }],
+      scripts,
+    };
+  },
   loader: async ({ context }) => {
-    await Promise.all([
+    const [, , faq] = await Promise.all([
       context.queryClient.ensureQueryData({
         queryKey: ['site-content', 'hero'],
         queryFn: () => getSiteContent({ data: 'hero' }),
@@ -34,10 +86,12 @@ export const Route = createFileRoute("/")({
         queryKey: ['site-content', 'gallery'],
         queryFn: () => getSiteContent({ data: 'gallery' }),
       })
-    ])
+    ]);
+    return { faq: (faq ?? []) as FAQItem[] };
   },
   component: Index,
 });
+
 
 function Index() {
   const { data: hero } = useSuspenseQuery({
@@ -91,7 +145,7 @@ function Index() {
         <div className="absolute inset-0 z-0">
           <img 
             src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000" 
-            alt="Sítio de Eventos"
+            alt="Vista aérea do sítio de eventos com piscina e área verde ao pôr do sol"
             className="w-full h-full object-cover anim-photo-reveal"
           />
         </div>
@@ -149,7 +203,7 @@ function Index() {
               <div className="aspect-[4/3] overflow-hidden relative">
                 <img 
                   src={item.image} 
-                  alt={item.title} 
+                  alt={`${item.title} — estrutura disponível no sítio de eventos`} 
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -185,7 +239,7 @@ function Index() {
               >
                 <img 
                   src={src} 
-                  alt={`Galeria ${i}`} 
+                  alt={`Foto ${i + 1} da estrutura de lazer do sítio para festas e eventos`} 
                   className="w-full h-auto object-cover" 
                   onError={(e) => {
                     (e.target as HTMLImageElement).parentElement?.classList.add('hidden');
@@ -206,8 +260,9 @@ function Index() {
           className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 cursor-pointer"
           onClick={() => setSelectedImage(null)}
         >
-          <img src={selectedImage} className="max-w-full max-h-full rounded-2xl shadow-2xl" alt="Enlarged" />
-          <button className="absolute top-8 right-8 text-white text-4xl">&times;</button>
+          <img src={selectedImage} className="max-w-full max-h-full rounded-2xl shadow-2xl" alt="Foto ampliada da estrutura do sítio de eventos" />
+          <button aria-label="Fechar imagem ampliada" className="absolute top-8 right-8 text-white text-4xl">&times;</button>
+
         </div>
       )}
 
@@ -251,7 +306,7 @@ function Index() {
                   </div>
                 </div>
                 <div className="md:w-1/3 w-full">
-                  <img src="https://images.unsplash.com/photo-1520245647217-b48632c0c7b7?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Finais de semana" />
+                  <img src="https://images.unsplash.com/photo-1520245647217-b48632c0c7b7?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Casa de campo com varanda para finais de semana em família" />
                 </div>
               </div>
             </TabsContent>
@@ -272,7 +327,7 @@ function Index() {
                   </div>
                 </div>
                 <div className="md:w-1/3 w-full">
-                  <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Festas" />
+                  <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Salão decorado para festas e casamentos no sítio" />
                 </div>
               </div>
             </TabsContent>
@@ -293,7 +348,7 @@ function Index() {
                   </div>
                 </div>
                 <div className="md:w-1/3 w-full">
-                  <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Day Use" />
+                  <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Piscina e área de lazer para day use durante o dia" />
                 </div>
               </div>
             </TabsContent>
@@ -314,7 +369,7 @@ function Index() {
                   </div>
                 </div>
                 <div className="md:w-1/3 w-full">
-                  <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Feriados" />
+                  <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=600" className="rounded-3xl shadow-lg w-full" alt="Mesa preparada para ceia de Natal e Réveillon no sítio" />
                 </div>
               </div>
             </TabsContent>
