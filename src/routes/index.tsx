@@ -99,9 +99,17 @@ function Index() {
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto space-y-8">
           <div className="flex flex-wrap justify-center gap-3 mb-4" data-aos="fade-down">
             {(hero?.badges || ["Piscina Aquecida", "Campo de Futebol", "Área Gourmet", "Pernoite"]).map((badge, i) => (
-              <span key={i} className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-semibold">
-                • {badge}
-              </span>
+              <button 
+                key={i} 
+                onClick={() => {
+                  const gallerySection = document.getElementById('galeria');
+                  if (gallerySection) gallerySection.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="group relative bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 hover:bg-[#FE8330] hover:scale-110 active:scale-95 overflow-hidden"
+              >
+                <span className="relative z-10">• {badge}</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+              </button>
             ))}
           </div>
           
@@ -154,7 +162,7 @@ function Index() {
       </section>
 
       {/* Immersive Gallery / Lookbook */}
-      <section className="py-24 bg-white">
+      <section id="galeria" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">Galeria Imersiva</h2>
