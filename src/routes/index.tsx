@@ -237,7 +237,8 @@ function Index() {
             <h2 className="text-4xl font-black text-[#FE8330]">Sítio de Eventos</h2>
             <p className="text-gray-400">O cenário perfeito para seus melhores momentos.</p>
           </div>
-          <div className="flex gap-8"><Instagram className="w-8 h-8 cursor-pointer hover:text-[#FE8330] transition-all" /><Link to="/admin" className="text-xs text-gray-600 hover:text-white transition-all">Painel Restrito</Link></div>
+          <div className="flex gap-8"><Link to="/admin" className="text-xs text-gray-600 hover:text-white transition-all">Painel Restrito</Link></div>
+
         </div>
       </footer>
     </div>
