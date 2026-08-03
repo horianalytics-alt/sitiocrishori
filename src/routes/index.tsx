@@ -66,31 +66,55 @@ function Index() {
 
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229]">
+    <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229] selection:bg-[#FE8330] selection:text-white">
       <main>
         {/* Hero Section */}
-        <section className="relative min-h-screen flex items-center justify-center py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-black/40 z-10" />
+        <section className="relative min-h-[100svh] flex items-center justify-center py-20 overflow-hidden">
+          <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/30 to-black/60 z-10" />
           <div className="absolute inset-0 z-0">
-            <img src={HERO_IMAGE} alt="Hero" className="w-full h-full object-cover anim-photo-reveal" />
+            <img 
+              src={HERO_IMAGE} 
+              alt="Hero" 
+              className="w-full h-full object-cover anim-photo-reveal scale-105" 
+            />
           </div>
-          <div className="relative z-20 text-center px-4 max-w-5xl mx-auto space-y-8">
-            <div className="flex flex-wrap justify-center gap-3" data-aos="fade-down">
+          <div className="relative z-20 text-center px-6 max-w-6xl mx-auto space-y-10">
+            <div className="flex flex-wrap justify-center gap-3" data-aos="fade-down" data-aos-duration="1200">
               {(hero?.badges || ["Piscina Aquecida", "Campo", "Área Gourmet"]).map((b, i) => (
-                <span key={i} className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-bold">• {b}</span>
+                <span 
+                  key={i} 
+                  className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-5 py-2 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-white/20 transition-colors cursor-default"
+                >
+                  • {b}
+                </span>
               ))}
             </div>
-            <h1 className="text-4xl md:text-8xl font-black text-white leading-tight break-words" data-aos="zoom-out">{hero?.headline}</h1>
-            <p className="text-xl md:text-3xl text-white/90 font-light max-w-3xl mx-auto" data-aos="fade-up">{hero?.subheadline}</p>
-            <div data-aos="fade-up" data-aos-delay="400" className="flex justify-center pt-6">
-              <button onClick={() => document.getElementById('calendario')?.scrollIntoView({behavior: 'smooth'})} className="px-12 py-6 bg-[#FE8330] text-white text-xl font-black rounded-full shadow-2xl hover:scale-105 transition-all animate-bounce-slow">{hero?.cta_text || "VERIFICAR DISPONIBILIDADE"}</button>
+            <h1 className="text-5xl md:text-9xl font-extrabold text-white leading-[0.9] tracking-tighter" data-aos="zoom-out" data-aos-delay="200">
+              {hero?.headline}
+            </h1>
+            <p className="text-lg md:text-2xl text-white/90 font-medium max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="400">
+              {hero?.subheadline}
+            </p>
+            <div data-aos="fade-up" data-aos-delay="600" className="flex justify-center pt-8">
+              <button 
+                onClick={() => document.getElementById('calendario')?.scrollIntoView({behavior: 'smooth'})} 
+                className="group relative px-14 py-7 bg-[#FE8330] text-white text-xl font-bold rounded-full shadow-[0_20px_50px_rgba(254,131,48,0.3)] hover:scale-105 hover:shadow-[0_25px_60px_rgba(254,131,48,0.4)] transition-all duration-500 overflow-hidden"
+              >
+                <span className="relative z-10">{hero?.cta_text || "VERIFICAR DISPONIBILIDADE"}</span>
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              </button>
             </div>
+          </div>
+          
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce opacity-50">
+            <div className="w-1 h-12 rounded-full bg-linear-to-b from-white to-transparent" />
           </div>
         </section>
 
         {/* Airbnb Style Calendar Section */}
-        <section id="calendario" className="py-32 px-4 max-w-6xl mx-auto">
-          <div className="bg-white p-8 md:p-16 rounded-[3rem] shadow-2xl border border-gray-100 flex flex-col lg:flex-row gap-16 items-start" data-aos="fade-up">
+        <section id="calendario" className="py-24 md:py-40 px-6 max-w-7xl mx-auto">
+          <div className="bg-white p-10 md:p-20 rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-20 items-stretch" data-aos="fade-up">
             <div className="flex-1 space-y-8">
               <div className="space-y-4">
                 <h2 className="text-4xl md:text-5xl font-black tracking-tighter">Escolha suas datas</h2>
@@ -137,15 +161,24 @@ function Index() {
         </section>
 
         {/* Infrastructure Grid */}
-        <section id="infraestrutura" className="py-24 px-4 max-w-7xl mx-auto">
-          <h2 className="text-4xl md:text-6xl font-black text-center mb-16" data-aos="fade-up">Estrutura Completa</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <section id="infraestrutura" className="py-32 px-6 max-w-7xl mx-auto">
+          <div className="text-center mb-20 space-y-4">
+            <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter" data-aos="fade-up">Estrutura de Alto Padrão</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Cada detalhe foi planejado para oferecer o máximo conforto e diversão para você e seus convidados.</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {infrastructure?.map((item, i) => (
-              <div key={i} className="group bg-white rounded-[2.5rem] overflow-hidden shadow-xl hover:-translate-y-4 transition-all duration-500 border border-gray-100" data-aos="fade-up" data-aos-delay={i*100}>
-                <div className="aspect-[4/3] overflow-hidden"><img src={item.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" /></div>
-                <div className="p-8 space-y-2">
-                  <h3 className="text-2xl font-bold">{item.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+              <div key={i} className="card-premium rounded-[3rem] overflow-hidden group" data-aos="fade-up" data-aos-delay={i*100}>
+                <div className="aspect-[4/5] overflow-hidden relative">
+                  <img src={item.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={item.title} />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60" />
+                  <div className="absolute bottom-8 left-8 right-8 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                    <h3 className="text-3xl font-bold mb-2">{item.title}</h3>
+                    <div className="w-12 h-1 bg-[#FE8330] rounded-full group-hover:w-full transition-all duration-500" />
+                  </div>
+                </div>
+                <div className="p-8 bg-white">
+                  <p className="text-muted-foreground leading-relaxed font-medium">{item.description}</p>
                 </div>
               </div>
             ))}
@@ -153,27 +186,60 @@ function Index() {
         </section>
 
         {/* Tabs Modalidades */}
-        <section className="py-24 bg-white">
-          <div className="max-w-5xl mx-auto px-4">
-            <h2 className="text-4xl md:text-6xl font-black text-center mb-16">Modalidades</h2>
+        <section className="py-32 bg-white relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-gray-200 to-transparent" />
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter mb-4">Escolha sua Modalidade</h2>
+              <p className="text-xl text-muted-foreground font-medium">Temos o formato ideal para cada tipo de celebração.</p>
+            </div>
+            
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="flex flex-wrap h-auto gap-4 justify-center bg-transparent mb-12">
-                {["finais-de-semana", "festas-eventos", "day-use"].map(t => (
-                  <TabsTrigger key={t} value={t} activeValue={activeTab} onClick={setActiveTab} className="px-8 py-4 rounded-full font-bold uppercase tracking-widest border data-[state=active]:bg-[#FE8330] data-[state=active]:text-white transition-all">{t.replace('-', ' ')}</TabsTrigger>
+              <TabsList className="flex flex-wrap h-auto gap-4 justify-center bg-transparent mb-16">
+                {[
+                  { id: "finais-de-semana", label: "Finais de Semana" },
+                  { id: "festas-eventos", label: "Festas & Eventos" },
+                  { id: "day-use", label: "Day Use" }
+                ].map(t => (
+                  <TabsTrigger 
+                    key={t.id} 
+                    value={t.id} 
+                    activeValue={activeTab}
+                    onClick={setActiveTab}
+                    className="px-10 py-5 rounded-full font-bold uppercase tracking-[0.2em] text-xs border-2 border-transparent data-[state=active]:border-[#FE8330] data-[state=active]:bg-[#FE8330]/5 data-[state=active]:text-[#FE8330] hover:bg-gray-50 transition-all duration-500"
+                  >
+                    {t.label}
+                  </TabsTrigger>
                 ))}
               </TabsList>
-              <TabsContent value="finais-de-semana" activeValue={activeTab}>
-                <div className="p-10 bg-[#FAF8F5] rounded-[3rem] border flex flex-col md:flex-row gap-12 items-center">
-                  <div className="flex-1 space-y-6">
-                    <h3 className="text-4xl font-black">Finais de Semana</h3>
-                    <p className="text-xl text-muted-foreground">Privacidade e lazer total para sua família com pernoite completo.</p>
-                    <ul className="space-y-3 font-bold">
-                      <li className="flex items-center gap-2"><CheckCircle className="text-[#FE8330] w-5 h-5" /> Até 20 pessoas no pernoite</li>
-                      <li className="flex items-center gap-2"><CheckCircle className="text-[#FE8330] w-5 h-5" /> Cozinha industrial completa</li>
-                      <li className="flex items-center gap-2"><CheckCircle className="text-[#FE8330] w-5 h-5" /> Suítes climatizadas</li>
-                    </ul>
+              
+              <TabsContent value="finais-de-semana" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
+                <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                  <div className="flex-1 space-y-8">
+                    <div className="space-y-4">
+                      <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Experiência Completa</span>
+                      <h3 className="text-5xl md:text-6xl font-extrabold tracking-tighter">Finais de Semana</h3>
+                    </div>
+                    <p className="text-xl text-muted-foreground leading-relaxed font-medium">Privacidade absoluta e lazer total para sua família com pernoite completo e infraestrutura de hotel fazenda premium.</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {[
+                        "Até 20 pessoas no pernoite",
+                        "Cozinha industrial completa",
+                        "Suítes climatizadas",
+                        "Área VIP com vista",
+                        "Estacionamento privativo",
+                        "Check-in flexível"
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
+                          <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
+                          <span className="font-bold text-sm">{item}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="md:w-1/3"><img src={HERO_IMAGE} className="rounded-3xl shadow-xl" /></div>
+                  <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                    <img src={HERO_IMAGE} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Finais de Semana" />
+                  </div>
                 </div>
               </TabsContent>
             </Tabs>
@@ -181,17 +247,25 @@ function Index() {
         </section>
 
         {/* Testimonials */}
-        <section className="py-24 bg-[#FAF8F5]">
-          <div className="max-w-7xl mx-auto px-4">
-            <h2 className="text-4xl md:text-6xl font-black text-center mb-16">O que dizem nossos clientes</h2>
-            <div className="grid md:grid-cols-3 gap-8">
+        <section className="py-32 bg-[#FAF8F5] relative">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-20 space-y-4">
+              <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter" data-aos="fade-up">Memórias Inesquecíveis</h2>
+              <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Confira o depoimento de quem já viveu momentos especiais em nosso espaço.</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-10">
               {(depoimentos || []).map((dep, i) => (
-                <div key={i} className="bg-white p-10 rounded-[2.5rem] shadow-xl space-y-6 border border-gray-100" data-aos="fade-up" data-aos-delay={i*100}>
-                  <div className="flex text-[#FE8330]">{Array.from({length: dep.estrelas}).map((_, j) => <Star key={j} className="w-5 h-5 fill-current" />)}</div>
-                  <p className="text-lg italic leading-relaxed text-gray-600">"{dep.depoimento}"</p>
-                  <div>
-                    <p className="font-black text-xl">{dep.nome}</p>
-                    <p className="text-[#FE8330] font-bold text-xs uppercase tracking-widest">{dep.evento}</p>
+                <div key={i} className="bg-white p-12 rounded-[3.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] space-y-8 border border-gray-100 hover-lift relative group" data-aos="fade-up" data-aos-delay={i*100}>
+                  <div className="absolute top-10 right-10 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <Star className="w-16 h-16 fill-[#FE8330] text-[#FE8330]" />
+                  </div>
+                  <div className="flex text-[#FE8330] gap-1">
+                    {Array.from({length: dep.estrelas}).map((_, j) => <Star key={j} className="w-5 h-5 fill-current" />)}
+                  </div>
+                  <p className="text-xl font-medium leading-relaxed text-gray-700 relative z-10">"{dep.depoimento}"</p>
+                  <div className="pt-6 border-t border-gray-50">
+                    <p className="font-extrabold text-2xl tracking-tight">{dep.nome}</p>
+                    <p className="text-[#FE8330] font-black text-[10px] uppercase tracking-[0.3em] mt-1">{dep.evento}</p>
                   </div>
                 </div>
               ))}
@@ -200,23 +274,30 @@ function Index() {
         </section>
 
         {/* Gallery Masonry */}
-        <section className="py-24 bg-white px-4">
-          <div className="max-w-7xl mx-auto columns-1 md:columns-3 lg:columns-4 gap-6 space-y-6">
+        <section id="galeria" className="py-32 bg-white px-6">
+          <div className="max-w-7xl mx-auto columns-1 md:columns-3 lg:columns-4 gap-8 space-y-8">
             {(galleryData || []).map((src, i) => (
-              <div key={i} className="relative group cursor-pointer overflow-hidden rounded-3xl" onClick={() => setSelectedImage(src)} data-aos="fade-up">
-                <img src={src} className="w-full h-auto object-cover transition-all duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"><span className="text-white font-black bg-white/20 backdrop-blur-md px-6 py-2 rounded-full border border-white/40">VER</span></div>
+              <div key={i} className="relative group cursor-pointer overflow-hidden rounded-[2.5rem] shadow-lg hover:shadow-2xl transition-all duration-700" onClick={() => setSelectedImage(src)} data-aos="fade-up" data-aos-delay={i*50}>
+                <img src={src} className="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-110" alt="Galeria" />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
+                  <span className="text-white font-bold bg-[#FE8330] px-8 py-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">AMPLIAR</span>
+                </div>
               </div>
             ))}
           </div>
         </section>
 
         {/* FAQ */}
-        <section className="py-24 px-4 max-w-4xl mx-auto">
-          <h2 className="text-4xl font-black text-center mb-16">Dúvidas Frequentes</h2>
-          <Accordion className="space-y-4">
+        <section className="py-32 px-6 max-w-4xl mx-auto">
+          <div className="text-center mb-20 space-y-4">
+            <h2 className="text-5xl md:text-6xl font-extrabold tracking-tighter" data-aos="fade-up">Dúvidas Frequentes</h2>
+            <p className="text-xl text-muted-foreground font-medium" data-aos="fade-up" data-aos-delay="100">Tudo o que você precisa saber para planejar sua estadia.</p>
+          </div>
+          <Accordion className="space-y-6">
             {(faq || []).map((item, i) => (
-              <AccordionItem key={i} title={item.question} className="bg-white px-8 py-2 rounded-3xl shadow-sm border-none">{item.answer}</AccordionItem>
+              <AccordionItem key={i} title={item.question} className="bg-white px-10 py-4 rounded-[2rem] shadow-sm border border-gray-100 hover:border-[#FE8330]/20 transition-colors">
+                <div className="text-lg text-muted-foreground leading-relaxed pt-2">{item.answer}</div>
+              </AccordionItem>
             ))}
           </Accordion>
         </section>
@@ -224,21 +305,48 @@ function Index() {
 
       {/* Lightbox */}
       {selectedImage && (
-        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4" onClick={() => setSelectedImage(null)}>
-          <img src={selectedImage} className="max-w-full max-h-full rounded-2xl shadow-2xl" />
+        <div className="fixed inset-0 z-[100] bg-black/98 flex items-center justify-center p-6 backdrop-blur-xl transition-all" onClick={() => setSelectedImage(null)}>
+          <div className="relative group max-w-7xl max-h-[90vh]">
+            <img src={selectedImage} className="w-full h-full object-contain rounded-3xl shadow-[0_0_100px_rgba(0,0,0,0.5)]" alt="Visualização" />
+            <button className="absolute -top-4 -right-4 w-12 h-12 bg-white text-black rounded-full flex items-center justify-center font-black shadow-2xl hover:scale-110 transition-transform">×</button>
+          </div>
         </div>
       )}
 
       <WhatsAppButton phoneNumber={hero?.whatsapp_number || ""} floating message={hero?.whatsapp_message} label="Falar com a Administração" />
 
-      <footer className="py-20 bg-[#1E2229] text-white">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-10">
-          <div className="space-y-4 text-center md:text-left">
-            <h2 className="text-4xl font-black text-[#FE8330]">Sítio de Eventos</h2>
-            <p className="text-gray-400">O cenário perfeito para seus melhores momentos.</p>
+      <footer className="py-32 bg-[#1E2229] text-white relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-white/10 to-transparent" />
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-16 relative z-10">
+          <div className="space-y-8">
+            <h2 className="text-4xl font-extrabold text-[#FE8330] tracking-tighter">Sítio de Eventos</h2>
+            <p className="text-gray-400 text-lg leading-relaxed font-medium">O cenário perfeito para transformar seus momentos em memórias inesquecíveis.</p>
           </div>
-          <div className="flex gap-8"><Link to="/admin" className="text-xs text-gray-600 hover:text-white transition-all">Painel Restrito</Link></div>
+          
+          <div className="space-y-6">
+            <h4 className="text-lg font-bold uppercase tracking-widest text-[#FE8330]/60">Navegação</h4>
+            <ul className="space-y-4 font-medium text-gray-300">
+              <li><button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="hover:text-[#FE8330] transition-colors">Início</button></li>
+              <li><button onClick={() => document.getElementById('infraestrutura')?.scrollIntoView({behavior: 'smooth'})} className="hover:text-[#FE8330] transition-colors">Estrutura</button></li>
+              <li><button onClick={() => document.getElementById('galeria')?.scrollIntoView({behavior: 'smooth'})} className="hover:text-[#FE8330] transition-colors">Galeria</button></li>
+              <li><button onClick={() => document.getElementById('calendario')?.scrollIntoView({behavior: 'smooth'})} className="hover:text-[#FE8330] transition-colors">Reservas</button></li>
+            </ul>
+          </div>
 
+          <div className="space-y-6">
+            <h4 className="text-lg font-bold uppercase tracking-widest text-[#FE8330]/60">Contato</h4>
+            <p className="text-gray-300 font-medium">São Paulo, SP<br />Brasil</p>
+            <p className="text-[#FE8330] font-bold text-lg">{hero?.whatsapp_number}</p>
+          </div>
+
+          <div className="space-y-6">
+            <h4 className="text-lg font-bold uppercase tracking-widest text-[#FE8330]/60">Admin</h4>
+            <Link to="/admin" className="inline-block text-xs text-gray-500 hover:text-white border border-gray-700 px-6 py-2 rounded-full transition-all">Acesso Restrito</Link>
+          </div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-6 mt-20 pt-10 border-t border-white/5 text-center text-gray-500 text-sm">
+          <p>© 2026 Sítio de Eventos. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
