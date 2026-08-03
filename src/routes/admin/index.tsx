@@ -194,7 +194,7 @@ function AdminDashboard() {
                   <input 
                     type="text"
                     className="w-full px-4 py-3 rounded-xl border border-gray-200"
-                    value={heroForm.whatsapp_number}
+                    value={heroForm.whatsapp_number || ""}
                     onChange={e => setHeroForm({ ...heroForm, whatsapp_number: e.target.value })}
                   />
                 </div>
