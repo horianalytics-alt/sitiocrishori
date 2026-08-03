@@ -322,6 +322,7 @@ function Index() {
           ))}
         </Accordion>
       </section>
+      </main>
 
       {/* WhatsApp Floating Button */}
       <WhatsAppButton 
