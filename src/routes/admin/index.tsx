@@ -133,6 +133,17 @@ function AdminDashboard() {
                     onChange={e => setHeroForm({ ...heroForm, whatsapp_number: e.target.value })}
                   />
                 </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold">Badges (Separados por vírgula)</label>
+                <input 
+                  type="text"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200"
+                  value={heroForm.badges?.join(', ') || ""}
+                  onChange={e => setHeroForm({ ...heroForm, badges: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                  placeholder="Piscina Aquecida, Campo de Futebol..."
+                />
               </div>
             </div>
             <div className="flex justify-end">
