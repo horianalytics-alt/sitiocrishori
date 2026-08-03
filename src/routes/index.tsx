@@ -367,8 +367,11 @@ function Index() {
           <div className="max-w-7xl mx-auto space-y-16">
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="text-left space-y-4">
+                <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-right">Galeria de Fotos</h2>
+                <p className="text-sm md:text-lg text-muted-foreground font-medium" data-aos="fade-right" data-aos-delay="100">Explore cada canto do nosso paraíso.</p>
               </div>
             </div>
+
 
             <div className="relative min-h-[600px]">
               <div className="columns-1 md:columns-3 lg:columns-4 gap-8 space-y-8">
