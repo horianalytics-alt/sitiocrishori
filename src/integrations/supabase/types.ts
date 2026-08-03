@@ -14,6 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
+      configuracoes: {
+        Row: {
+          chave: string
+          id: string
+          valor: string
+        }
+        Insert: {
+          chave: string
+          id?: string
+          valor: string
+        }
+        Update: {
+          chave?: string
+          id?: string
+          valor?: string
+        }
+        Relationships: []
+      }
+      depoimentos: {
+        Row: {
+          created_at: string
+          depoimento: string
+          estrelas: number | null
+          evento: string | null
+          foto_url: string | null
+          id: string
+          nome: string
+        }
+        Insert: {
+          created_at?: string
+          depoimento: string
+          estrelas?: number | null
+          evento?: string | null
+          foto_url?: string | null
+          id?: string
+          nome: string
+        }
+        Update: {
+          created_at?: string
+          depoimento?: string
+          estrelas?: number | null
+          evento?: string | null
+          foto_url?: string | null
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      galeria: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          id: string
+          imagem_url: string
+          ordem: number | null
+          titulo: string | null
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          id?: string
+          imagem_url: string
+          ordem?: number | null
+          titulo?: string | null
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          id?: string
+          imagem_url?: string
+          ordem?: number | null
+          titulo?: string | null
+        }
+        Relationships: []
+      }
+      reservas: {
+        Row: {
+          cliente_nome: string | null
+          cliente_telefone: string | null
+          created_at: string
+          data_fim: string
+          data_inicio: string
+          id: string
+          sinal_pago: boolean | null
+          status: string | null
+          valor_total: number | null
+        }
+        Insert: {
+          cliente_nome?: string | null
+          cliente_telefone?: string | null
+          created_at?: string
+          data_fim: string
+          data_inicio: string
+          id?: string
+          sinal_pago?: boolean | null
+          status?: string | null
+          valor_total?: number | null
+        }
+        Update: {
+          cliente_nome?: string | null
+          cliente_telefone?: string | null
+          created_at?: string
+          data_fim?: string
+          data_inicio?: string
+          id?: string
+          sinal_pago?: boolean | null
+          status?: string | null
+          valor_total?: number | null
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           content: Json
@@ -58,7 +169,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "user"
