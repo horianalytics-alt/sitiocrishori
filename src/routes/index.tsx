@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getSiteContent, getReservas, getDepoimentos, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
@@ -57,38 +57,84 @@ function Index() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"masonry" | "spiral" | "list">("spiral");
   const [mounted, setMounted] = useState(false);
+  const [globalRot, setGlobalRot] = useState(0);
+
+  // Ref para o valor atual sem causar re-render no RAF
+  const rotRef = useRef(0);
+  const velRef = useRef(0); // velocidade atual (inércia)
+  const rafRef = useRef<number | null>(null);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const SPIRAL_CONFIG = {
-    itemsPerRotation: 3.5,
-    radiusStart: 120,
-    radiusGrowth: 180,
-    cardWidth: 180,
-    cardHeight: 140,
+    itemsPerRotation: 3.5,   // cards por volta completa
+    radiusStart: 120,         // raio do 1º card (px)
+    radiusGrowth: 180,        // crescimento por volta completa (px)
+    scrollSensitivity: 0.0008, // velocidade de rotação por pixel de scroll
+    cardWidth: 160,
+    cardHeight: 110,
   };
 
-  const getSpiralPositions = (count: number) => {
-    const { itemsPerRotation, radiusStart, radiusGrowth } = SPIRAL_CONFIG;
-    const ANGLE_STEP = (Math.PI * 2) / itemsPerRotation;
-    return Array.from({ length: count }, (_, i) => {
-      const angle = i * ANGLE_STEP - Math.PI / 2;
-      const rotations = angle / (Math.PI * 2);
-      const radius = radiusStart + rotations * radiusGrowth;
-      const tangentAngle = angle + Math.PI / 2;
-      const tiltDeg = (tangentAngle * 180) / Math.PI;
-      const clampedTilt = ((tiltDeg % 12) - 6) * 0.5;
-      return {
-        x: Math.cos(angle) * radius,
-        y: Math.sin(angle) * radius,
-        tilt: clampedTilt,
-      };
-    });
-  };
+  const getSpiralPos = useCallback((index: number, rotation = 0) => {
+    const ANGLE_STEP = (Math.PI * 2) / SPIRAL_CONFIG.itemsPerRotation;
+    const baseAngle = index * ANGLE_STEP; // posição fixa do card na sequência
+    
+    // globalRotation gira o sistema inteiro
+    const angle = baseAngle + rotation - Math.PI / 2;
+    
+    // Raio usa baseAngle (não rotaciona — preserva a forma da espiral)
+    const r = SPIRAL_CONFIG.radiusStart + (baseAngle / (Math.PI * 2)) * SPIRAL_CONFIG.radiusGrowth;
+    
+    // Inclinação sutil perpendicular à tangente da espiral
+    const tilt = ((angle * 180 / Math.PI) % 10) - 5;
+    
+    return { x: Math.cos(angle) * r, y: Math.sin(angle) * r, tilt };
+  }, []);
 
-  const spiralPositions = getSpiralPositions((galleryData || []).length);
+  // Loop de animação com inércia
+  const animate = useCallback(() => {
+    velRef.current *= 0.92;
+    rotRef.current += velRef.current;
+    setGlobalRot(rotRef.current);
+    rafRef.current = requestAnimationFrame(animate);
+  }, []);
+
+  useEffect(() => {
+    rafRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [animate]);
+
+  // Scroll dirige a rotação
+  useEffect(() => {
+    const onScroll = () => {
+      const delta = window.scrollY - lastScrollY.current;
+      lastScrollY.current = window.scrollY;
+      // Cada pixel de scroll adiciona velocidade à rotação
+      velRef.current += delta * SPIRAL_CONFIG.scrollSensitivity;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Drag/swipe também rotaciona
+  const dragStart = useRef<{ x: number; y: number; rot: number } | null>(null);
+  const onPointerDown = (e: React.PointerEvent) => {
+    dragStart.current = { x: e.clientX, y: e.clientY, rot: rotRef.current };
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragStart.current) return;
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    velRef.current = (dx + dy) * 0.0015;
+  };
+  const onPointerUp = () => { dragStart.current = null; };
+
+  const positions = (galleryData || []).map((_, i) => getSpiralPos(i, globalRot));
 
   useEffect(() => {
     import('aos').then((AOS) => { AOS.init({ duration: 1000, easing: 'ease-out-back', once: true }); });
@@ -104,7 +150,13 @@ function Index() {
 
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229] selection:bg-[#FE8330] selection:text-white">
+    <div 
+      className="min-h-screen bg-[#FAF8F5] text-[#1E2229] selection:bg-[#FE8330] selection:text-white"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerLeave={onPointerUp}
+    >
       <main>
         {/* Hero Section */}
         <section className="relative min-h-[100svh] flex items-center justify-center py-20 overflow-hidden">
@@ -395,24 +447,45 @@ function Index() {
                 <p className="text-sm md:text-lg text-muted-foreground font-medium" data-aos="fade-right" data-aos-delay="100">Explore cada canto do nosso paraíso.</p>
               </div>
               
-              <div className="flex items-center bg-[#FAF8F5] p-2 rounded-2xl border" data-aos="fade-left">
-                {[
-                  { id: "masonry", label: "Grade" },
-                  { id: "spiral", label: "Espiral" },
-                  { id: "list", label: "Lista" }
-                ].map((m) => (
-                  <button
-                    key={m.id}
-                    onClick={() => setViewMode(m.id as any)}
-                    className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
-                      viewMode === m.id 
-                        ? "bg-[#FE8330] text-white shadow-lg" 
-                        : "text-gray-400 hover:text-gray-600"
-                    }`}
-                  >
-                    {m.label}
-                  </button>
-                ))}
+              <div className="flex items-center bg-[#FAF8F5] p-2 rounded-2xl border gap-4" data-aos="fade-left">
+                <button
+                  onClick={() => setViewMode("masonry")}
+                  className="slide-btn"
+                  style={{
+                    fontSize: 14, fontWeight: 500, letterSpacing: "-0.03em",
+                    color: viewMode === "masonry" ? "rgba(30,34,41,1)" : "rgba(30,34,41,0.38)",
+                    transition: "color .3s ease",
+                  }}
+                >
+                  <span className="t1">grade</span>
+                  <span className="t2">grade</span>
+                </button>
+                <span className="w-1.5 h-1.5 rounded-full bg-black/10" />
+                <button
+                  onClick={() => setViewMode("spiral")}
+                  className="slide-btn"
+                  style={{
+                    fontSize: 14, fontWeight: 500, letterSpacing: "-0.03em",
+                    color: viewMode === "spiral" ? "rgba(30,34,41,1)" : "rgba(30,34,41,0.38)",
+                    transition: "color .3s ease",
+                  }}
+                >
+                  <span className="t1">espiral</span>
+                  <span className="t2">espiral</span>
+                </button>
+                <span className="w-1.5 h-1.5 rounded-full bg-black/10" />
+                <button
+                  onClick={() => setViewMode("list")}
+                  className="slide-btn"
+                  style={{
+                    fontSize: 14, fontWeight: 500, letterSpacing: "-0.03em",
+                    color: viewMode === "list" ? "rgba(30,34,41,1)" : "rgba(30,34,41,0.38)",
+                    transition: "color .3s ease",
+                  }}
+                >
+                  <span className="t1">lista</span>
+                  <span className="t2">lista</span>
+                </button>
               </div>
             </div>
 
@@ -448,36 +521,41 @@ function Index() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="relative h-[700px] flex items-center justify-center"
+                    className="relative h-[700px] flex items-center justify-center spiral-field"
                   >
                     {(galleryData || []).map((src, i) => {
-                      const pos = spiralPositions[i];
+                      const pos = positions[i];
                       if (!pos) return null;
                       return (
                         <motion.div
                           key={i}
                           layoutId={`gallery-${i}`}
-                          className="absolute cursor-pointer rounded-2xl overflow-hidden border-4 border-white shadow-2xl group"
+                          className="absolute cursor-pointer rounded-2xl overflow-hidden border-4 border-white shadow-2xl group s-card"
                           style={{
                             width: SPIRAL_CONFIG.cardWidth,
                             height: SPIRAL_CONFIG.cardHeight,
                             left: "50%",
                             top: "50%",
-                            translateX: "-50%",
-                            translateY: "-50%",
-                            zIndex: (galleryData || []).length - i
+                            zIndex: (galleryData || []).length - i,
+                            opacity: mounted ? 1 : 0,
+                            willChange: "transform",
                           }}
                           animate={{
-                            x: pos.x,
-                            y: pos.y,
+                            x: `calc(-50% + ${pos.x}px)`,
+                            y: `calc(-50% + ${pos.y}px)`,
                             rotate: pos.tilt,
                           }}
-                          initial={{ x: 0, y: 0, rotate: 0 }}
-
-
-                          whileHover={{ scale: 1.1, zIndex: 50, rotate: 0 }}
-                          transition={{ type: "spring", stiffness: 100, damping: 20 }}
-
+                          initial={{ x: "-50%", y: "-50%", rotate: 0 }}
+                          whileHover={{ 
+                            scale: 1.07, 
+                            zIndex: 50, 
+                            rotate: 0,
+                            boxShadow: "0 12px 40px rgba(0,0,0,0.5)"
+                          }}
+                          transition={{ 
+                            duration: 0.55,
+                            ease: [0.16, 1, 0.3, 1] // Approximate ease-spring/expo-out
+                          }}
                           onClick={() => setSelectedImage(src)}
                         >
                           <img src={src} className="w-full h-full object-cover" alt="Espiral" />
@@ -494,13 +572,13 @@ function Index() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="max-w-3xl mx-auto space-y-4"
+                    className="max-w-3xl mx-auto space-y-4 list-field"
                   >
                     {(galleryData || []).map((src, i) => (
                       <motion.div
                         key={i}
                         layoutId={`gallery-${i}`}
-                        className="flex items-center justify-between p-6 bg-[#FAF8F5] rounded-3xl border hover:border-[#FE8330]/30 transition-all group cursor-pointer"
+                        className="l-row ul-link flex items-center justify-between p-6 bg-[#FAF8F5] rounded-3xl border hover:border-[#FE8330]/30 transition-all group cursor-pointer"
                         onClick={() => setSelectedImage(src)}
                         whileHover={{ x: 10 }}
                       >
