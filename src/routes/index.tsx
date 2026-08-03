@@ -459,13 +459,18 @@ function Index() {
                           style={{
                             width: SPIRAL_CONFIG.cardWidth,
                             height: SPIRAL_CONFIG.cardHeight,
-                            x: pos.x,
-                            y: pos.y,
-                            rotate: pos.tilt,
+                            left: "50%",
+                            top: "50%",
                             zIndex: (galleryData || []).length - i
+                          }}
+                          animate={{
+                            x: `calc(-50% + ${pos.x}px)`,
+                            y: `calc(-50% + ${pos.y}px)`,
+                            rotate: pos.tilt,
                           }}
                           whileHover={{ scale: 1.1, zIndex: 50, rotate: 0 }}
                           transition={{ type: "spring", stiffness: 100, damping: 20 }}
+
                           onClick={() => setSelectedImage(src)}
                         >
                           <img src={src} className="w-full h-full object-cover" alt="Espiral" />
