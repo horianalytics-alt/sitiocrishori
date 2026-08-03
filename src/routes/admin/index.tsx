@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { getSiteContent, updateSiteContent, type HeroContent, type InfrastructureItem, type FAQItem } from '@/lib/site-content.functions'
 import { toast } from 'sonner'
 import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle } from 'lucide-react'
@@ -45,7 +45,7 @@ function AdminDashboard() {
     queryFn: () => getSiteContent({ data: 'faq' }),
   }) as { data: FAQItem[] }
 
-  const [heroForm, setHeroForm] = useState<HeroContent>(heroContent)
+  const [heroForm, setHeroForm] = useState<HeroContent & { badges?: string[] }>(heroContent)
   const [infraForm, setInfraForm] = useState<InfrastructureItem[]>(infrastructureContent)
   const [faqForm, setFaqForm] = useState<FAQItem[]>(faqContent)
 
@@ -133,6 +133,16 @@ function AdminDashboard() {
                     onChange={e => setHeroForm({ ...heroForm, whatsapp_number: e.target.value })}
                   />
                 </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold">Badges (Separados por vírgula)</label>
+                <input 
+                  type="text"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200"
+                  value={heroForm.badges?.join(', ') || ""}
+                  onChange={e => setHeroForm({ ...heroForm, badges: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                  placeholder="Piscina Aquecida, Campo de Futebol..."
+                />
               </div>
             </div>
             <div className="flex justify-end">
