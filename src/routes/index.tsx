@@ -89,7 +89,7 @@ function Index() {
                 </span>
               ))}
             </div>
-            <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-extrabold text-white leading-[0.9] tracking-tighter" data-aos="zoom-out" data-aos-duration="1200">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-tight tracking-tight" data-aos="zoom-out" data-aos-duration="1200">
               {hero?.headline}
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-white/90 font-medium max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="400">
@@ -163,7 +163,7 @@ function Index() {
         {/* Infrastructure Grid */}
         <section id="infraestrutura" className="py-32 px-6 max-w-7xl mx-auto">
           <div className="text-center mb-20 space-y-4">
-            <h2 className="text-4xl md:text-7xl font-extrabold tracking-tighter" data-aos="fade-up">Estrutura de Alto Padrão</h2>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Estrutura de Alto Padrão</h2>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Cada detalhe foi planejado para oferecer o máximo conforto e diversão para você e seus convidados.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
@@ -190,7 +190,7 @@ function Index() {
           <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-gray-200 to-transparent" />
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-7xl font-extrabold tracking-tighter mb-4">Escolha sua Modalidade</h2>
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">Escolha sua Modalidade</h2>
               <p className="text-lg md:text-xl text-muted-foreground font-medium">Temos o formato ideal para cada tipo de celebração.</p>
             </div>
             
@@ -218,7 +218,7 @@ function Index() {
                   <div className="flex-1 space-y-8">
                     <div className="space-y-4">
                       <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Experiência Completa</span>
-                      <h3 className="text-4xl md:text-6xl font-extrabold tracking-tighter">Finais de Semana</h3>
+                      <h3 className="text-3xl md:text-5xl font-black tracking-tight">Finais de Semana</h3>
                     </div>
                     <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Privacidade absoluta e lazer total para sua família com pernoite completo e infraestrutura de hotel fazenda premium.</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -250,7 +250,7 @@ function Index() {
         <section className="py-32 bg-[#FAF8F5] relative">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-20 space-y-4">
-              <h2 className="text-4xl md:text-7xl font-extrabold tracking-tighter" data-aos="fade-up">Memórias Inesquecíveis</h2>
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Memórias Inesquecíveis</h2>
               <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Confira o depoimento de quem já viveu momentos especiais em nosso espaço.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-10">
