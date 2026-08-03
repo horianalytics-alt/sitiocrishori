@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { getSiteContent, updateSiteContent, type HeroContent, type InfrastructureItem, type FAQItem } from '@/lib/site-content.functions'
 import { toast } from 'sonner'
 import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle } from 'lucide-react'
@@ -45,7 +45,7 @@ function AdminDashboard() {
     queryFn: () => getSiteContent({ data: 'faq' }),
   }) as { data: FAQItem[] }
 
-  const [heroForm, setHeroForm] = useState<HeroContent>(heroContent)
+  const [heroForm, setHeroForm] = useState<HeroContent & { badges?: string[] }>(heroContent)
   const [infraForm, setInfraForm] = useState<InfrastructureItem[]>(infrastructureContent)
   const [faqForm, setFaqForm] = useState<FAQItem[]>(faqContent)
 
@@ -132,6 +132,8 @@ function AdminDashboard() {
                     value={heroForm.whatsapp_number}
                     onChange={e => setHeroForm({ ...heroForm, whatsapp_number: e.target.value })}
                   />
+                </div>
+              </div>
               <div className="space-y-2">
                 <label className="text-sm font-semibold">Badges (Separados por vírgula)</label>
                 <input 
