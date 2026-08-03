@@ -130,8 +130,6 @@ function AdminDashboard() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    console.log('Iniciando upload:', file.name, 'Tipo:', file.type)
-
     // Validação de tipo e tamanho (ex: max 5MB)
     if (!file.type.startsWith('image/')) {
       toast.error('Por favor, selecione apenas arquivos de imagem.')
@@ -146,42 +144,37 @@ function AdminDashboard() {
     setIsUploading(uploadId)
     
     try {
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`
-      
-      console.log('Tentando upload para bucket "images"...')
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+      const fileName = `${type}/${crypto.randomUUID()}.${fileExt}`
+
       const { data, error } = await supabase.storage.from('images').upload(fileName, file, {
         cacheControl: '3600',
         upsert: false
       })
       
       if (error) {
-        console.error('Erro de Storage detalhado:', error)
         if (error.message.includes('Bucket not found') || error.message.includes('not_found')) {
-          // Tenta listar buckets para ver se "images" aparece
-          const { data: buckets } = await supabase.storage.listBuckets()
-          console.log('Buckets visíveis:', buckets)
-          throw new Error('O bucket "images" não está acessível. Verifique as configurações de Storage.')
+          throw new Error('O armazenamento de imagens não foi encontrado. Atualize a página e tente novamente.')
         }
-        if (error.status === 403) {
-          throw new Error('Sem permissão (403). Verifique se o RLS permite uploads para este bucket.')
+        if (error.status === 401 || error.status === 403) {
+          throw new Error('Sua sessão não tem permissão para enviar imagens. Entre novamente no painel.')
         }
         throw error
       }
 
-      const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path)
+      const imageUrl = `/api/public/image?path=${encodeURIComponent(data.path)}`
       
       if (type === 'infra' && index !== undefined && infraForm && infraForm[index]) {
         const newInfra = [...infraForm];
         const item = newInfra[index];
         if (item) {
-          item.image = publicUrl;
+          item.image = imageUrl;
           setInfraForm(newInfra);
         }
       } else if (type === 'hero' && heroForm) {
-        setHeroForm({ ...heroForm, hero_image: publicUrl });
+        setHeroForm({ ...heroForm, hero_image: imageUrl });
       } else if (type === 'gallery' && galleryForm) {
-        setGalleryForm([...galleryForm, publicUrl])
+        setGalleryForm([...galleryForm, imageUrl])
       }
 
       toast.success('Upload concluído com sucesso!')
