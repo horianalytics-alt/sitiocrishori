@@ -14,10 +14,23 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Estrutura premium para eventos e finais de semana inesquecíveis." },
     ],
   }),
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ['site-content', 'hero'],
+      queryFn: () => getSiteContent('hero'),
+    })
+  },
   component: Index,
 });
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { getSiteContent } from "@/lib/site-content.functions";
+
 function Index() {
+  const { data: hero } = useSuspenseQuery({
+    queryKey: ['site-content', 'hero'],
+    queryFn: () => getSiteContent('hero'),
+  });
   const [activeTab, setActiveTab] = useState("finais-de-semana");
 
   useEffect(() => {
@@ -43,13 +56,16 @@ function Index() {
         />
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto space-y-6">
           <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight" data-aos="zoom-out">
-            O cenário perfeito para os teus melhores momentos: Festas, Finais de Semana e Day Use.
+            {hero?.headline || "O cenário perfeito para os teus melhores momentos: Festas, Finais de Semana e Day Use."}
           </h1>
           <p className="text-lg md:text-xl text-white/90" data-aos="fade-up" data-aos-delay="200">
-            Estrutura completa com piscina, área gourmet, suítes e muito mais.
+            {hero?.subheadline || "Estrutura completa com piscina, área gourmet, suítes e muito mais."}
           </p>
           <div data-aos="fade-up" data-aos-delay="400">
-            <WhatsAppButton phoneNumber="00000000000" />
+            <WhatsAppButton 
+              phoneNumber={hero?.whatsapp_number || "00000000000"} 
+              label={hero?.cta_text || "Verificar Disponibilidade"}
+            />
           </div>
         </div>
       </section>
