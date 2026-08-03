@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getSiteContent, getReservas, getDepoimentos, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
 import { useState, useEffect } from "react";
@@ -6,10 +6,11 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Star, Instagram, Calendar as CalendarIcon, MapPin, Users, CheckCircle } from "lucide-react";
-import { DayPicker } from "react-day-picker";
+import { DayPicker, type DateRange } from "react-day-picker";
 import { ptBR } from "date-fns/locale";
-import { format, isSameDay, isWithinInterval, addDays, startOfDay } from "date-fns";
+import { format, isWithinInterval, startOfDay } from "date-fns";
 import "react-day-picker/dist/style.css";
+
 
 const SITE_URL = "https://sitiocrishori.lovable.app";
 const HERO_IMAGE = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000";
