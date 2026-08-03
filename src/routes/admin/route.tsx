@@ -2,7 +2,12 @@ import { createFileRoute, redirect, Outlet } from '@tanstack/react-router'
 import { supabase } from '@/integrations/supabase/client'
 
 export const Route = createFileRoute('/admin')({
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
+    // Evitar redirecionamento infinito se já estivermos na página de login
+    if (location.pathname === '/admin/login') {
+      return
+    }
+
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) {
       throw redirect({ to: '/admin/login', replace: true })
