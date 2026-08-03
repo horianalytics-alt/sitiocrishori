@@ -66,31 +66,55 @@ function Index() {
 
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229]">
+    <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229] selection:bg-[#FE8330] selection:text-white">
       <main>
         {/* Hero Section */}
-        <section className="relative min-h-screen flex items-center justify-center py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-black/40 z-10" />
+        <section className="relative min-h-[100svh] flex items-center justify-center py-20 overflow-hidden">
+          <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/30 to-black/60 z-10" />
           <div className="absolute inset-0 z-0">
-            <img src={HERO_IMAGE} alt="Hero" className="w-full h-full object-cover anim-photo-reveal" />
+            <img 
+              src={HERO_IMAGE} 
+              alt="Hero" 
+              className="w-full h-full object-cover anim-photo-reveal scale-105" 
+            />
           </div>
-          <div className="relative z-20 text-center px-4 max-w-5xl mx-auto space-y-8">
-            <div className="flex flex-wrap justify-center gap-3" data-aos="fade-down">
+          <div className="relative z-20 text-center px-6 max-w-6xl mx-auto space-y-10">
+            <div className="flex flex-wrap justify-center gap-3" data-aos="fade-down" data-aos-duration="1200">
               {(hero?.badges || ["Piscina Aquecida", "Campo", "Área Gourmet"]).map((b, i) => (
-                <span key={i} className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-bold">• {b}</span>
+                <span 
+                  key={i} 
+                  className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-5 py-2 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-white/20 transition-colors cursor-default"
+                >
+                  • {b}
+                </span>
               ))}
             </div>
-            <h1 className="text-4xl md:text-8xl font-black text-white leading-tight break-words" data-aos="zoom-out">{hero?.headline}</h1>
-            <p className="text-xl md:text-3xl text-white/90 font-light max-w-3xl mx-auto" data-aos="fade-up">{hero?.subheadline}</p>
-            <div data-aos="fade-up" data-aos-delay="400" className="flex justify-center pt-6">
-              <button onClick={() => document.getElementById('calendario')?.scrollIntoView({behavior: 'smooth'})} className="px-12 py-6 bg-[#FE8330] text-white text-xl font-black rounded-full shadow-2xl hover:scale-105 transition-all animate-bounce-slow">{hero?.cta_text || "VERIFICAR DISPONIBILIDADE"}</button>
+            <h1 className="text-5xl md:text-9xl font-extrabold text-white leading-[0.9] tracking-tighter" data-aos="zoom-out" data-aos-delay="200">
+              {hero?.headline}
+            </h1>
+            <p className="text-lg md:text-2xl text-white/90 font-medium max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="400">
+              {hero?.subheadline}
+            </p>
+            <div data-aos="fade-up" data-aos-delay="600" className="flex justify-center pt-8">
+              <button 
+                onClick={() => document.getElementById('calendario')?.scrollIntoView({behavior: 'smooth'})} 
+                className="group relative px-14 py-7 bg-[#FE8330] text-white text-xl font-bold rounded-full shadow-[0_20px_50px_rgba(254,131,48,0.3)] hover:scale-105 hover:shadow-[0_25px_60px_rgba(254,131,48,0.4)] transition-all duration-500 overflow-hidden"
+              >
+                <span className="relative z-10">{hero?.cta_text || "VERIFICAR DISPONIBILIDADE"}</span>
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              </button>
             </div>
+          </div>
+          
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce opacity-50">
+            <div className="w-1 h-12 rounded-full bg-linear-to-b from-white to-transparent" />
           </div>
         </section>
 
         {/* Airbnb Style Calendar Section */}
-        <section id="calendario" className="py-32 px-4 max-w-6xl mx-auto">
-          <div className="bg-white p-8 md:p-16 rounded-[3rem] shadow-2xl border border-gray-100 flex flex-col lg:flex-row gap-16 items-start" data-aos="fade-up">
+        <section id="calendario" className="py-24 md:py-40 px-6 max-w-7xl mx-auto">
+          <div className="bg-white p-10 md:p-20 rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-20 items-stretch" data-aos="fade-up">
             <div className="flex-1 space-y-8">
               <div className="space-y-4">
                 <h2 className="text-4xl md:text-5xl font-black tracking-tighter">Escolha suas datas</h2>
