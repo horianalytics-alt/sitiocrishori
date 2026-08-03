@@ -9,11 +9,11 @@ import { getSiteContent, type HeroContent, type InfrastructureItem, type FAQItem
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    title: "Sítio de Eventos | Festas, Finais de Semana e Day Use",
+    title: "Sítio Para Eventos | Festas, Casamentos e Finais de Semana",
     meta: [
-      { name: "description", content: "O cenário perfeito para seus melhores momentos. Piscina, área gourmet e suítes completas." },
-      { property: "og:title", content: "Sítio de Eventos | Locação para Festas e Lazer" },
-      { property: "og:description", content: "Estrutura premium para eventos e finais de semana inesquecíveis." },
+      { name: "description", content: "Locação de sítio premium para eventos, festas, casamentos e lazer em família. Piscina aquecida, campo de futebol, área gourmet e suítes completas." },
+      { property: "og:title", content: "Sítio Para Eventos | O Cenário Perfeito Para Seus Momentos Especiais" },
+      { property: "og:description", content: "Estrutura premium para casamentos, eventos corporativos e finais de semana inesquecíveis. Reserve sua data!" },
     ],
   }),
   loader: async ({ context }) => {
@@ -84,8 +84,10 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1E2229]">
-      {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+      {/* Main Content Area */}
+      <main>
+        {/* Hero Section */}
+        <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-black/40 z-10" />
         <div className="absolute inset-0 z-0">
           <img 
