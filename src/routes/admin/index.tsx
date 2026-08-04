@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useSuspenseQuery, useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { 
   getSiteContent, 
   updateSiteContent, 
-  getReservas, 
+  getReservasAdmin, 
   upsertReserva, 
   deleteReserva,
   getDepoimentos,
@@ -36,10 +36,6 @@ export const Route = createFileRoute('/admin/')({
       context.queryClient.ensureQueryData({
         queryKey: ['site-content', 'gallery'],
         queryFn: () => getSiteContent({ data: 'gallery' }),
-      }),
-      context.queryClient.ensureQueryData({
-        queryKey: ['reservas'],
-        queryFn: () => getReservas(),
       }),
       context.queryClient.ensureQueryData({
         queryKey: ['depoimentos'],
@@ -75,9 +71,9 @@ function AdminDashboard() {
     queryFn: () => getSiteContent({ data: 'faq' }),
   }) as { data: FAQItem[] }
 
-  const { data: reservas } = useSuspenseQuery({
-    queryKey: ['reservas'],
-    queryFn: () => getReservas(),
+  const { data: reservas = [] } = useQuery({
+    queryKey: ['reservas', 'admin'],
+    queryFn: () => getReservasAdmin(),
   }) as { data: any[] }
 
   const { data: depoimentos } = useSuspenseQuery({
@@ -105,7 +101,7 @@ function AdminDashboard() {
   const resMutation = useMutation({
     mutationFn: (data: any) => upsertReserva({ data }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reservas'] })
+      queryClient.invalidateQueries({ queryKey: ['reservas', 'admin'] })
       toast.success('Reserva salva!')
     },
   })
@@ -113,7 +109,7 @@ function AdminDashboard() {
   const delResMutation = useMutation({
     mutationFn: (id: string) => deleteReserva({ data: id }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reservas'] })
+      queryClient.invalidateQueries({ queryKey: ['reservas', 'admin'] })
       toast.success('Reserva excluída!')
     },
   })
