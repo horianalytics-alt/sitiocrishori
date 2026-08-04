@@ -21,10 +21,16 @@ export const Route = createFileRoute("/")({
     return {
       meta: [
         { title: "Sítio Para Eventos | Festas, Casamentos e Finais de Semana" },
-        { name: "description", content: "Locação de sítio premium para eventos, festas e lazer. Piscina aquecida, campo de futebol e suítes completas." },
-        { property: "og:title", content: "Sítio Para Eventos | O Cenário Perfeito" },
+        { name: "description", content: "Locação de sítio premium para eventos, festas e lazer em São Paulo. Piscina aquecida, campo de futebol, salão de festas e suítes completas." },
+        { property: "og:title", content: "Sítio Para Eventos | O Cenário Perfeito para sua Festa" },
+        { property: "og:description", content: "Aluguel de sítio de alto padrão para festas, casamentos e lazer. Piscina aquecida, salão de festas e área gourmet completa." },
         { property: "og:url", content: `${SITE_URL}/` },
         { property: "og:image", content: HERO_IMAGE },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: "Sítio Para Eventos | Festas e Lazer" },
+        { name: "twitter:description", content: "O melhor sítio para seu evento ou final de semana com a família." },
+        { name: "twitter:image", content: HERO_IMAGE },
       ],
       links: [{ rel: "canonical", href: `${SITE_URL}/` }],
     };
@@ -88,8 +94,9 @@ function Index() {
           <div className="absolute inset-0 z-0">
             <img 
               src={hero?.hero_image || HERO_IMAGE} 
-              alt="Hero" 
+              alt="Vista panorâmica do sítio para eventos com piscina e área verde" 
               className="w-full h-full object-cover anim-photo-reveal scale-105" 
+              loading="eager"
             />
           </div>
           <div className="relative z-20 text-center px-6 max-w-6xl mx-auto space-y-10">
@@ -184,7 +191,7 @@ function Index() {
             {infrastructure?.map((item, i) => (
               <div key={i} className="card-premium rounded-[3rem] overflow-hidden group" data-aos="fade-up" data-aos-delay={i*100}>
                 <div className="aspect-[4/5] overflow-hidden relative">
-                  <img src={item.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={item.title} />
+                  <img src={item.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={`Infraestrutura: ${item.title}`} loading="lazy" />
                   <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60" />
                   <div className="absolute bottom-8 left-8 right-8 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                     <h3 className="text-3xl font-bold mb-2">{item.title}</h3>
@@ -264,7 +271,7 @@ function Index() {
                           </div>
                         </div>
                         <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
-                          <img src={HERO_IMAGE} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Finais de Semana" />
+                          <img src={HERO_IMAGE} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Vista da acomodação para Finais de Semana" loading="lazy" />
                         </div>
                       </div>
                     </TabsContent>
