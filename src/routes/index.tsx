@@ -134,14 +134,14 @@ function Index() {
         </section>
 
         {/* Airbnb Style Calendar Section */}
-        <section id="calendario" className="py-24 md:py-40 px-6 max-w-7xl mx-auto">
-          <div className="bg-white p-10 md:p-20 rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-20 items-stretch" data-aos="fade-up">
+        <section id="calendario" className="py-20 md:py-40 px-4 md:px-6 max-w-7xl mx-auto overflow-hidden">
+          <div className="bg-white p-6 md:p-20 rounded-[2.5rem] md:rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-10 md:gap-20 items-stretch" data-aos="fade-up">
             <div className="flex-1 space-y-8">
               <div className="space-y-4">
                 <h2 className="text-2xl md:text-5xl font-black tracking-tight">Escolha suas datas</h2>
                 <p className="text-sm md:text-lg text-muted-foreground">Selecione o período desejado no calendário para consultar valores e disponibilidade instantânea.</p>
               </div>
-              <div className="inline-block p-4 bg-[#FAF8F5] rounded-3xl border">
+              <div className="flex justify-center p-2 md:p-4 bg-[#FAF8F5] rounded-3xl border overflow-x-auto">
                 <DayPicker
                   mode="range"
                   selected={selectedRange}
@@ -155,7 +155,7 @@ function Index() {
               </div>
             </div>
             
-            <div className="lg:w-[400px] w-full bg-[#FAF8F5] p-10 rounded-[2.5rem] border-2 border-[#FE8330]/10 space-y-8 sticky top-10">
+            <div className="lg:w-[400px] w-full bg-[#FAF8F5] p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] border-2 border-[#FE8330]/10 space-y-8 lg:sticky lg:top-10">
               <h3 className="text-2xl font-black flex items-center gap-3"><CheckCircle className="text-[#FE8330]" /> Reserva Garantida</h3>
               {selectedRange?.from ? (
                 <div className="space-y-6 animate-fade-in">
