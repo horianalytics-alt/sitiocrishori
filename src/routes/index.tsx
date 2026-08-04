@@ -452,8 +452,10 @@ function Index() {
           </div>
 
           <div className="space-y-6">
-            <h4 className="text-lg font-bold uppercase tracking-widest text-[#FE8330]/60">Admin</h4>
-            <Link to="/admin" className="inline-block text-xs text-gray-500 hover:text-white border border-gray-700 px-6 py-2 rounded-full transition-all">Acesso Restrito</Link>
+            <h4 className="text-lg font-bold uppercase tracking-widest text-[#FE8330]/60">Social</h4>
+            <div className="flex gap-4">
+              {/* Espaço para ícones sociais se necessário no futuro */}
+            </div>
           </div>
         </div>
         
