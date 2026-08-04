@@ -166,7 +166,27 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      reservas_disponibilidade: {
+        Row: {
+          data_fim: string | null
+          data_inicio: string | null
+          id: string | null
+          status: string | null
+        }
+        Insert: {
+          data_fim?: string | null
+          data_inicio?: string | null
+          id?: string | null
+          status?: string | null
+        }
+        Update: {
+          data_fim?: string | null
+          data_inicio?: string | null
+          id?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never

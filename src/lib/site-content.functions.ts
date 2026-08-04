@@ -66,15 +66,39 @@ export const getSiteContent = createServerFn({ method: "GET" })
 
 
 // Reservations Functions
+// Public: only date ranges + status (no customer PII)
 export const getReservas = createServerFn({ method: "GET" })
   .handler(async () => {
     const { data, error } = await supabase
-      .from("reservas" as any)
+      .from("reservas_disponibilidade" as any)
+      .select("id,data_inicio,data_fim,status")
+      .order("data_inicio", { ascending: true });
+    if (error) throw error;
+    return data as any[];
+  });
+
+// Admin only: full reservation records including customer data
+export const getReservasAdmin = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: roleData } = await context.supabase
+      .from('user_roles' as any)
+      .select('role')
+      .eq('user_id', context.userId)
+      .eq('role', 'admin')
+      .maybeSingle();
+
+    if (!roleData) throw new Error("Unauthorized");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await (supabaseAdmin as any)
+      .from("reservas")
       .select("*")
       .order("data_inicio", { ascending: true });
     if (error) throw error;
     return data as any[];
   });
+
 
 export const upsertReserva = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
