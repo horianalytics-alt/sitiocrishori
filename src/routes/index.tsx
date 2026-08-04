@@ -301,7 +301,7 @@ function Index() {
                           </div>
                         </div>
                         <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
-                          <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Festas e Eventos" />
+                          <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Salão decorado para Festas e Eventos no sítio" loading="lazy" />
                         </div>
                       </div>
                     </TabsContent>
@@ -331,7 +331,7 @@ function Index() {
                           </div>
                         </div>
                         <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
-                          <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Day Use" />
+                          <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Área de lazer e piscina para Day Use no sítio" loading="lazy" />
                         </div>
                       </div>
                     </TabsContent>
@@ -393,7 +393,7 @@ function Index() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
                   >
-                    <img src={src} className="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-110" alt="Galeria" />
+                    <img src={src} className="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-110" alt={`Foto da galeria ${i + 1} do sítio de eventos`} loading="lazy" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
                       <span className="text-white font-bold bg-[#FE8330] px-8 py-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">AMPLIAR</span>
                     </div>
