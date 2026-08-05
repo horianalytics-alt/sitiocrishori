@@ -117,11 +117,11 @@ function Index() {
             />
           </div>
           <div className="relative z-20 text-center px-6 max-w-6xl mx-auto space-y-10">
-            <div className="flex flex-wrap justify-center gap-3" data-aos="fade-down" data-aos-duration="1200">
+            <div className="flex flex-wrap justify-center gap-2 md:gap-3" data-aos="fade-down" data-aos-duration="1200">
               {(hero?.badges || ["Piscina Aquecida", "Campo", "Área Gourmet"]).map((b, i) => (
                 <span 
                   key={i} 
-                  className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-5 py-2 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-white/20 transition-colors cursor-default"
+                  className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-3 py-1.5 md:px-5 md:py-2 rounded-full text-[9px] md:text-xs font-bold uppercase tracking-widest hover:bg-white/20 transition-colors cursor-default"
                 >
                   • {b}
                 </span>
@@ -210,7 +210,7 @@ function Index() {
         <section id="infraestrutura" className="py-32 px-6 max-w-7xl mx-auto">
           <div className="text-center mb-20 space-y-4">
             <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Estrutura de Alto Padrão</h2>
-            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">Cada detalhe foi planejado para oferecer o máximo conforto e diversão para você e seus convidados.</p>
+            <p className="text-xs md:text-lg text-muted-foreground max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">Cada detalhe foi planejado para oferecer o máximo conforto e diversão para você e seus convidados.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {infrastructure?.map((item, i) => (
@@ -219,12 +219,12 @@ function Index() {
                   <img src={item.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={`Infraestrutura: ${item.title}`} loading="lazy" />
                   <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60" />
                   <div className="absolute bottom-8 left-8 right-8 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <h3 className="text-3xl font-bold mb-2">{item.title}</h3>
+                    <h3 className="text-2xl md:text-3xl font-bold mb-2">{item.title}</h3>
                     <div className="w-12 h-1 bg-[#FE8330] rounded-full group-hover:w-full transition-all duration-500" />
                   </div>
                 </div>
                 <div className="p-8 bg-white">
-                  <p className="text-muted-foreground leading-relaxed font-medium">{item.description}</p>
+                  <p className="text-muted-foreground leading-relaxed font-medium text-sm md:text-base">{item.description}</p>
                 </div>
               </div>
             ))}
@@ -304,7 +304,7 @@ function Index() {
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Experiência Completa</span>
                             <h3 className="text-2xl md:text-5xl font-black tracking-tight">Finais de Semana</h3>
                           </div>
-                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Privacidade absoluta e lazer total para sua família com pernoite completo e infraestrutura de hotel fazenda premium.</p>
+                          <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-medium">Privacidade absoluta e lazer total para sua família com pernoite completo e infraestrutura de hotel fazenda premium.</p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {[
                               "Até 20 pessoas no pernoite",
@@ -488,7 +488,7 @@ function Index() {
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-20 space-y-4">
               <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Memórias Inesquecíveis</h2>
-              <p className="text-sm md:text-lg text-muted-foreground font-medium max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">Confira o depoimento de quem já viveu momentos especiais em nosso espaço.</p>
+              <p className="text-xs md:text-lg text-muted-foreground font-medium max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">Confira o depoimento de quem já viveu momentos especiais em nosso espaço.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-10">
               {(depoimentos || []).map((dep, i) => (
