@@ -522,7 +522,7 @@ function Index() {
 
 
             <div className="relative min-h-[600px]">
-              <div className="columns-1 md:columns-3 lg:columns-4 gap-8 space-y-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
                 {(galleryData || []).map((src, i) => (
                   <motion.div 
                     key={i} 
@@ -534,7 +534,7 @@ function Index() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
                   >
-                    <img src={src} className="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-110" alt={`Foto da galeria ${i + 1} do sítio de eventos`} loading="lazy" />
+                    <img src={src} className="w-full aspect-[4/5] object-cover transition-all duration-1000 group-hover:scale-110" alt={`Foto da galeria ${i + 1} do sítio de eventos`} loading="lazy" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
                       <span className="text-white font-bold bg-[#FE8330] px-8 py-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">AMPLIAR</span>
                     </div>
