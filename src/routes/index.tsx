@@ -4,9 +4,10 @@ import { getSiteContent, getReservas, getDepoimentos, type HeroContent, type Inf
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { SeasonalEffects, type Season } from "@/components/SeasonalEffects";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Star, Calendar as CalendarIcon, MapPin, Users, CheckCircle } from "lucide-react";
+import { Star, Calendar as CalendarIcon, MapPin, Users, CheckCircle, Sparkles } from "lucide-react";
 import { DayPicker, type DateRange } from "react-day-picker";
 import { ptBR } from "date-fns/locale";
 import { format, isWithinInterval, startOfDay } from "date-fns";
@@ -62,6 +63,8 @@ function Index() {
   const [activeTab, setActiveTab] = useState("finais-de-semana");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [viewMode] = useState<"masonry">("masonry");
+  const [activeSeason, setActiveSeason] = useState<Season>("none");
+  const [effectsEnabled, setEffectsEnabled] = useState(true);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -86,6 +89,24 @@ function Index() {
     <div 
       className="min-h-screen bg-[#FAF8F5] text-[#1E2229] selection:bg-[#FE8330] selection:text-white"
     >
+      <SeasonalEffects season={activeSeason} isEnabled={effectsEnabled} />
+      
+      {/* Floating Effects Toggle */}
+      <div className="fixed bottom-32 left-6 z-[60]">
+        <button
+          onClick={() => setEffectsEnabled(!effectsEnabled)}
+          className={`group flex items-center gap-3 px-6 py-4 rounded-full shadow-2xl transition-all duration-500 backdrop-blur-md border ${
+            effectsEnabled 
+              ? 'bg-[#FE8330] text-white border-[#FE8330]' 
+              : 'bg-white/80 text-[#1E2229] border-gray-200'
+          }`}
+        >
+          <Sparkles className={`w-5 h-5 transition-transform duration-500 ${effectsEnabled ? 'rotate-12 scale-110' : 'rotate-0'}`} />
+          <span className="font-bold text-sm tracking-tight">
+            {effectsEnabled ? 'Efeitos ON' : 'Efeitos OFF'}
+          </span>
+        </button>
+      </div>
 
       <main>
         {/* Hero Section */}
@@ -124,6 +145,12 @@ function Index() {
                 <span className="relative z-10">{hero?.cta_text || "VERIFICAR DISPONIBILIDADE"}</span>
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
               </button>
+            </div>
+            <div data-aos="fade-up" data-aos-delay="700" className="flex justify-center pt-4">
+              <a href="#pacotes" className="text-white/80 font-bold hover:text-[#FE8330] transition-colors flex items-center gap-2 text-sm uppercase tracking-widest">
+                <Sparkles className="w-4 h-4" />
+                Conheça Nossos Pacotes Sazonais
+              </a>
             </div>
           </div>
           
@@ -206,8 +233,8 @@ function Index() {
           </div>
         </section>
 
-        {/* Tabs Modalidades */}
-        <section className="py-32 bg-white relative overflow-hidden">
+        {/* Tabs Modalidades & Sazonalidades */}
+        <section id="pacotes" className="py-32 bg-white relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-gray-200 to-transparent" />
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center mb-16">
@@ -218,15 +245,21 @@ function Index() {
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="flex flex-wrap h-auto gap-4 justify-center bg-transparent mb-16">
                 {[
-                  { id: "finais-de-semana", label: "Finais de Semana" },
-                  { id: "festas-eventos", label: "Festas & Eventos" },
-                  { id: "day-use", label: "Day Use" }
+                  { id: "finais-de-semana", label: "Finais de Semana", season: "none" as Season },
+                  { id: "natal", label: "Natal ❄️", season: "natal" as Season },
+                  { id: "ano-novo", label: "Ano Novo ✨", season: "ano-novo" as Season },
+                  { id: "pascoa", label: "Páscoa 🐰", season: "pascoa" as Season },
+                  { id: "festas-eventos", label: "Festas & Eventos", season: "none" as Season },
+                  { id: "day-use", label: "Day Use", season: "none" as Season }
                 ].map(t => (
                   <TabsTrigger 
                     key={t.id} 
                     value={t.id} 
                     activeValue={activeTab}
-                    onClick={setActiveTab}
+                    onClick={() => {
+                      setActiveTab(t.id);
+                      setActiveSeason(t.season);
+                    }}
                     className="px-6 py-4 md:px-10 md:py-5 rounded-full"
                   >
                     {t.label}
@@ -272,6 +305,96 @@ function Index() {
                         </div>
                         <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
                           <img src={HERO_IMAGE} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Vista da acomodação para Finais de Semana" loading="lazy" />
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="natal" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
+                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                        <div className="flex-1 space-y-8">
+                          <div className="space-y-4">
+                            <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Natal Encantado</span>
+                            <h3 className="text-2xl md:text-5xl font-black tracking-tight">Natal no Sítio ❄️</h3>
+                          </div>
+                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Viva a magia do Natal com sua família em um ambiente decorado e acolhedor.</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[
+                              "Decoração temática inclusa",
+                              "Ceia completa (opcional)",
+                              "Chegada do Papai Noel",
+                              "Espaço para troca de presentes",
+                              "Piscina aquecida",
+                              "Acomodação para toda família"
+                            ].map((item, i) => (
+                              <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
+                                <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
+                                <span className="font-bold text-sm">{item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                          <img src="https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Decoração de Natal no sítio" loading="lazy" />
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="ano-novo" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
+                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                        <div className="flex-1 space-y-8">
+                          <div className="space-y-4">
+                            <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Réveillon Premium</span>
+                            <h3 className="text-2xl md:text-5xl font-black tracking-tight">Ano Novo ✨</h3>
+                          </div>
+                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Inicie o novo ciclo com estilo, paz e uma festa inesquecível entre amigos.</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[
+                              "Queima de fogos privativa",
+                              "Festa na piscina",
+                              "Som e Iluminação",
+                              "Buffet de Réveillon",
+                              "Brinde com Espumante",
+                              "Pernoite exclusivo"
+                            ].map((item, i) => (
+                              <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
+                                <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
+                                <span className="font-bold text-sm">{item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                          <img src="https://images.unsplash.com/photo-1467810563316-b5476525c0f9?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Festa de Ano Novo no sítio" loading="lazy" />
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="pascoa" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
+                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                        <div className="flex-1 space-y-8">
+                          <div className="space-y-4">
+                            <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Páscoa no Sítio</span>
+                            <h3 className="text-2xl md:text-5xl font-black tracking-tight">Páscoa 🐰</h3>
+                          </div>
+                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Momentos de união e diversão para as crianças com nossa caça aos ovos.</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[
+                              "Caça aos ovos monitorada",
+                              "Oficina de chocolate",
+                              "Almoço de Páscoa",
+                              "Contato com a natureza",
+                              "Playground completo",
+                              "Feriado prolongado"
+                            ].map((item, i) => (
+                              <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
+                                <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
+                                <span className="font-bold text-sm">{item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                          <img src="https://images.unsplash.com/photo-1522336572468-97b06e8ef143?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Celebração de Páscoa no sítio" loading="lazy" />
                         </div>
                       </div>
                     </TabsContent>
