@@ -89,6 +89,24 @@ function Index() {
     <div 
       className="min-h-screen bg-[#FAF8F5] text-[#1E2229] selection:bg-[#FE8330] selection:text-white"
     >
+      <SeasonalEffects season={activeSeason} isEnabled={effectsEnabled} />
+      
+      {/* Floating Effects Toggle */}
+      <div className="fixed bottom-32 left-6 z-[60]">
+        <button
+          onClick={() => setEffectsEnabled(!effectsEnabled)}
+          className={`group flex items-center gap-3 px-6 py-4 rounded-full shadow-2xl transition-all duration-500 backdrop-blur-md border ${
+            effectsEnabled 
+              ? 'bg-[#FE8330] text-white border-[#FE8330]' 
+              : 'bg-white/80 text-[#1E2229] border-gray-200'
+          }`}
+        >
+          <Sparkles className={`w-5 h-5 transition-transform duration-500 ${effectsEnabled ? 'rotate-12 scale-110' : 'rotate-0'}`} />
+          <span className="font-bold text-sm tracking-tight">
+            {effectsEnabled ? 'Efeitos ON' : 'Efeitos OFF'}
+          </span>
+        </button>
+      </div>
 
       <main>
         {/* Hero Section */}
