@@ -117,17 +117,17 @@ function Index() {
             />
           </div>
           <div className="relative z-20 text-center px-6 max-w-6xl mx-auto space-y-10">
-            <div className="flex flex-wrap justify-center gap-3" data-aos="fade-down" data-aos-duration="1200">
+            <div className="flex flex-wrap justify-center gap-2 md:gap-3" data-aos="fade-down" data-aos-duration="1200">
               {(hero?.badges || ["Piscina Aquecida", "Campo", "Área Gourmet"]).map((b, i) => (
                 <span 
                   key={i} 
-                  className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-5 py-2 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-white/20 transition-colors cursor-default"
+                  className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-3 py-1.5 md:px-5 md:py-2 rounded-full text-[9px] md:text-xs font-bold uppercase tracking-widest hover:bg-white/20 transition-colors cursor-default"
                 >
                   • {b}
                 </span>
               ))}
             </div>
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight" data-aos="zoom-out" data-aos-duration="1200">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight" data-aos="zoom-out" data-aos-duration="1200">
               {hero?.headline}
             </h1>
             <p className="text-sm sm:text-base md:text-lg text-white/90 font-medium max-w-2xl mx-auto leading-relaxed px-4" data-aos="fade-up" data-aos-delay="400">
@@ -160,7 +160,7 @@ function Index() {
 
         {/* Airbnb Style Calendar Section */}
         <section id="calendario" className="py-20 md:py-40 px-4 md:px-6 max-w-7xl mx-auto overflow-hidden">
-          <div className="bg-white p-6 md:p-20 rounded-[2.5rem] md:rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-10 md:gap-20 items-stretch" data-aos="fade-up">
+          <div className="bg-white p-4 md:p-20 rounded-[2.5rem] md:rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-10 md:gap-20 items-stretch" data-aos="fade-up">
             <div className="flex-1 space-y-8">
               <div className="space-y-4">
                 <h2 className="text-2xl md:text-5xl font-black tracking-tight">Escolha suas datas</h2>
@@ -210,21 +210,21 @@ function Index() {
         <section id="infraestrutura" className="py-32 px-6 max-w-7xl mx-auto">
           <div className="text-center mb-20 space-y-4">
             <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Estrutura de Alto Padrão</h2>
-            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">Cada detalhe foi planejado para oferecer o máximo conforto e diversão para você e seus convidados.</p>
+            <p className="text-xs md:text-lg text-muted-foreground max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">Cada detalhe foi planejado para oferecer o máximo conforto e diversão para você e seus convidados.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {infrastructure?.map((item, i) => (
-              <div key={i} className="card-premium rounded-[3rem] overflow-hidden group" data-aos="fade-up" data-aos-delay={i*100}>
+              <div key={i} className="card-premium rounded-[2rem] md:rounded-[3rem] overflow-hidden group" data-aos="fade-up" data-aos-delay={i*100}>
                 <div className="aspect-[4/5] overflow-hidden relative">
                   <img src={item.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={`Infraestrutura: ${item.title}`} loading="lazy" />
                   <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60" />
                   <div className="absolute bottom-8 left-8 right-8 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <h3 className="text-3xl font-bold mb-2">{item.title}</h3>
+                    <h3 className="text-2xl md:text-3xl font-bold mb-2">{item.title}</h3>
                     <div className="w-12 h-1 bg-[#FE8330] rounded-full group-hover:w-full transition-all duration-500" />
                   </div>
                 </div>
                 <div className="p-8 bg-white">
-                  <p className="text-muted-foreground leading-relaxed font-medium">{item.description}</p>
+                  <p className="text-muted-foreground leading-relaxed font-medium text-sm md:text-base">{item.description}</p>
                 </div>
               </div>
             ))}
@@ -242,7 +242,7 @@ function Index() {
             
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <div className="relative group mb-12 md:mb-16">
-                <TabsList className="flex flex-nowrap overflow-x-auto pb-4 md:pb-0 md:flex-wrap h-auto gap-3 md:gap-4 justify-start md:justify-center bg-transparent no-scrollbar -mx-6 px-6 md:mx-0 md:px-0 scroll-smooth">
+                <TabsList className="flex flex-nowrap overflow-x-auto pb-4 md:pb-0 md:flex-wrap h-auto gap-2 md:gap-4 justify-start md:justify-center bg-transparent no-scrollbar -mx-6 px-6 md:mx-0 md:px-0 scroll-smooth">
                   {[
                     { id: "finais-de-semana", label: "Finais de Semana", season: "none" as Season },
                     { id: "festas-eventos", label: "Festas & Eventos", season: "none" as Season },
@@ -269,7 +269,7 @@ function Index() {
                             seasonalEffectsRef.current?.playSound(t.season!);
                           }
                         }}
-                        className="px-5 py-3 md:px-10 md:py-5 rounded-full whitespace-nowrap text-sm md:text-base font-bold shadow-sm border border-transparent data-[state=active]:border-[#FE8330]/20"
+                        className="px-4 py-2.5 md:px-10 md:py-5 rounded-full whitespace-nowrap text-xs md:text-base font-bold shadow-sm border border-transparent data-[state=active]:border-[#FE8330]/20 data-[state=active]:bg-[#FE8330] data-[state=active]:text-white transition-all"
                       >
                         {t.label}
                       </TabsTrigger>
@@ -298,13 +298,13 @@ function Index() {
                     }}
                   >
                     <TabsContent value="finais-de-semana" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
+                      <div className="p-5 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Experiência Completa</span>
                             <h3 className="text-2xl md:text-5xl font-black tracking-tight">Finais de Semana</h3>
                           </div>
-                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Privacidade absoluta e lazer total para sua família com pernoite completo e infraestrutura de hotel fazenda premium.</p>
+                          <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-medium">Privacidade absoluta e lazer total para sua família com pernoite completo e infraestrutura de hotel fazenda premium.</p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {[
                               "Até 20 pessoas no pernoite",
@@ -488,11 +488,11 @@ function Index() {
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-20 space-y-4">
               <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Memórias Inesquecíveis</h2>
-              <p className="text-sm md:text-lg text-muted-foreground font-medium max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">Confira o depoimento de quem já viveu momentos especiais em nosso espaço.</p>
+              <p className="text-xs md:text-lg text-muted-foreground font-medium max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">Confira o depoimento de quem já viveu momentos especiais em nosso espaço.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-10">
               {(depoimentos || []).map((dep, i) => (
-                <div key={i} className="bg-white p-12 rounded-[3.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] space-y-8 border border-gray-100 hover-lift relative group" data-aos="fade-up" data-aos-delay={i*100}>
+                <div key={i} className="bg-white p-8 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] space-y-6 md:space-y-8 border border-gray-100 hover-lift relative group" data-aos="fade-up" data-aos-delay={i*100}>
                   <div className="absolute top-10 right-10 opacity-10 group-hover:opacity-20 transition-opacity">
                     <Star className="w-16 h-16 fill-[#FE8330] text-[#FE8330]" />
                   </div>
@@ -549,14 +549,14 @@ function Index() {
 
         {/* FAQ */}
         <section className="py-32 px-6 max-w-4xl mx-auto">
-          <div className="text-center mb-20 space-y-4">
+          <div className="text-center mb-16 md:mb-20 space-y-4">
             <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Dúvidas Frequentes</h2>
-            <p className="text-sm md:text-lg text-muted-foreground font-medium px-4" data-aos="fade-up" data-aos-delay="100">Tudo o que você precisa saber para planejar sua estadia.</p>
+            <p className="text-xs md:text-lg text-muted-foreground font-medium px-4" data-aos="fade-up" data-aos-delay="100">Tudo o que você precisa saber para planejar sua estadia.</p>
           </div>
           <Accordion className="space-y-6">
             {(faq || []).map((item, i) => (
-              <AccordionItem key={i} title={item.question} className="bg-white px-10 py-4 rounded-[2rem] shadow-sm border border-gray-100 hover:border-[#FE8330]/20 transition-colors">
-                <div className="text-lg text-muted-foreground leading-relaxed pt-2">{item.answer}</div>
+              <AccordionItem key={i} title={item.question} className="bg-white px-6 md:px-10 py-3 md:py-4 rounded-[1.5rem] md:rounded-[2rem] shadow-sm border border-gray-100 hover:border-[#FE8330]/20 transition-colors">
+                <div className="text-base md:text-lg text-muted-foreground leading-relaxed pt-2">{item.answer}</div>
               </AccordionItem>
             ))}
           </Accordion>
