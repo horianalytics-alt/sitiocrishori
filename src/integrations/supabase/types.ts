@@ -166,30 +166,18 @@ export type Database = {
       }
     }
     Views: {
-      reservas_disponibilidade: {
-        Row: {
-          data_fim: string | null
-          data_inicio: string | null
-          id: string | null
-          status: string | null
-        }
-        Insert: {
-          data_fim?: string | null
-          data_inicio?: string | null
-          id?: string | null
-          status?: string | null
-        }
-        Update: {
-          data_fim?: string | null
-          data_inicio?: string | null
-          id?: string | null
-          status?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_reservas_disponibilidade: {
+        Args: never
+        Returns: {
+          data_fim: string
+          data_inicio: string
+          id: string
+          status: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "user"
