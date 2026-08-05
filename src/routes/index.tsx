@@ -239,15 +239,21 @@ function Index() {
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="flex flex-wrap h-auto gap-4 justify-center bg-transparent mb-16">
                 {[
-                  { id: "finais-de-semana", label: "Finais de Semana" },
-                  { id: "festas-eventos", label: "Festas & Eventos" },
-                  { id: "day-use", label: "Day Use" }
+                  { id: "finais-de-semana", label: "Finais de Semana", season: "none" as Season },
+                  { id: "natal", label: "Natal ❄️", season: "natal" as Season },
+                  { id: "ano-novo", label: "Ano Novo ✨", season: "ano-novo" as Season },
+                  { id: "pascoa", label: "Páscoa 🐰", season: "pascoa" as Season },
+                  { id: "festas-eventos", label: "Festas & Eventos", season: "none" as Season },
+                  { id: "day-use", label: "Day Use", season: "none" as Season }
                 ].map(t => (
                   <TabsTrigger 
                     key={t.id} 
                     value={t.id} 
                     activeValue={activeTab}
-                    onClick={setActiveTab}
+                    onClick={() => {
+                      setActiveTab(t.id);
+                      setActiveSeason(t.season);
+                    }}
                     className="px-6 py-4 md:px-10 md:py-5 rounded-full"
                   >
                     {t.label}
