@@ -7,7 +7,7 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SeasonalEffects, type Season } from "@/components/SeasonalEffects";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Star, Calendar as CalendarIcon, MapPin, Users, CheckCircle, Sparkles, SparklesOff } from "lucide-react";
+import { Star, Calendar as CalendarIcon, MapPin, Users, CheckCircle, Sparkles } from "lucide-react";
 import { DayPicker, type DateRange } from "react-day-picker";
 import { ptBR } from "date-fns/locale";
 import { format, isWithinInterval, startOfDay } from "date-fns";
