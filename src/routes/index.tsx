@@ -298,7 +298,7 @@ function Index() {
                     }}
                   >
                     <TabsContent value="finais-de-semana" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Experiência Completa</span>
@@ -321,14 +321,14 @@ function Index() {
                             ))}
                           </div>
                         </div>
-                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                        <div className="w-full lg:w-[55%] group overflow-hidden rounded-[2rem] md:rounded-[3rem] shadow-2xl aspect-video lg:aspect-auto lg:h-[400px]">
                           <img src={HERO_IMAGE} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Vista da acomodação para Finais de Semana" loading="lazy" />
                         </div>
                       </div>
                     </TabsContent>
 
                     <TabsContent value="natal" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Natal Encantado</span>
@@ -351,14 +351,14 @@ function Index() {
                             ))}
                           </div>
                         </div>
-                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                        <div className="w-full lg:w-[55%] group overflow-hidden rounded-[2rem] md:rounded-[3rem] shadow-2xl aspect-video lg:aspect-auto lg:h-[400px]">
                           <img src="https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Decoração de Natal no sítio" loading="lazy" />
                         </div>
                       </div>
                     </TabsContent>
 
                     <TabsContent value="ano-novo" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Réveillon Premium</span>
@@ -381,14 +381,14 @@ function Index() {
                             ))}
                           </div>
                         </div>
-                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                        <div className="w-full lg:w-[55%] group overflow-hidden rounded-[2rem] md:rounded-[3rem] shadow-2xl aspect-video lg:aspect-auto lg:h-[400px]">
                           <img src="https://images.unsplash.com/photo-1467810563316-b5476525c0f9?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Festa de Ano Novo no sítio" loading="lazy" />
                         </div>
                       </div>
                     </TabsContent>
 
                     <TabsContent value="pascoa" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Páscoa no Sítio</span>
@@ -411,14 +411,14 @@ function Index() {
                             ))}
                           </div>
                         </div>
-                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                        <div className="w-full lg:w-[55%] group overflow-hidden rounded-[2rem] md:rounded-[3rem] shadow-2xl aspect-video lg:aspect-auto lg:h-[400px]">
                           <img src="https://images.unsplash.com/photo-1522336572468-97b06e8ef143?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Celebração de Páscoa no sítio" loading="lazy" />
                         </div>
                       </div>
                     </TabsContent>
 
                     <TabsContent value="festas-eventos" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Celebrações Memoráveis</span>
@@ -441,14 +441,14 @@ function Index() {
                             ))}
                           </div>
                         </div>
-                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                        <div className="w-full lg:w-[55%] group overflow-hidden rounded-[2rem] md:rounded-[3rem] shadow-2xl aspect-video lg:aspect-auto lg:h-[400px]">
                           <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Salão decorado para Festas e Eventos no sítio" loading="lazy" />
                         </div>
                       </div>
                     </TabsContent>
 
                     <TabsContent value="day-use" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Lazer e Diversão</span>
@@ -471,7 +471,7 @@ function Index() {
                             ))}
                           </div>
                         </div>
-                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                        <div className="w-full lg:w-[55%] group overflow-hidden rounded-[2rem] md:rounded-[3rem] shadow-2xl aspect-video lg:aspect-auto lg:h-[400px]">
                           <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Área de lazer e piscina para Day Use no sítio" loading="lazy" />
                         </div>
                       </div>
