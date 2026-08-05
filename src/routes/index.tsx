@@ -63,6 +63,8 @@ function Index() {
   const [activeTab, setActiveTab] = useState("finais-de-semana");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [viewMode] = useState<"masonry">("masonry");
+  const [activeSeason, setActiveSeason] = useState<Season>("none");
+  const [effectsEnabled, setEffectsEnabled] = useState(true);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
