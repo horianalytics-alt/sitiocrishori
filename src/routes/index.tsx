@@ -146,6 +146,12 @@ function Index() {
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
               </button>
             </div>
+            <div data-aos="fade-up" data-aos-delay="700" className="flex justify-center pt-4">
+              <a href="#pacotes" className="text-white/80 font-bold hover:text-[#FE8330] transition-colors flex items-center gap-2 text-sm uppercase tracking-widest">
+                <Sparkles className="w-4 h-4" />
+                Conheça Nossos Pacotes Sazonais
+              </a>
+            </div>
           </div>
           
           {/* Scroll Indicator */}
