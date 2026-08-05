@@ -194,4 +194,4 @@ export const SeasonalEffects: React.FC<SeasonalEffectsProps> = ({ season, isEnab
       )}
     </AnimatePresence>
   );
-};
+});

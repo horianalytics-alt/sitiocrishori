@@ -4,7 +4,7 @@ import { getSiteContent, getReservas, getDepoimentos, type HeroContent, type Inf
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
-import { SeasonalEffects, type Season } from "@/components/SeasonalEffects";
+import { SeasonalEffects, type Season, type SeasonalEffectsHandle } from "@/components/SeasonalEffects";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Star, Calendar as CalendarIcon, MapPin, Users, CheckCircle, Sparkles, Volume2, VolumeX } from "lucide-react";
@@ -73,6 +73,7 @@ function Index() {
     return true;
   });
   const [mounted, setMounted] = useState(false);
+  const seasonalEffectsRef = useRef<SeasonalEffectsHandle>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -100,7 +101,7 @@ function Index() {
     <div 
       className="min-h-screen bg-[#FAF8F5] text-[#1E2229] selection:bg-[#FE8330] selection:text-white"
     >
-      <SeasonalEffects season={activeSeason} isEnabled={effectsEnabled} isSoundEnabled={soundEnabled} />
+      <SeasonalEffects ref={seasonalEffectsRef} season={activeSeason} isEnabled={effectsEnabled} isSoundEnabled={soundEnabled} />
       
       {/* Floating Effects Toggle */}
       <div className="fixed bottom-32 left-6 z-[60] flex flex-col gap-3">
@@ -284,6 +285,9 @@ function Index() {
                     onClick={() => {
                       setActiveTab(t.id);
                       setActiveSeason(t.season);
+                      if (t.season !== 'none') {
+                        seasonalEffectsRef.current?.playSound(t.season);
+                      }
                     }}
                     className="px-6 py-4 md:px-10 md:py-5 rounded-full"
                   >
