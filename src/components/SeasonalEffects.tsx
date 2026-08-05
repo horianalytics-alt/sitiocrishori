@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export type Season = 'natal' | 'ano-novo' | 'pascoa' | 'none';
@@ -41,16 +41,27 @@ export const SeasonalEffects: React.FC<SeasonalEffectsProps> = ({ season, isEnab
     };
   }, []);
 
-  // Play sound when season changes
-  useEffect(() => {
-    if (isEnabled && isSoundEnabled && hasInteracted && season !== 'none') {
-      const sound = audioRefs.current[season];
+  const playSound = (targetSeason: Season) => {
+    if (isEnabled && isSoundEnabled && hasInteracted && targetSeason !== 'none') {
+      const sound = audioRefs.current[targetSeason];
       if (sound) {
+        sound.pause();
         sound.currentTime = 0;
         sound.play().catch(e => console.log("Audio play failed:", e));
       }
     }
-  }, [season, isEnabled, isSoundEnabled, hasInteracted]);
+  };
+
+  useImperativeHandle(ref, () => ({
+    playSound
+  }));
+
+  // Auto-play when season prop changes from outside (if needed)
+  useEffect(() => {
+    if (season !== 'none') {
+      playSound(season);
+    }
+  }, [season]);
 
   useEffect(() => {
     if (!isEnabled || season === 'none' || !canvasRef.current) return;
