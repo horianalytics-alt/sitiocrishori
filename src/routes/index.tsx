@@ -103,36 +103,6 @@ function Index() {
     >
       <SeasonalEffects ref={seasonalEffectsRef} season={activeSeason} isEnabled={effectsEnabled} isSoundEnabled={soundEnabled} />
       
-      {/* Floating Effects Toggle */}
-      <div className="fixed bottom-32 left-6 z-[60] flex flex-col gap-3">
-        {/* Toggle Sound */}
-        <button
-          onClick={() => setSoundEnabled(!soundEnabled)}
-          className={`group flex items-center justify-center w-14 h-14 rounded-full shadow-2xl transition-all duration-500 backdrop-blur-md border ${
-            soundEnabled 
-              ? 'bg-[#FE8330] text-white border-[#FE8330]' 
-              : 'bg-white/80 text-[#1E2229] border-gray-200'
-          }`}
-          title={soundEnabled ? 'Desativar Som' : 'Ativar Som'}
-        >
-          {soundEnabled ? <Volume2 className="w-6 h-6" /> : <VolumeX className="w-6 h-6" />}
-        </button>
-
-        {/* Toggle Effects */}
-        <button
-          onClick={() => setEffectsEnabled(!effectsEnabled)}
-          className={`group flex items-center gap-3 px-6 py-4 rounded-full shadow-2xl transition-all duration-500 backdrop-blur-md border ${
-            effectsEnabled 
-              ? 'bg-[#FE8330] text-white border-[#FE8330]' 
-              : 'bg-white/80 text-[#1E2229] border-gray-200'
-          }`}
-        >
-          <Sparkles className={`w-5 h-5 transition-transform duration-500 ${effectsEnabled ? 'rotate-12 scale-110' : 'rotate-0'}`} />
-          <span className="font-bold text-sm tracking-tight">
-            {effectsEnabled ? 'Efeitos ON' : 'Efeitos OFF'}
-          </span>
-        </button>
-      </div>
 
       <main>
         {/* Hero Section */}
@@ -269,7 +239,7 @@ function Index() {
             </div>
             
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="flex flex-wrap h-auto gap-4 justify-center bg-transparent mb-16">
+              <TabsList className="flex flex-nowrap overflow-x-auto pb-4 md:pb-0 md:flex-wrap h-auto gap-3 md:gap-4 justify-start md:justify-center bg-transparent mb-12 md:mb-16 no-scrollbar -mx-6 px-6 md:mx-0 md:px-0">
                 {[
                   { id: "finais-de-semana", label: "Finais de Semana", season: "none" as Season },
                   { id: "natal", label: "Natal ❄️", season: "natal" as Season },
@@ -289,7 +259,7 @@ function Index() {
                         seasonalEffectsRef.current?.playSound(t.season);
                       }
                     }}
-                    className="px-6 py-4 md:px-10 md:py-5 rounded-full"
+                    className="px-5 py-3 md:px-10 md:py-5 rounded-full whitespace-nowrap text-sm md:text-base font-bold shadow-sm"
                   >
                     {t.label}
                   </TabsTrigger>
