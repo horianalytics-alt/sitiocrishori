@@ -9,6 +9,10 @@ interface SeasonalEffectsProps {
   isSoundEnabled: boolean;
 }
 
+export interface SeasonalEffectsHandle {
+  playSound: (season: Season) => void;
+}
+
 // Seasonal Sound URLs (Using high-quality public assets)
 const SOUNDS = {
   natal: 'https://cdn.pixabay.com/audio/2021/11/24/audio_98313621cc.mp3', // Christmas Bell Chime
@@ -16,7 +20,7 @@ const SOUNDS = {
   pascoa: 'https://cdn.pixabay.com/audio/2022/03/10/audio_c361e27a7c.mp3', // Soft Acoustic Chime
 };
 
-export const SeasonalEffects: React.FC<SeasonalEffectsProps> = ({ season, isEnabled, isSoundEnabled }) => {
+export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffectsProps>(({ season, isEnabled, isSoundEnabled }, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
   const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
