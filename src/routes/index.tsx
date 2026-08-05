@@ -7,7 +7,7 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SeasonalEffects, type Season } from "@/components/SeasonalEffects";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Star, Calendar as CalendarIcon, MapPin, Users, CheckCircle, Sparkles } from "lucide-react";
+import { Star, Calendar as CalendarIcon, MapPin, Users, CheckCircle, Sparkles, Volume2, VolumeX } from "lucide-react";
 import { DayPicker, type DateRange } from "react-day-picker";
 import { ptBR } from "date-fns/locale";
 import { format, isWithinInterval, startOfDay } from "date-fns";
@@ -65,11 +65,22 @@ function Index() {
   const [viewMode] = useState<"masonry">("masonry");
   const [activeSeason, setActiveSeason] = useState<Season>("none");
   const [effectsEnabled, setEffectsEnabled] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('soundEnabled');
+      return saved !== null ? JSON.parse(saved) : true;
+    }
+    return true;
+  });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('soundEnabled', JSON.stringify(soundEnabled));
+  }, [soundEnabled]);
 
 
   useEffect(() => {
@@ -89,10 +100,24 @@ function Index() {
     <div 
       className="min-h-screen bg-[#FAF8F5] text-[#1E2229] selection:bg-[#FE8330] selection:text-white"
     >
-      <SeasonalEffects season={activeSeason} isEnabled={effectsEnabled} />
+      <SeasonalEffects season={activeSeason} isEnabled={effectsEnabled} isSoundEnabled={soundEnabled} />
       
       {/* Floating Effects Toggle */}
-      <div className="fixed bottom-32 left-6 z-[60]">
+      <div className="fixed bottom-32 left-6 z-[60] flex flex-col gap-3">
+        {/* Toggle Sound */}
+        <button
+          onClick={() => setSoundEnabled(!soundEnabled)}
+          className={`group flex items-center justify-center w-14 h-14 rounded-full shadow-2xl transition-all duration-500 backdrop-blur-md border ${
+            soundEnabled 
+              ? 'bg-[#FE8330] text-white border-[#FE8330]' 
+              : 'bg-white/80 text-[#1E2229] border-gray-200'
+          }`}
+          title={soundEnabled ? 'Desativar Som' : 'Ativar Som'}
+        >
+          {soundEnabled ? <Volume2 className="w-6 h-6" /> : <VolumeX className="w-6 h-6" />}
+        </button>
+
+        {/* Toggle Effects */}
         <button
           onClick={() => setEffectsEnabled(!effectsEnabled)}
           className={`group flex items-center gap-3 px-6 py-4 rounded-full shadow-2xl transition-all duration-500 backdrop-blur-md border ${
