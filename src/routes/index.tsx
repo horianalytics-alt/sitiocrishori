@@ -133,7 +133,7 @@ function Index() {
             <p className="text-sm sm:text-base md:text-lg text-white/90 font-medium max-w-2xl mx-auto leading-relaxed px-4" data-aos="fade-up" data-aos-delay="400">
               {hero?.subheadline}
             </p>
-            <div className="flex flex-col md:flex-row gap-4 md:gap-10 pt-4 md:pt-8 w-full md:w-auto">
+            <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-10 pt-4 md:pt-8 w-full md:w-auto">
               <button 
                 onClick={() => document.getElementById('calendario')?.scrollIntoView({behavior: 'smooth'})} 
                 className="group relative w-full md:w-auto px-8 py-5 md:px-14 md:py-7 bg-[#FE8330] text-base md:text-xl font-bold rounded-full shadow-[0_20px_50px_rgba(254,131,48,0.3)] hover:scale-105 hover:shadow-[0_25px_60px_rgba(254,131,48,0.4)] transition-all duration-500 overflow-hidden"
