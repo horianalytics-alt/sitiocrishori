@@ -50,11 +50,13 @@ export const SeasonalEffects: React.FC<SeasonalEffectsProps> = ({ season, isEnab
         if (season === 'natal') {
           this.color = `rgba(255, 255, 255, ${this.opacity})`;
         } else if (season === 'ano-novo') {
-          this.color = `rgba(254, 131, 48, ${this.opacity})`; // #FE8330 base
-          if (Math.random() > 0.5) this.color = `rgba(255, 215, 0, ${this.opacity})`; // Gold
+          const goldColor = `rgba(255, 215, 0, ${this.opacity})`;
+          const primaryColor = `rgba(254, 131, 48, ${this.opacity})`;
+          this.color = Math.random() > 0.5 ? goldColor : primaryColor;
         } else {
           const colors = ['#FFD1DC', '#E0BBE4', '#957DAD', '#D291BC']; // Pastels
-          this.color = colors[Math.floor(Math.random() * colors.length)];
+          const randomColor = colors[Math.floor(Math.random() * colors.length)];
+          this.color = randomColor || '#FFD1DC';
         }
       }
 
