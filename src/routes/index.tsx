@@ -241,32 +241,49 @@ function Index() {
             </div>
             
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="flex flex-nowrap overflow-x-auto pb-4 md:pb-0 md:flex-wrap h-auto gap-3 md:gap-4 justify-start md:justify-center bg-transparent mb-12 md:mb-16 no-scrollbar -mx-6 px-6 md:mx-0 md:px-0">
-                {[
-                  { id: "finais-de-semana", label: "Finais de Semana", season: "none" as Season },
-                  { id: "natal", label: "Natal ❄️", season: "natal" as Season },
-                  { id: "ano-novo", label: "Ano Novo ✨", season: "ano-novo" as Season },
-                  { id: "pascoa", label: "Páscoa 🐰", season: "pascoa" as Season },
-                  { id: "festas-eventos", label: "Festas & Eventos", season: "none" as Season },
-                  { id: "day-use", label: "Day Use", season: "none" as Season }
-                ].map(t => (
-                  <TabsTrigger 
-                    key={t.id} 
-                    value={t.id} 
-                    activeValue={activeTab}
-                    onClick={() => {
-                      setActiveTab(t.id);
-                      setActiveSeason(t.season);
-                      if (t.season !== 'none') {
-                        seasonalEffectsRef.current?.playSound(t.season);
-                      }
-                    }}
-                    className="px-5 py-3 md:px-10 md:py-5 rounded-full whitespace-nowrap text-sm md:text-base font-bold shadow-sm"
-                  >
-                    {t.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+              <div className="relative group mb-12 md:mb-16">
+                <TabsList className="flex flex-nowrap overflow-x-auto pb-4 md:pb-0 md:flex-wrap h-auto gap-3 md:gap-4 justify-start md:justify-center bg-transparent no-scrollbar -mx-6 px-6 md:mx-0 md:px-0 scroll-smooth">
+                  {[
+                    { id: "finais-de-semana", label: "Finais de Semana", season: "none" as Season },
+                    { id: "festas-eventos", label: "Festas & Eventos", season: "none" as Season },
+                    { id: "day-use", label: "Day Use", season: "none" as Season },
+                    { id: "separator", label: "", type: "separator" },
+                    { id: "natal", label: "Natal ❄️", season: "natal" as Season },
+                    { id: "ano-novo", label: "Ano Novo ✨", season: "ano-novo" as Season },
+                    { id: "pascoa", label: "Páscoa 🐰", season: "pascoa" as Season },
+                  ].map((t, idx) => {
+                    if (t.type === "separator") {
+                      return (
+                        <div key={`sep-${idx}`} className="hidden md:block w-px h-8 bg-gray-200 self-center mx-2" />
+                      );
+                    }
+                    return (
+                      <TabsTrigger 
+                        key={t.id} 
+                        value={t.id!} 
+                        activeValue={activeTab}
+                        onClick={() => {
+                          setActiveTab(t.id!);
+                          setActiveSeason(t.season!);
+                          if (t.season !== 'none') {
+                            seasonalEffectsRef.current?.playSound(t.season!);
+                          }
+                        }}
+                        className="px-5 py-3 md:px-10 md:py-5 rounded-full whitespace-nowrap text-sm md:text-base font-bold shadow-sm border border-transparent data-[state=active]:border-[#FE8330]/20"
+                      >
+                        {t.label}
+                      </TabsTrigger>
+                    );
+                  })}
+                </TabsList>
+                
+                {/* Mobile Scroll Hint */}
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-full bg-linear-to-l from-white to-transparent pointer-events-none md:hidden flex items-center justify-end pr-2 animate-pulse">
+                  <div className="w-6 h-6 rounded-full bg-white/80 shadow-sm flex items-center justify-center border border-gray-100">
+                    <span className="text-[#FE8330] text-xs">→</span>
+                  </div>
+                </div>
+              </div>
               
               <div className="relative overflow-hidden min-h-[500px]">
                 <AnimatePresence mode="wait">
