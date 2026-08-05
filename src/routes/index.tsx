@@ -227,8 +227,8 @@ function Index() {
           </div>
         </section>
 
-        {/* Tabs Modalidades */}
-        <section className="py-32 bg-white relative overflow-hidden">
+        {/* Tabs Modalidades & Sazonalidades */}
+        <section id="pacotes" className="py-32 bg-white relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-gray-200 to-transparent" />
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center mb-16">
