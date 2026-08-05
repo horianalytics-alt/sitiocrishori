@@ -127,7 +127,7 @@ function Index() {
                 </span>
               ))}
             </div>
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight" data-aos="zoom-out" data-aos-duration="1200">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight" data-aos="zoom-out" data-aos-duration="1200">
               {hero?.headline}
             </h1>
             <p className="text-sm sm:text-base md:text-lg text-white/90 font-medium max-w-2xl mx-auto leading-relaxed px-4" data-aos="fade-up" data-aos-delay="400">
@@ -160,7 +160,7 @@ function Index() {
 
         {/* Airbnb Style Calendar Section */}
         <section id="calendario" className="py-20 md:py-40 px-4 md:px-6 max-w-7xl mx-auto overflow-hidden">
-          <div className="bg-white p-6 md:p-20 rounded-[2.5rem] md:rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-10 md:gap-20 items-stretch" data-aos="fade-up">
+          <div className="bg-white p-4 md:p-20 rounded-[2.5rem] md:rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-10 md:gap-20 items-stretch" data-aos="fade-up">
             <div className="flex-1 space-y-8">
               <div className="space-y-4">
                 <h2 className="text-2xl md:text-5xl font-black tracking-tight">Escolha suas datas</h2>
@@ -214,7 +214,7 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {infrastructure?.map((item, i) => (
-              <div key={i} className="card-premium rounded-[3rem] overflow-hidden group" data-aos="fade-up" data-aos-delay={i*100}>
+              <div key={i} className="card-premium rounded-[2rem] md:rounded-[3rem] overflow-hidden group" data-aos="fade-up" data-aos-delay={i*100}>
                 <div className="aspect-[4/5] overflow-hidden relative">
                   <img src={item.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={`Infraestrutura: ${item.title}`} loading="lazy" />
                   <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60" />
@@ -242,7 +242,7 @@ function Index() {
             
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <div className="relative group mb-12 md:mb-16">
-                <TabsList className="flex flex-nowrap overflow-x-auto pb-4 md:pb-0 md:flex-wrap h-auto gap-3 md:gap-4 justify-start md:justify-center bg-transparent no-scrollbar -mx-6 px-6 md:mx-0 md:px-0 scroll-smooth">
+                <TabsList className="flex flex-nowrap overflow-x-auto pb-4 md:pb-0 md:flex-wrap h-auto gap-2 md:gap-4 justify-start md:justify-center bg-transparent no-scrollbar -mx-6 px-6 md:mx-0 md:px-0 scroll-smooth">
                   {[
                     { id: "finais-de-semana", label: "Finais de Semana", season: "none" as Season },
                     { id: "festas-eventos", label: "Festas & Eventos", season: "none" as Season },
@@ -269,7 +269,7 @@ function Index() {
                             seasonalEffectsRef.current?.playSound(t.season!);
                           }
                         }}
-                        className="px-5 py-3 md:px-10 md:py-5 rounded-full whitespace-nowrap text-sm md:text-base font-bold shadow-sm border border-transparent data-[state=active]:border-[#FE8330]/20"
+                        className="px-4 py-2.5 md:px-10 md:py-5 rounded-full whitespace-nowrap text-xs md:text-base font-bold shadow-sm border border-transparent data-[state=active]:border-[#FE8330]/20 data-[state=active]:bg-[#FE8330] data-[state=active]:text-white transition-all"
                       >
                         {t.label}
                       </TabsTrigger>
@@ -298,7 +298,7 @@ function Index() {
                     }}
                   >
                     <TabsContent value="finais-de-semana" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
+                      <div className="p-5 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Experiência Completa</span>
@@ -492,7 +492,7 @@ function Index() {
             </div>
             <div className="grid md:grid-cols-3 gap-10">
               {(depoimentos || []).map((dep, i) => (
-                <div key={i} className="bg-white p-12 rounded-[3.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] space-y-8 border border-gray-100 hover-lift relative group" data-aos="fade-up" data-aos-delay={i*100}>
+                <div key={i} className="bg-white p-8 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] space-y-6 md:space-y-8 border border-gray-100 hover-lift relative group" data-aos="fade-up" data-aos-delay={i*100}>
                   <div className="absolute top-10 right-10 opacity-10 group-hover:opacity-20 transition-opacity">
                     <Star className="w-16 h-16 fill-[#FE8330] text-[#FE8330]" />
                   </div>
