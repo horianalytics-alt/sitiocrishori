@@ -549,14 +549,14 @@ function Index() {
 
         {/* FAQ */}
         <section className="py-32 px-6 max-w-4xl mx-auto">
-          <div className="text-center mb-20 space-y-4">
+          <div className="text-center mb-16 md:mb-20 space-y-4">
             <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Dúvidas Frequentes</h2>
-            <p className="text-sm md:text-lg text-muted-foreground font-medium px-4" data-aos="fade-up" data-aos-delay="100">Tudo o que você precisa saber para planejar sua estadia.</p>
+            <p className="text-xs md:text-lg text-muted-foreground font-medium px-4" data-aos="fade-up" data-aos-delay="100">Tudo o que você precisa saber para planejar sua estadia.</p>
           </div>
           <Accordion className="space-y-6">
             {(faq || []).map((item, i) => (
-              <AccordionItem key={i} title={item.question} className="bg-white px-10 py-4 rounded-[2rem] shadow-sm border border-gray-100 hover:border-[#FE8330]/20 transition-colors">
-                <div className="text-lg text-muted-foreground leading-relaxed pt-2">{item.answer}</div>
+              <AccordionItem key={i} title={item.question} className="bg-white px-6 md:px-10 py-3 md:py-4 rounded-[1.5rem] md:rounded-[2rem] shadow-sm border border-gray-100 hover:border-[#FE8330]/20 transition-colors">
+                <div className="text-base md:text-lg text-muted-foreground leading-relaxed pt-2">{item.answer}</div>
               </AccordionItem>
             ))}
           </Accordion>
