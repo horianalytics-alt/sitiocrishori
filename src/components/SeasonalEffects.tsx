@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export type Season = 'natal' | 'ano-novo' | 'pascoa' | 'none';
@@ -6,10 +6,51 @@ export type Season = 'natal' | 'ano-novo' | 'pascoa' | 'none';
 interface SeasonalEffectsProps {
   season: Season;
   isEnabled: boolean;
+  isSoundEnabled: boolean;
 }
 
-export const SeasonalEffects: React.FC<SeasonalEffectsProps> = ({ season, isEnabled }) => {
+// Seasonal Sound URLs (Using high-quality public assets)
+const SOUNDS = {
+  natal: 'https://cdn.pixabay.com/audio/2021/11/24/audio_98313621cc.mp3', // Christmas Bell Chime
+  'ano-novo': 'https://cdn.pixabay.com/audio/2022/03/15/audio_8231c62f83.mp3', // Magic Sparkle/Brilliant
+  pascoa: 'https://cdn.pixabay.com/audio/2022/03/10/audio_c361e27a7c.mp3', // Soft Acoustic Chime
+};
+
+export const SeasonalEffects: React.FC<SeasonalEffectsProps> = ({ season, isEnabled, isSoundEnabled }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
+
+  // Initialize sounds
+  useEffect(() => {
+    Object.entries(SOUNDS).forEach(([key, url]) => {
+      const audio = new Audio(url);
+      audio.volume = 0.3;
+      audioRefs.current[key] = audio;
+    });
+  }, []);
+
+  // Set interaction flag
+  useEffect(() => {
+    const handleInteraction = () => setHasInteracted(true);
+    window.addEventListener('click', handleInteraction, { once: true });
+    window.addEventListener('touchstart', handleInteraction, { once: true });
+    return () => {
+      window.removeEventListener('click', handleInteraction);
+      window.removeEventListener('touchstart', handleInteraction);
+    };
+  }, []);
+
+  // Play sound when season changes
+  useEffect(() => {
+    if (isEnabled && isSoundEnabled && hasInteracted && season !== 'none') {
+      const sound = audioRefs.current[season];
+      if (sound) {
+        sound.currentTime = 0;
+        sound.play().catch(e => console.log("Audio play failed:", e));
+      }
+    }
+  }, [season, isEnabled, isSoundEnabled, hasInteracted]);
 
   useEffect(() => {
     if (!isEnabled || season === 'none' || !canvasRef.current) return;
@@ -40,8 +81,8 @@ export const SeasonalEffects: React.FC<SeasonalEffectsProps> = ({ season, isEnab
       opacity: number;
 
       constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
+        this.x = Math.random() * (canvas?.width || 1000);
+        this.y = Math.random() * (canvas?.height || 1000);
         this.size = Math.random() * (season === 'natal' ? 4 : 3) + 1;
         this.speedX = Math.random() * 1 - 0.5;
         this.speedY = season === 'natal' ? Math.random() * 1 + 1 : Math.random() * 0.5 - 0.25;
@@ -61,6 +102,7 @@ export const SeasonalEffects: React.FC<SeasonalEffectsProps> = ({ season, isEnab
       }
 
       update() {
+        if (!canvas) return;
         this.x += this.speedX;
         this.y += this.speedY;
 
@@ -81,7 +123,6 @@ export const SeasonalEffects: React.FC<SeasonalEffectsProps> = ({ season, isEnab
         if (!ctx) return;
         ctx.beginPath();
         if (season === 'ano-novo' && Math.random() > 0.98) {
-            // Flash effect for fireworks
             ctx.shadowBlur = 15;
             ctx.shadowColor = this.color;
         } else {
@@ -101,6 +142,7 @@ export const SeasonalEffects: React.FC<SeasonalEffectsProps> = ({ season, isEnab
     };
 
     const animate = () => {
+      if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => {
         p.update();
