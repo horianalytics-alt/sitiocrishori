@@ -522,7 +522,7 @@ function Index() {
 
 
             <div className="relative min-h-[600px]">
-              <div className="columns-1 md:columns-3 lg:columns-4 gap-8 space-y-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
                 {(galleryData || []).map((src, i) => (
                   <motion.div 
                     key={i} 
