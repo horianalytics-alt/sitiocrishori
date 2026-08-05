@@ -303,6 +303,96 @@ function Index() {
                       </div>
                     </TabsContent>
 
+                    <TabsContent value="natal" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
+                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                        <div className="flex-1 space-y-8">
+                          <div className="space-y-4">
+                            <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Natal Encantado</span>
+                            <h3 className="text-2xl md:text-5xl font-black tracking-tight">Natal no Sítio ❄️</h3>
+                          </div>
+                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Viva a magia do Natal com sua família em um ambiente decorado e acolhedor.</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[
+                              "Decoração temática inclusa",
+                              "Ceia completa (opcional)",
+                              "Chegada do Papai Noel",
+                              "Espaço para troca de presentes",
+                              "Piscina aquecida",
+                              "Acomodação para toda família"
+                            ].map((item, i) => (
+                              <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
+                                <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
+                                <span className="font-bold text-sm">{item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                          <img src="https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Decoração de Natal no sítio" loading="lazy" />
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="ano-novo" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
+                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                        <div className="flex-1 space-y-8">
+                          <div className="space-y-4">
+                            <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Réveillon Premium</span>
+                            <h3 className="text-2xl md:text-5xl font-black tracking-tight">Ano Novo ✨</h3>
+                          </div>
+                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Inicie o novo ciclo com estilo, paz e uma festa inesquecível entre amigos.</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[
+                              "Queima de fogos privativa",
+                              "Festa na piscina",
+                              "Som e Iluminação",
+                              "Buffet de Réveillon",
+                              "Brinde com Espumante",
+                              "Pernoite exclusivo"
+                            ].map((item, i) => (
+                              <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
+                                <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
+                                <span className="font-bold text-sm">{item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                          <img src="https://images.unsplash.com/photo-1467810563316-b5476525c0f9?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Festa de Ano Novo no sítio" loading="lazy" />
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="pascoa" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
+                      <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
+                        <div className="flex-1 space-y-8">
+                          <div className="space-y-4">
+                            <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Páscoa no Sítio</span>
+                            <h3 className="text-2xl md:text-5xl font-black tracking-tight">Páscoa 🐰</h3>
+                          </div>
+                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Momentos de união e diversão para as crianças com nossa caça aos ovos.</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[
+                              "Caça aos ovos monitorada",
+                              "Oficina de chocolate",
+                              "Almoço de Páscoa",
+                              "Contato com a natureza",
+                              "Playground completo",
+                              "Feriado prolongado"
+                            ].map((item, i) => (
+                              <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-xs">
+                                <CheckCircle className="text-[#FE8330] w-5 h-5 shrink-0" />
+                                <span className="font-bold text-sm">{item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="md:w-[45%] group overflow-hidden rounded-[3rem] shadow-2xl">
+                          <img src="https://images.unsplash.com/photo-1522336572468-97b06e8ef143?q=80&w=2000" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Celebração de Páscoa no sítio" loading="lazy" />
+                        </div>
+                      </div>
+                    </TabsContent>
+
                     <TabsContent value="festas-eventos" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
                       <div className="p-10 md:p-20 bg-[#FAF8F5] rounded-[4rem] border border-gray-100 flex flex-col md:flex-row gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
