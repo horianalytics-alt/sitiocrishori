@@ -69,12 +69,13 @@ export const getSiteContent = createServerFn({ method: "GET" })
 // Public: only date ranges + status (no customer PII)
 export const getReservas = createServerFn({ method: "GET" })
   .handler(async () => {
-    const { data, error } = await supabase
-      .from("reservas_disponibilidade" as any)
-      .select("id,data_inicio,data_fim,status")
-      .order("data_inicio", { ascending: true });
+    const { data, error } = await (supabase as any)
+      .rpc("get_reservas_disponibilidade");
     if (error) throw error;
-    return data as any[];
+    return ((data as any[]) || []).sort((a, b) =>
+      String(a.data_inicio).localeCompare(String(b.data_inicio)),
+    );
+
   });
 
 // Admin only: full reservation records including customer data
