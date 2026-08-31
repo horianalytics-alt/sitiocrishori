@@ -434,12 +434,12 @@ img:not([class*="h-full"]):not([class*="h-["]) { height: auto; }
   max-width: 100%;
 }
 @media (max-width: 420px) {
-  .rdp, .rdp-root {
-    --rdp-cell-size: 36px;
-    --rdp-day-width: 36px;
-    --rdp-day-height: 36px;
-    --rdp-day_button-width: 36px;
-    --rdp-day_button-height: 36px;
+  .rdp, .rdp-root, html body .rdp-root {
+    --rdp-cell-size: 36px !important;
+    --rdp-day-width: 36px !important;
+    --rdp-day-height: 36px !important;
+    --rdp-day_button-width: 36px !important;
+    --rdp-day_button-height: 36px !important;
     font-size: 0.9rem;
   }
 }
