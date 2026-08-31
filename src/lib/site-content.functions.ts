@@ -69,7 +69,8 @@ export const getSiteContent = createServerFn({ method: "GET" })
 // Public: only date ranges + status (no customer PII)
 export const getReservas = createServerFn({ method: "GET" })
   .handler(async () => {
-    const { data, error } = await (supabase as any)
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await (supabaseAdmin as any)
       .rpc("get_reservas_disponibilidade");
     if (error) throw error;
     return ((data as any[]) || []).sort((a, b) =>
