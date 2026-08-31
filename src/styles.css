@@ -386,7 +386,7 @@ img:not([class*="h-full"]):not([class*="h-["]) { height: auto; }
   h3 { font-size: clamp(1.35rem, 5.5vw, 1.6rem) !important; line-height: 1.25; }
   p, li { line-height: 1.55; }
   /* nunca menos de 16px no corpo de texto */
-  p, li, .text-xs, .text-sm { font-size: max(1rem, 1em); }
+  p:not([class*="text-["]):not(.text-tiny), li { font-size: max(1rem, 1em); }
   /* iOS: evita zoom automático nos campos */
   input, textarea, select { font-size: 16px !important; }
   /* respiro lateral mínimo */
