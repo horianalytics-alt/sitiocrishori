@@ -253,47 +253,86 @@ function Index() {
             </div>
             
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <div className="relative group mb-12 md:mb-16">
-                <TabsList className="flex flex-nowrap overflow-x-auto pb-4 md:pb-0 md:flex-wrap h-auto gap-2 md:gap-4 justify-start md:justify-center bg-transparent no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth">
+              <div className="mb-12 md:mb-16">
+                {/* Mobile: botões empilhados verticalmente */}
+                <div className="flex md:hidden flex-col w-full gap-3">
                   {[
                     { id: "finais-de-semana", label: "Finais de Semana", season: "none" as Season },
                     { id: "festas-eventos", label: "Festas & Eventos", season: "none" as Season },
                     { id: "day-use", label: "Day Use", season: "none" as Season },
-                    { id: "separator", label: "", type: "separator" },
+                  ].map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveTab(t.id);
+                        setActiveSeason(t.season);
+                      }}
+                      className={`w-full min-h-[52px] rounded-xl text-sm font-bold uppercase tracking-wide border transition-all ${
+                        activeTab === t.id
+                          ? "bg-[#FE8330] text-white border-[#FE8330]"
+                          : "bg-transparent text-gray-500 border-gray-200 hover:border-[#FE8330]/40"
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                  <div className="text-[10px] font-black uppercase tracking-[0.25em] text-gray-400 py-2 text-center">
+                    Pacotes Sazonais
+                  </div>
+                  {[
                     { id: "natal", label: "Natal ❄️", season: "natal" as Season },
                     { id: "ano-novo", label: "Ano Novo ✨", season: "ano-novo" as Season },
                     { id: "pascoa", label: "Páscoa 🐰", season: "pascoa" as Season },
-                  ].map((t, idx) => {
-                    if (t.type === "separator") {
-                      return (
-                        <div key={`sep-${idx}`} className="hidden md:block w-px h-8 bg-gray-200 self-center mx-2" />
-                      );
-                    }
-                    return (
-                      <TabsTrigger 
-                        key={t.id} 
-                        value={t.id!} 
-                        activeValue={activeTab}
-                        onClick={() => {
-                          setActiveTab(t.id!);
-                          setActiveSeason(t.season!);
-                          if (t.season !== 'none') {
-                            seasonalEffectsRef.current?.playSound(t.season!);
-                          }
-                        }}
-                        className="shrink-0 px-4 py-3 min-h-11 md:px-10 md:py-5 rounded-full whitespace-nowrap text-xs md:text-base font-bold shadow-sm border border-transparent data-[state=active]:border-[#FE8330]/20 data-[state=active]:bg-[#FE8330] data-[state=active]:text-white transition-all"
-                      >
-                        {t.label}
-                      </TabsTrigger>
-                    );
-                  })}
-                </TabsList>
-                
-                {/* Mobile Scroll Hint */}
-                <div className="absolute right-0 top-0 h-[3.25rem] w-10 pointer-events-none md:hidden flex items-center justify-end animate-pulse">
-                  <div className="w-6 h-6 rounded-full bg-[#FE8330] text-white shadow-md flex items-center justify-center">
-                    <span className="text-xs">→</span>
-                  </div>
+                  ].map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveTab(t.id);
+                        setActiveSeason(t.season);
+                        seasonalEffectsRef.current?.playSound(t.season);
+                      }}
+                      className={`w-full min-h-[52px] rounded-xl text-sm font-bold uppercase tracking-wide border transition-all ${
+                        activeTab === t.id
+                          ? "bg-[#FE8330] text-white border-[#FE8330]"
+                          : "bg-transparent text-gray-500 border-gray-200 hover:border-[#FE8330]/40"
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Desktop: pills horizontais com scroll suave */}
+                <div className="hidden md:flex flex-nowrap overflow-x-auto h-auto gap-3 md:gap-4 justify-center bg-transparent p-0 no-scrollbar scroll-smooth">
+                  {[
+                    { id: "finais-de-semana", label: "Finais de Semana", season: "none" as Season },
+                    { id: "festas-eventos", label: "Festas & Eventos", season: "none" as Season },
+                    { id: "day-use", label: "Day Use", season: "none" as Season },
+                    { id: "natal", label: "Natal ❄️", season: "natal" as Season },
+                    { id: "ano-novo", label: "Ano Novo ✨", season: "ano-novo" as Season },
+                    { id: "pascoa", label: "Páscoa 🐰", season: "pascoa" as Season },
+                  ].map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveTab(t.id);
+                        setActiveSeason(t.season);
+                        if (t.season !== 'none') {
+                          seasonalEffectsRef.current?.playSound(t.season);
+                        }
+                      }}
+                      className={`shrink-0 px-6 py-3 min-h-11 rounded-full whitespace-nowrap text-sm font-bold border transition-all ${
+                        activeTab === t.id
+                          ? "bg-[#FE8330] text-white border-[#FE8330]"
+                          : "bg-white/50 text-gray-600 border-transparent hover:border-[#FE8330]/30"
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
                 </div>
               </div>
               
