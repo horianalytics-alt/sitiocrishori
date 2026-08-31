@@ -426,8 +426,22 @@ img:not([class*="h-full"]):not([class*="h-["]) { height: auto; }
   margin: 0;
   max-width: 100%;
 }
-@media (max-width: 380px) {
-  .rdp { --rdp-cell-size: 33px; font-size: 0.85rem; }
+.rdp-root {
+  --rdp-day-width: 38px;
+  --rdp-day-height: 38px;
+  --rdp-day_button-width: 38px;
+  --rdp-day_button-height: 38px;
+  max-width: 100%;
+}
+@media (max-width: 400px) {
+  .rdp, .rdp-root {
+    --rdp-cell-size: 32px;
+    --rdp-day-width: 32px;
+    --rdp-day-height: 32px;
+    --rdp-day_button-width: 32px;
+    --rdp-day_button-height: 32px;
+    font-size: 0.85rem;
+  }
 }
 
 /* Transição de tema sem flash branco */
