@@ -128,7 +128,7 @@ function Index() {
               loading="eager"
             />
           </div>
-          <div className="relative z-20 text-center px-6 max-w-6xl mx-auto space-y-10">
+          <div className="relative z-20 text-center px-5 max-w-6xl mx-auto space-y-6 md:space-y-10">
             <div className="flex flex-wrap justify-center gap-2 md:gap-3" data-aos="fade-down" data-aos-duration="1200">
               {(hero?.badges || ["Piscina Aquecida", "Campo", "Área Gourmet"]).map((b, i) => (
                 <span 
@@ -142,7 +142,7 @@ function Index() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight" data-aos="zoom-out" data-aos-duration="1200">
               {hero?.headline}
             </h1>
-            <p className="text-sm sm:text-base md:text-lg text-white/90 font-medium max-w-2xl mx-auto leading-relaxed px-4" data-aos="fade-up" data-aos-delay="400">
+            <p className="text-base md:text-lg text-white/90 font-medium max-w-[55ch] mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="400">
               {hero?.subheadline}
             </p>
             <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-10 pt-4 md:pt-8 w-full md:w-auto">
@@ -176,7 +176,7 @@ function Index() {
             <div className="flex-1 space-y-8">
               <div className="space-y-4">
                 <h2 className="text-2xl md:text-5xl font-black tracking-tight">Escolha suas datas</h2>
-                <p className="text-sm md:text-lg text-muted-foreground">Selecione o período desejado no calendário para consultar valores e disponibilidade instantânea.</p>
+                <p className="text-base md:text-lg text-muted-foreground max-w-[60ch]">Selecione o período desejado no calendário para consultar valores e disponibilidade instantânea.</p>
               </div>
               <div className="flex justify-center p-2 md:p-4 bg-[#FAF8F5] rounded-3xl border overflow-x-auto">
                 <DayPicker
@@ -192,7 +192,7 @@ function Index() {
               </div>
             </div>
             
-            <div className="lg:w-[400px] w-full bg-[#FAF8F5] p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] border-2 border-[#FE8330]/10 space-y-8 lg:sticky lg:top-10">
+            <div className="lg:w-[400px] w-full bg-[#FAF8F5] p-5 md:p-10 rounded-[2rem] md:rounded-[2.5rem] border-2 border-[#FE8330]/10 space-y-8 lg:sticky lg:top-10">
               <h3 className="text-2xl font-black flex items-center gap-3"><CheckCircle className="text-[#FE8330]" /> Reserva Garantida</h3>
               {selectedRange?.from ? (
                 <div className="space-y-6 animate-fade-in">
@@ -219,12 +219,12 @@ function Index() {
         </section>
 
         {/* Infrastructure Grid */}
-        <section id="infraestrutura" className="py-32 px-6 max-w-7xl mx-auto">
-          <div className="text-center mb-20 space-y-4">
+        <section id="infraestrutura" className="py-20 md:py-32 px-4 md:px-6 max-w-7xl mx-auto">
+          <div className="text-center mb-12 md:mb-20 space-y-4">
             <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Estrutura de Alto Padrão</h2>
-            <p className="text-xs md:text-lg text-muted-foreground max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">Cada detalhe foi planejado para oferecer o máximo conforto e diversão para você e seus convidados.</p>
+            <p className="text-base md:text-lg text-muted-foreground max-w-[60ch] mx-auto" data-aos="fade-up" data-aos-delay="100">Cada detalhe foi planejado para oferecer o máximo conforto e diversão para você e seus convidados.</p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12">
             {infrastructure?.map((item, i) => (
               <div key={i} className="card-premium rounded-[2rem] md:rounded-[3rem] overflow-hidden group" data-aos="fade-up" data-aos-delay={i*100}>
                 <div className="aspect-[4/5] overflow-hidden relative">
@@ -244,17 +244,17 @@ function Index() {
         </section>
 
         {/* Tabs Modalidades & Sazonalidades */}
-        <section id="pacotes" className="py-32 bg-white relative overflow-hidden">
+        <section id="pacotes" className="py-20 md:py-32 bg-white relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-gray-200 to-transparent" />
-          <div className="max-w-6xl mx-auto px-6">
+          <div className="max-w-6xl mx-auto px-4 md:px-6">
             <div className="text-center mb-16">
               <h2 className="text-2xl md:text-5xl font-black tracking-tight mb-4">Escolha sua Modalidade</h2>
-              <p className="text-sm md:text-lg text-muted-foreground font-medium px-4">Temos o formato ideal para cada tipo de celebração.</p>
+              <p className="text-base md:text-lg text-muted-foreground font-medium max-w-[60ch] mx-auto">Temos o formato ideal para cada tipo de celebração.</p>
             </div>
             
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <div className="relative group mb-12 md:mb-16">
-                <TabsList className="flex flex-nowrap overflow-x-auto pb-4 md:pb-0 md:flex-wrap h-auto gap-2 md:gap-4 justify-start md:justify-center bg-transparent no-scrollbar -mx-6 px-6 md:mx-0 md:px-0 scroll-smooth">
+                <TabsList className="flex flex-nowrap overflow-x-auto pb-4 md:pb-0 md:flex-wrap h-auto gap-2 md:gap-4 justify-start md:justify-center bg-transparent no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth">
                   {[
                     { id: "finais-de-semana", label: "Finais de Semana", season: "none" as Season },
                     { id: "festas-eventos", label: "Festas & Eventos", season: "none" as Season },
@@ -281,7 +281,7 @@ function Index() {
                             seasonalEffectsRef.current?.playSound(t.season!);
                           }
                         }}
-                        className="px-4 py-2.5 md:px-10 md:py-5 rounded-full whitespace-nowrap text-xs md:text-base font-bold shadow-sm border border-transparent data-[state=active]:border-[#FE8330]/20 data-[state=active]:bg-[#FE8330] data-[state=active]:text-white transition-all"
+                        className="px-4 py-3 min-h-11 md:px-10 md:py-5 rounded-full whitespace-nowrap text-xs md:text-base font-bold shadow-sm border border-transparent data-[state=active]:border-[#FE8330]/20 data-[state=active]:bg-[#FE8330] data-[state=active]:text-white transition-all"
                       >
                         {t.label}
                       </TabsTrigger>
@@ -297,7 +297,7 @@ function Index() {
                 </div>
               </div>
               
-              <div className="relative overflow-hidden min-h-[500px]">
+              <div className="relative overflow-hidden min-h-[420px] md:min-h-[500px]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeTab}
@@ -340,13 +340,13 @@ function Index() {
                     </TabsContent>
 
                     <TabsContent value="natal" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
+                      <div className="p-5 md:p-12 bg-[#FAF8F5] rounded-[2rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Natal Encantado</span>
                             <h3 className="text-2xl md:text-5xl font-black tracking-tight">Natal no Sítio ❄️</h3>
                           </div>
-                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Viva a magia do Natal com sua família em um ambiente decorado e acolhedor.</p>
+                          <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-medium max-w-[60ch]">Viva a magia do Natal com sua família em um ambiente decorado e acolhedor.</p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {[
                               "Decoração temática inclusa",
@@ -370,13 +370,13 @@ function Index() {
                     </TabsContent>
 
                     <TabsContent value="ano-novo" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
+                      <div className="p-5 md:p-12 bg-[#FAF8F5] rounded-[2rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Réveillon Premium</span>
                             <h3 className="text-2xl md:text-5xl font-black tracking-tight">Ano Novo ✨</h3>
                           </div>
-                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Inicie o novo ciclo com estilo, paz e uma festa inesquecível entre amigos.</p>
+                          <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-medium max-w-[60ch]">Inicie o novo ciclo com estilo, paz e uma festa inesquecível entre amigos.</p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {[
                               "Queima de fogos privativa",
@@ -400,13 +400,13 @@ function Index() {
                     </TabsContent>
 
                     <TabsContent value="pascoa" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
+                      <div className="p-5 md:p-12 bg-[#FAF8F5] rounded-[2rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Páscoa no Sítio</span>
                             <h3 className="text-2xl md:text-5xl font-black tracking-tight">Páscoa 🐰</h3>
                           </div>
-                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Momentos de união e diversão para as crianças com nossa caça aos ovos.</p>
+                          <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-medium max-w-[60ch]">Momentos de união e diversão para as crianças com nossa caça aos ovos.</p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {[
                               "Caça aos ovos monitorada",
@@ -430,13 +430,13 @@ function Index() {
                     </TabsContent>
 
                     <TabsContent value="festas-eventos" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
+                      <div className="p-5 md:p-12 bg-[#FAF8F5] rounded-[2rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Celebrações Memoráveis</span>
                             <h3 className="text-2xl md:text-5xl font-black tracking-tight">Festas & Eventos</h3>
                           </div>
-                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">O cenário ideal para casamentos, aniversários e eventos corporativos com suporte completo.</p>
+                          <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-medium max-w-[60ch]">O cenário ideal para casamentos, aniversários e eventos corporativos com suporte completo.</p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {[
                               "Salão de festas coberto",
@@ -460,13 +460,13 @@ function Index() {
                     </TabsContent>
 
                     <TabsContent value="day-use" activeValue={activeTab} className="mt-0 focus-visible:outline-none">
-                      <div className="p-6 md:p-12 bg-[#FAF8F5] rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
+                      <div className="p-5 md:p-12 bg-[#FAF8F5] rounded-[2rem] md:rounded-[4rem] border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center shadow-inner">
                         <div className="flex-1 space-y-8">
                           <div className="space-y-4">
                             <span className="text-[#FE8330] font-black uppercase tracking-[0.3em] text-[10px]">Lazer e Diversão</span>
                             <h3 className="text-2xl md:text-5xl font-black tracking-tight">Day Use</h3>
                           </div>
-                          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">Aproveite toda a nossa infraestrutura de lazer por um dia inteiro com amigos e família.</p>
+                          <p className="text-base md:text-xl text-muted-foreground leading-relaxed font-medium max-w-[60ch]">Aproveite toda a nossa infraestrutura de lazer por um dia inteiro com amigos e família.</p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {[
                               "Acesso total à piscina",
@@ -496,22 +496,22 @@ function Index() {
         </section>
 
         {/* Testimonials */}
-        <section className="py-32 bg-[#FAF8F5] relative">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-20 space-y-4">
+        <section className="py-20 md:py-32 bg-[#FAF8F5] relative">
+          <div className="max-w-7xl mx-auto px-4 md:px-6">
+            <div className="text-center mb-12 md:mb-20 space-y-4">
               <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Memórias Inesquecíveis</h2>
-              <p className="text-xs md:text-lg text-muted-foreground font-medium max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">Confira o depoimento de quem já viveu momentos especiais em nosso espaço.</p>
+              <p className="text-base md:text-lg text-muted-foreground font-medium max-w-[60ch] mx-auto" data-aos="fade-up" data-aos-delay="100">Confira o depoimento de quem já viveu momentos especiais em nosso espaço.</p>
             </div>
-            <div className="grid md:grid-cols-3 gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
               {(depoimentos || []).map((dep, i) => (
-                <div key={i} className="bg-white p-8 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] space-y-6 md:space-y-8 border border-gray-100 hover-lift relative group" data-aos="fade-up" data-aos-delay={i*100}>
+                <div key={i} className="bg-white p-6 md:p-12 rounded-[2rem] md:rounded-[3.5rem] md:rounded-[3.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] space-y-5 md:space-y-8 border border-gray-100 hover-lift relative group" data-aos="fade-up" data-aos-delay={i*100}>
                   <div className="absolute top-10 right-10 opacity-10 group-hover:opacity-20 transition-opacity">
                     <Star className="w-16 h-16 fill-[#FE8330] text-[#FE8330]" />
                   </div>
                   <div className="flex text-[#FE8330] gap-1">
                     {Array.from({length: dep.estrelas}).map((_, j) => <Star key={j} className="w-5 h-5 fill-current" />)}
                   </div>
-                  <p className="text-lg md:text-xl font-medium leading-relaxed text-gray-700 relative z-10">"{dep.depoimento}"</p>
+                  <p className="text-base md:text-xl font-medium leading-relaxed text-gray-700 relative z-10 max-w-[60ch]">"{dep.depoimento}"</p>
                   <div className="pt-6 border-t border-gray-50">
                     <p className="font-extrabold text-xl md:text-2xl tracking-tight">{dep.nome}</p>
                     <p className="text-[#FE8330] font-black text-[10px] uppercase tracking-[0.3em] mt-1">{dep.evento}</p>
@@ -523,7 +523,7 @@ function Index() {
         </section>
 
         {/* Gallery Section */}
-        <section id="galeria" className="py-32 bg-white px-6 overflow-hidden">
+        <section id="galeria" className="py-20 md:py-32 bg-white px-4 md:px-6 overflow-hidden">
           <div className="max-w-7xl mx-auto space-y-16">
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="text-left space-y-4">
@@ -538,7 +538,7 @@ function Index() {
             </div>
 
             <div className="relative">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8 py-10 md:py-20">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-8 md:py-20">
                 {photos.map((photo, i) => (
                   <GalleryPhotoCard
                     key={`${photo.url}-${i}`}
@@ -556,10 +556,10 @@ function Index() {
 
 
         {/* FAQ */}
-        <section className="py-32 px-6 max-w-4xl mx-auto">
+        <section className="py-20 md:py-32 px-4 md:px-6 max-w-4xl mx-auto">
           <div className="text-center mb-16 md:mb-20 space-y-4">
             <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Dúvidas Frequentes</h2>
-            <p className="text-xs md:text-lg text-muted-foreground font-medium px-4" data-aos="fade-up" data-aos-delay="100">Tudo o que você precisa saber para planejar sua estadia.</p>
+            <p className="text-base md:text-lg text-muted-foreground font-medium max-w-[60ch] mx-auto" data-aos="fade-up" data-aos-delay="100">Tudo o que você precisa saber para planejar sua estadia.</p>
           </div>
           <Accordion className="space-y-6">
             {(faq || []).map((item, i) => (
@@ -573,31 +573,31 @@ function Index() {
 
       {/* Lightbox */}
       {selectedImage && (
-        <div className="fixed inset-0 z-[100] bg-black/98 flex items-center justify-center p-6 backdrop-blur-xl transition-all" onClick={() => setSelectedImage(null)}>
-          <div className="relative group max-w-7xl max-h-[90vh]">
-            <img src={selectedImage} className="w-full h-full object-contain rounded-3xl shadow-[0_0_100px_rgba(0,0,0,0.5)]" alt="Visualização" />
-            <button className="absolute -top-4 -right-4 w-12 h-12 bg-white text-black rounded-full flex items-center justify-center font-black shadow-2xl hover:scale-110 transition-transform">×</button>
+        <div className="fixed inset-0 z-[100] bg-black/98 flex items-center justify-center p-4 md:p-6 backdrop-blur-xl transition-all" onClick={() => setSelectedImage(null)}>
+          <div className="relative group w-full max-w-[90vw] md:max-w-5xl max-h-[85vh]">
+            <img src={selectedImage} className="w-full max-h-[85vh] object-contain rounded-2xl md:rounded-3xl shadow-[0_0_100px_rgba(0,0,0,0.5)]" alt="Visualização" />
+            <button className="absolute top-2 right-2 md:-top-4 md:-right-4 w-12 h-12 bg-white text-black rounded-full flex items-center justify-center text-2xl font-black shadow-2xl hover:scale-110 transition-transform" aria-label="Fechar imagem">×</button>
           </div>
         </div>
       )}
 
       <WhatsAppButton phoneNumber={hero?.whatsapp_number || ""} floating message={hero?.whatsapp_message} label="Falar com a Administração" />
 
-      <footer className="py-32 bg-[#1E2229] text-white relative overflow-hidden">
+      <footer className="py-16 md:py-32 bg-[#1E2229] text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-white/10 to-transparent" />
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-16 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-16 relative z-10">
           <div className="space-y-8">
             <h2 className="text-3xl font-black text-[#FE8330] tracking-tight">Sítio de Eventos</h2>
-            <p className="text-gray-400 text-lg leading-relaxed font-medium">O cenário perfeito para transformar seus momentos em memórias inesquecíveis.</p>
+            <p className="text-gray-400 text-base md:text-lg leading-relaxed font-medium max-w-[60ch]">O cenário perfeito para transformar seus momentos em memórias inesquecíveis.</p>
           </div>
           
           <div className="space-y-6">
             <h4 className="text-lg font-bold uppercase tracking-widest text-[#FE8330]/60">Navegação</h4>
             <ul className="space-y-4 font-medium text-gray-300">
-              <li><button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="hover:text-[#FE8330] transition-colors">Início</button></li>
-              <li><button onClick={() => document.getElementById('infraestrutura')?.scrollIntoView({behavior: 'smooth'})} className="hover:text-[#FE8330] transition-colors">Estrutura</button></li>
-              <li><button onClick={() => document.getElementById('galeria')?.scrollIntoView({behavior: 'smooth'})} className="hover:text-[#FE8330] transition-colors">Galeria</button></li>
-              <li><button onClick={() => document.getElementById('calendario')?.scrollIntoView({behavior: 'smooth'})} className="hover:text-[#FE8330] transition-colors">Reservas</button></li>
+              <li><button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="py-2 inline-flex min-h-11 items-center hover:text-[#FE8330] transition-colors">Início</button></li>
+              <li><button onClick={() => document.getElementById('infraestrutura')?.scrollIntoView({behavior: 'smooth'})} className="py-2 inline-flex min-h-11 items-center hover:text-[#FE8330] transition-colors">Estrutura</button></li>
+              <li><button onClick={() => document.getElementById('galeria')?.scrollIntoView({behavior: 'smooth'})} className="py-2 inline-flex min-h-11 items-center hover:text-[#FE8330] transition-colors">Galeria</button></li>
+              <li><button onClick={() => document.getElementById('calendario')?.scrollIntoView({behavior: 'smooth'})} className="py-2 inline-flex min-h-11 items-center hover:text-[#FE8330] transition-colors">Reservas</button></li>
             </ul>
           </div>
 
@@ -615,7 +615,7 @@ function Index() {
           </div>
         </div>
         
-        <div className="max-w-7xl mx-auto px-6 mt-20 pt-10 border-t border-white/5 text-center text-gray-500 text-sm">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 mt-12 md:mt-20 pt-10 border-t border-white/5 text-center text-gray-500 text-sm">
           <p>© 2026 Sítio de Eventos. Todos os direitos reservados.</p>
         </div>
       </footer>
