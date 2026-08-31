@@ -99,6 +99,9 @@ function Index() {
   }));
 
   const isDayReserved = (day: Date) => reservedDays.some(range => isWithinInterval(startOfDay(day), { start: range.from, end: range.to }));
+  const { mode, toggle: toggleMode } = useDayNight();
+  const photos = filterByMode(normalizeGallery(galleryData), mode);
+
 
 
 
