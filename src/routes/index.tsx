@@ -281,7 +281,7 @@ function Index() {
                             seasonalEffectsRef.current?.playSound(t.season!);
                           }
                         }}
-                        className="px-4 py-3 min-h-11 md:px-10 md:py-5 rounded-full whitespace-nowrap text-xs md:text-base font-bold shadow-sm border border-transparent data-[state=active]:border-[#FE8330]/20 data-[state=active]:bg-[#FE8330] data-[state=active]:text-white transition-all"
+                        className="shrink-0 px-4 py-3 min-h-11 md:px-10 md:py-5 rounded-full whitespace-nowrap text-xs md:text-base font-bold shadow-sm border border-transparent data-[state=active]:border-[#FE8330]/20 data-[state=active]:bg-[#FE8330] data-[state=active]:text-white transition-all"
                       >
                         {t.label}
                       </TabsTrigger>
@@ -290,9 +290,9 @@ function Index() {
                 </TabsList>
                 
                 {/* Mobile Scroll Hint */}
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-full bg-linear-to-l from-white to-transparent pointer-events-none md:hidden flex items-center justify-end pr-2 animate-pulse">
-                  <div className="w-6 h-6 rounded-full bg-white/80 shadow-sm flex items-center justify-center border border-gray-100">
-                    <span className="text-[#FE8330] text-xs">→</span>
+                <div className="absolute right-0 top-0 h-[3.25rem] w-10 pointer-events-none md:hidden flex items-center justify-end animate-pulse">
+                  <div className="w-6 h-6 rounded-full bg-[#FE8330] text-white shadow-md flex items-center justify-center">
+                    <span className="text-xs">→</span>
                   </div>
                 </div>
               </div>
