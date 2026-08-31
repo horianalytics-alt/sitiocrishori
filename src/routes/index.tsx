@@ -104,9 +104,13 @@ function Index() {
 
   return (
     <div 
-      className="min-h-screen bg-[#FAF8F5] text-[#1E2229] selection:bg-[#FE8330] selection:text-white"
+      className={`min-h-screen selection:bg-[#FE8330] selection:text-white ${mode === "noite" ? "mode-noite" : "mode-dia"}`}
     >
+      <div className="ambient-layer" aria-hidden="true" />
+      <DayNightToggle mode={mode} onToggle={toggleMode} />
       <SeasonalEffects ref={seasonalEffectsRef} season={activeSeason} isEnabled={effectsEnabled} isSoundEnabled={soundEnabled} />
+      
+
       
 
       <main>
