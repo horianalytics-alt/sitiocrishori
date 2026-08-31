@@ -173,7 +173,7 @@ function AdminDashboard() {
       } else if (type === 'hero' && heroForm) {
         setHeroForm({ ...heroForm, hero_image: imageUrl });
       } else if (type === 'gallery' && galleryForm) {
-        setGalleryForm([...galleryForm, imageUrl])
+        setGalleryForm([...galleryForm, { url: imageUrl, tag: 'ambos' }])
       }
 
       toast.success('Upload concluído com sucesso!')
