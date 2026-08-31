@@ -339,7 +339,7 @@ function AdminDashboard() {
                     <img src={photo.url} className="w-full h-full object-cover rounded-t-2xl" alt={`Foto ${i + 1}`} />
                     <button onClick={() => setGalleryForm(galleryForm.filter((_, idx) => idx !== i))} className="absolute top-2 right-2 w-9 h-9 md:w-10 md:h-10 bg-red-500 text-white flex items-center justify-center rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow-md" aria-label="Excluir foto"><Trash2 className="w-3.5 h-3.5 md:w-4 md:h-4" /></button>
                   </div>
-                  <div className="p-2 flex flex-nowrap gap-1.5 overflow-visible">
+                  <div className="p-2 flex flex-nowrap gap-1 md:gap-1.5 overflow-visible">
                     {TAG_OPTIONS.map(opt => {
                       const [emoji, ...rest] = opt.label.split(" ")
                       const word = rest.join(" ")
