@@ -364,3 +364,71 @@
   border-color: var(--amb-border);
   color: var(--amb-text);
 }
+
+/* ============================================================
+   AUDITORIA MOBILE — layout, toque, tipografia e performance
+   ============================================================ */
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+*, *::before, *::after { min-width: 0; }
+
+img, video, canvas, svg { max-width: 100%; }
+img:not([class*="h-full"]):not([class*="h-["]) { height: auto; }
+
+/* Tipografia responsiva base */
+@media (max-width: 767px) {
+  h1 { font-size: clamp(1.75rem, 7.5vw, 2rem) !important; line-height: 1.2; }
+  h2 { font-size: clamp(1.5rem, 6vw, 1.85rem) !important; line-height: 1.2; }
+  h3 { font-size: clamp(1.35rem, 5.5vw, 1.6rem) !important; line-height: 1.25; }
+  p, li { line-height: 1.55; }
+  /* nunca menos de 16px no corpo de texto */
+  p, li, .text-xs, .text-sm { font-size: max(1rem, 1em); }
+  /* iOS: evita zoom automático nos campos */
+  input, textarea, select { font-size: 16px !important; }
+  /* respiro lateral mínimo */
+  main > section { padding-left: max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); }
+}
+
+/* Áreas de toque mínimas (44px) */
+@media (pointer: coarse) {
+  button, a[href], label[role="button"], [role="tab"], summary {
+    min-height: 44px;
+  }
+  button:not([class*="w-full"]), a[href]:not([class*="w-full"]) { min-width: 44px; }
+  input[type="date"], input[type="number"], input[type="text"],
+  input[type="email"], input[type="password"], select { min-height: 48px; }
+}
+
+/* Hover não existe em touch: usa feedback de tap */
+@media (hover: none) {
+  .hover-lift:hover, .card-premium:hover, .btn-premium:hover { transform: none; }
+  button:active, a:active { transform: scale(0.98); }
+}
+
+/* Acessibilidade: reduzir movimento */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-aos] { opacity: 1 !important; transform: none !important; }
+}
+
+/* Calendário responsivo sem overflow */
+.rdp {
+  --rdp-cell-size: 38px;
+  margin: 0;
+  max-width: 100%;
+}
+@media (max-width: 380px) {
+  .rdp { --rdp-cell-size: 33px; font-size: 0.85rem; }
+}
+
+/* Transição de tema sem flash branco */
+.mode-dia, .mode-noite { will-change: background-color; }
