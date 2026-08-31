@@ -185,14 +185,14 @@ function AdminDashboard() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto py-10 px-4 space-y-10">
+    <div className="w-full max-w-6xl mx-auto py-8 md:py-10 px-4 space-y-8 md:space-y-10">
       <header className="space-y-2">
-        <h1 className="text-4xl font-black text-[#1E2229]">Painel Administrativo</h1>
-        <p className="text-muted-foreground text-lg">Gerenciamento completo do Sítio</p>
+        <h1 className="text-2xl md:text-4xl font-black text-[#1E2229]">Painel Administrativo</h1>
+        <p className="text-muted-foreground text-base md:text-lg">Gerenciamento completo do Sítio</p>
       </header>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="flex flex-wrap h-auto gap-2 bg-transparent p-0 mb-8">
+        <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap h-auto gap-2 bg-transparent p-0 mb-6 md:mb-8">
           {[
             { id: "hero", icon: Home, label: "Hero" },
             { id: "reservas", icon: Calendar, label: "Reservas" },
@@ -206,7 +206,7 @@ function AdminDashboard() {
               value={tab.id} 
               activeValue={activeTab} 
               onClick={setActiveTab}
-              className="flex-1 min-w-[120px] py-4 rounded-2xl border bg-white data-[state=active]:bg-[#FE8330] data-[state=active]:text-white shadow-sm transition-all"
+              className="w-full md:flex-1 md:min-w-[120px] min-h-12 py-3 px-3 text-sm rounded-2xl border bg-white data-[state=active]:bg-[#FE8330] data-[state=active]:text-white shadow-sm transition-all"
             >
               <tab.icon className="w-4 h-4 mr-2" /> {tab.label}
             </TabsTrigger>
@@ -214,7 +214,7 @@ function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="hero" activeValue={activeTab}>
-          <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
+          <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
             <h2 className="text-2xl font-bold">Conteúdo Principal</h2>
             <div className="grid gap-6">
               <div className="space-y-2">
@@ -225,7 +225,7 @@ function AdminDashboard() {
                 <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Subtítulo</label>
                 <textarea className="w-full p-4 rounded-2xl border focus:ring-2 ring-[#FE8330]/20 min-h-[80px]" value={heroForm?.subheadline || ""} onChange={e => setHeroForm({...heroForm, subheadline: e.target.value})} />
               </div>
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Número WhatsApp</label>
                   <input className="w-full p-4 rounded-2xl border" value={heroForm?.whatsapp_number || ""} onChange={e => setHeroForm({...heroForm, whatsapp_number: e.target.value})} />
@@ -241,9 +241,9 @@ function AdminDashboard() {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Imagem de Fundo (Hero)</label>
-                <div className="flex gap-4 items-center">
-                  <input className="flex-1 p-4 rounded-2xl border" value={heroForm?.hero_image || ""} onChange={e => setHeroForm({...heroForm, hero_image: e.target.value})} placeholder="URL da imagem ou faça upload..." />
-                  <label className="cursor-pointer bg-[#FE8330]/10 text-[#FE8330] p-4 rounded-2xl hover:bg-[#FE8330]/20 transition-colors flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center">
+                  <input className="w-full sm:flex-1 p-4 rounded-2xl border" value={heroForm?.hero_image || ""} onChange={e => setHeroForm({...heroForm, hero_image: e.target.value})} placeholder="URL da imagem ou faça upload..." />
+                  <label className="cursor-pointer bg-[#FE8330]/10 text-[#FE8330] p-4 min-h-12 rounded-2xl hover:bg-[#FE8330]/20 transition-colors flex items-center justify-center gap-2">
                     {isUploading === 'hero' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
                     <span className="font-bold text-sm uppercase">Upload</span>
                     <input type="file" className="hidden" accept="image/*" onChange={e => handleFileUpload(e, 'hero')} />
@@ -256,7 +256,7 @@ function AdminDashboard() {
                 )}
               </div>
             </div>
-            <button onClick={() => updateContentMutation.mutate({ section: 'hero', content: heroForm })} className="w-full py-4 bg-[#FE8330] text-white font-black rounded-2xl hover:bg-[#E06B1B] transition-colors flex items-center justify-center gap-2">
+            <button onClick={() => updateContentMutation.mutate({ section: 'hero', content: heroForm })} className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl hover:bg-[#E06B1B] transition-colors flex items-center justify-center gap-2">
               <Save className="w-5 h-5" /> SALVAR HERO
             </button>
 
@@ -265,9 +265,9 @@ function AdminDashboard() {
 
         <TabsContent value="reservas" activeValue={activeTab}>
           <div className="space-y-6">
-            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100">
+            <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100">
               <h2 className="text-2xl font-bold mb-6">Bloquear Agenda / Nova Reserva</h2>
-              <form className="grid md:grid-cols-3 gap-6" onSubmit={e => {
+              <form className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6" onSubmit={e => {
                 e.preventDefault();
                 const form = e.target as HTMLFormElement;
                 const data = {
@@ -285,20 +285,20 @@ function AdminDashboard() {
                 <input name="nome" placeholder="Nome do Cliente" className="p-4 rounded-2xl border" required />
                 <input name="tel" placeholder="WhatsApp do Cliente" className="p-4 rounded-2xl border" />
                 <input name="val" type="number" placeholder="Valor (R$)" className="p-4 rounded-2xl border" />
-                <button type="submit" className="bg-[#FE8330] text-white font-bold rounded-2xl hover:bg-[#E06B1B]">BLOQUEAR DATA</button>
+                <button type="submit" className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-bold rounded-2xl hover:bg-[#E06B1B]">BLOQUEAR DATA</button>
               </form>
             </div>
 
             <div className="grid gap-4">
               {reservas.map(res => (
-                <div key={res.id} className="bg-white p-6 rounded-3xl border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+                <div key={res.id} className="bg-white p-5 md:p-6 rounded-3xl border shadow-sm flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                   <div>
                     <p className="font-black text-lg">{res.cliente_nome}</p>
                     <p className="text-sm text-muted-foreground">{new Date(res.data_inicio).toLocaleDateString()} até {new Date(res.data_fim).toLocaleDateString()}</p>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between md:justify-end gap-4">
                     <span className="font-bold text-[#FE8330]">R$ {res.valor_total}</span>
-                    <button onClick={() => delResMutation.mutate(res.id)} className="p-3 text-red-500 hover:bg-red-50 rounded-xl"><Trash2 className="w-5 h-5" /></button>
+                    <button onClick={() => delResMutation.mutate(res.id)} className="p-3 min-h-11 min-w-11 flex items-center justify-center text-red-500 hover:bg-red-50 rounded-xl" aria-label="Excluir reserva"><Trash2 className="w-5 h-5" /></button>
                   </div>
                 </div>
               ))}
@@ -307,37 +307,37 @@ function AdminDashboard() {
         </TabsContent>
 
         <TabsContent value="infra" activeValue={activeTab}>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             {infraForm?.map((item, idx) => (
               <div key={idx} className="bg-white p-6 rounded-[2rem] border shadow-sm space-y-4">
                 <input className="w-full text-xl font-bold bg-transparent" value={item.title || ""} onChange={e => { const f = [...(infraForm || [])]; if (f[idx]) f[idx].title = e.target.value; setInfraForm(f) }} />
                 <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.description || ""} onChange={e => { const f = [...(infraForm || [])]; if (f[idx]) f[idx].description = e.target.value; setInfraForm(f) }} />
                 <div className="flex gap-2">
                   <input className="flex-1 text-xs p-2 bg-gray-50 rounded-lg" value={item.image || ""} onChange={e => { const f = [...(infraForm || [])]; if (f[idx]) f[idx].image = e.target.value; setInfraForm(f) }} />
-                  <label className="cursor-pointer bg-gray-100 p-2 rounded-lg">
+                  <label className="cursor-pointer bg-gray-100 p-3 min-h-11 min-w-11 flex items-center justify-center rounded-lg" aria-label="Enviar imagem">
                     <Upload className="w-4 h-4" />
                     <input type="file" className="hidden" onChange={e => handleFileUpload(e, 'infra', idx)} />
                   </label>
                 </div>
-                <button onClick={() => setInfraForm((infraForm || []).filter((_, i) => i !== idx))} className="text-red-500 text-xs font-bold uppercase tracking-widest">Excluir Card</button>
+                <button onClick={() => setInfraForm((infraForm || []).filter((_, i) => i !== idx))} className="text-red-500 text-xs font-bold uppercase tracking-widest py-3 min-h-11">Excluir Card</button>
               </div>
             ))}
             <button onClick={() => setInfraForm([...(infraForm || []), { title: "Novo Item", description: "", image: "" }])} className="border-2 border-dashed rounded-[2rem] p-10 flex flex-col items-center justify-center text-gray-300 hover:border-[#FE8330] hover:text-[#FE8330] transition-all">
               <Plus className="w-10 h-10 mb-2" /> <span>ADICIONAR ITEM</span>
             </button>
           </div>
-          <button onClick={() => updateContentMutation.mutate({ section: 'infrastructure', content: infraForm })} className="mt-8 w-full py-4 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR ESTRUTURA</button>
+          <button onClick={() => updateContentMutation.mutate({ section: 'infrastructure', content: infraForm })} className="mt-6 md:mt-8 w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR ESTRUTURA</button>
 
         </TabsContent>
 
         <TabsContent value="gallery" activeValue={activeTab}>
-          <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 space-y-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6 md:space-y-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
               {galleryForm.map((photo, i) => (
                 <div key={i} className="rounded-2xl border bg-gray-50 overflow-hidden">
                   <div className="relative aspect-square group">
                     <img src={photo.url} className="w-full h-full object-cover" alt={`Foto ${i + 1}`} />
-                    <button onClick={() => setGalleryForm(galleryForm.filter((_, idx) => idx !== i))} className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => setGalleryForm(galleryForm.filter((_, idx) => idx !== i))} className="absolute top-2 right-2 bg-red-500 text-white p-3 min-h-11 min-w-11 flex items-center justify-center rounded-xl opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity" aria-label="Excluir foto"><Trash2 className="w-4 h-4" /></button>
                   </div>
                   <div className="p-2 flex gap-1">
                     {TAG_OPTIONS.map(opt => (
@@ -345,7 +345,7 @@ function AdminDashboard() {
                         key={opt.value}
                         type="button"
                         onClick={() => setGalleryForm(galleryForm.map((p, idx) => idx === i ? { ...p, tag: opt.value as PhotoTag } : p))}
-                        className={`flex-1 text-[10px] font-bold py-2 rounded-lg border transition-all ${photo.tag === opt.value ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-500 hover:border-[#FE8330]/40'}`}
+                        className={`flex-1 text-[10px] font-bold py-3 min-h-11 rounded-lg border transition-all ${photo.tag === opt.value ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-500 hover:border-[#FE8330]/40'}`}
                       >
                         {opt.label}
                       </button>
@@ -353,21 +353,21 @@ function AdminDashboard() {
                   </div>
                 </div>
               ))}
-              <label className="aspect-square border-2 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-[#FE8330] transition-all">
-                <Plus className="w-8 h-8 text-gray-300" />
+              <label className="aspect-square border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2 text-center px-2 cursor-pointer hover:border-[#FE8330] transition-all">
+                <Plus className="w-8 h-8 text-gray-300" /><span className="text-[11px] font-bold uppercase tracking-wide text-gray-400">Toque para enviar foto</span>
                 <input type="file" className="hidden" accept="image/*" onChange={e => handleFileUpload(e, 'gallery')} />
               </label>
             </div>
 
-            <button onClick={() => updateContentMutation.mutate({ section: 'gallery', content: galleryForm })} className="w-full py-4 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR GALERIA</button>
+            <button onClick={() => updateContentMutation.mutate({ section: 'gallery', content: galleryForm })} className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR GALERIA</button>
           </div>
         </TabsContent>
 
         <TabsContent value="dep" activeValue={activeTab}>
           <div className="space-y-6">
-            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100">
+            <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100">
               <h2 className="text-2xl font-bold mb-6">Novo Depoimento</h2>
-              <form className="grid md:grid-cols-2 gap-6" onSubmit={e => {
+              <form className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6" onSubmit={e => {
                 e.preventDefault();
                 const form = e.target as HTMLFormElement;
                 const nomeInput = form.elements.namedItem('nome') as HTMLInputElement;
@@ -391,7 +391,7 @@ function AdminDashboard() {
             </div>
 
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {depoimentos.map(dep => (
                 <div key={dep.id} className="bg-white p-6 rounded-[2rem] border shadow-sm">
                   <div className="flex justify-between items-start mb-4">
@@ -411,18 +411,18 @@ function AdminDashboard() {
         </TabsContent>
 
         <TabsContent value="faq" activeValue={activeTab}>
-          <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
+          <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
             {faqForm?.map((item, idx) => (
               <div key={idx} className="p-6 bg-gray-50 rounded-3xl space-y-3 relative">
                 <input className="w-full font-bold bg-transparent pr-10" value={item.question || ""} onChange={e => { const f = [...(faqForm || [])]; if(f[idx]) f[idx].question = e.target.value; setFaqForm(f) }} />
                 <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.answer || ""} onChange={e => { const f = [...(faqForm || [])]; if(f[idx]) f[idx].answer = e.target.value; setFaqForm(f) }} />
 
 
-                <button onClick={() => setFaqForm(faqForm.filter((_, i) => i !== idx))} className="absolute top-6 right-6 text-red-400"><Trash2 className="w-4 h-4" /></button>
+                <button onClick={() => setFaqForm(faqForm.filter((_, i) => i !== idx))} className="absolute top-4 right-4 p-2 min-h-11 min-w-11 flex items-center justify-center text-red-400" aria-label="Excluir pergunta"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
             <button onClick={() => setFaqForm([...(faqForm || []), { question: "Nova Pergunta", answer: "" }])} className="w-full py-4 border-2 border-dashed rounded-3xl text-gray-400 font-bold hover:border-[#FE8330] hover:text-[#FE8330] transition-all">+ ADICIONAR PERGUNTA</button>
-            <button onClick={() => updateContentMutation.mutate({ section: 'faq', content: faqForm })} className="w-full py-4 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR FAQ</button>
+            <button onClick={() => updateContentMutation.mutate({ section: 'faq', content: faqForm })} className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR FAQ</button>
           </div>
         </TabsContent>
 
