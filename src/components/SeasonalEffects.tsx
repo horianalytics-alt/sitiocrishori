@@ -69,6 +69,8 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
 
   useEffect(() => {
     if (!isEnabled || season === 'none' || !canvasRef.current) return;
+    // Respeita preferência de movimento reduzido
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -76,11 +78,17 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
 
     let animationFrameId: number;
     let particles: any[] = [];
-    const particleCount = season === 'natal' ? 100 : season === 'ano-novo' ? 50 : 30;
+    // Carga reduzida em telas pequenas para não travar a rolagem no mobile
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const baseCount = season === 'natal' ? 100 : season === 'ano-novo' ? 50 : 30;
+    const particleCount = isMobile ? Math.round(baseCount * 0.35) : baseCount;
 
+    const dpr = Math.min(typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1, isMobile ? 1 : 2);
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
     };
 
     window.addEventListener('resize', resize);
