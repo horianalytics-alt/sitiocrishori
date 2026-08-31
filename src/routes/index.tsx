@@ -12,6 +12,11 @@ import { DayPicker, type DateRange } from "react-day-picker";
 import { ptBR } from "date-fns/locale";
 import { format, isWithinInterval, startOfDay } from "date-fns";
 import "react-day-picker/dist/style.css";
+import { useDayNight } from "@/hooks/useDayNight";
+import { DayNightToggle } from "@/components/DayNightToggle";
+import { GalleryPhotoCard } from "@/components/GalleryPhotoCard";
+import { normalizeGallery, filterByMode } from "@/lib/gallery";
+
 
 
 const SITE_URL = "https://sitiocrishori.lovable.app";
