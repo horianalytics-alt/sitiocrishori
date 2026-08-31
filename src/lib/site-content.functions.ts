@@ -202,7 +202,16 @@ const faqSchema = z.array(z.object({
   answer: z.string().max(2000),
 })).max(50);
 
-const gallerySchema = z.array(z.string().max(2000)).max(100);
+const gallerySchema = z.array(
+  z.union([
+    z.string().max(2000),
+    z.object({
+      url: z.string().max(2000),
+      tag: z.enum(["dia", "noite", "ambos"]),
+    }),
+  ]),
+).max(100);
+
 
 const sectionSchemas = {
   hero: heroSchema,
