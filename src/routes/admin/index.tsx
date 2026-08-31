@@ -17,6 +17,8 @@ import { toast } from 'sonner'
 import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon, Calendar, Star } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { normalizeGallery, TAG_OPTIONS, type GalleryPhoto, type PhotoTag } from "@/lib/gallery"
+
 
 export const Route = createFileRoute('/admin/')({
   loader: async ({ context }) => {
@@ -64,7 +66,8 @@ function AdminDashboard() {
   const { data: galleryContent } = useSuspenseQuery({
     queryKey: ['site-content', 'gallery'],
     queryFn: () => getSiteContent({ data: 'gallery' }),
-  }) as { data: string[] }
+  }) as { data: unknown }
+
 
   const { data: faqContent } = useSuspenseQuery({
     queryKey: ['site-content', 'faq'],
@@ -84,7 +87,7 @@ function AdminDashboard() {
   // Forms
   const [heroForm, setHeroForm] = useState(heroContent)
   const [infraForm, setInfraForm] = useState(infrastructureContent)
-  const [galleryForm, setGalleryForm] = useState(Array.isArray(galleryContent) ? galleryContent : [])
+  const [galleryForm, setGalleryForm] = useState<GalleryPhoto[]>(() => normalizeGallery(galleryContent))
   const [faqForm, setFaqForm] = useState(faqContent)
   const [isUploading, setIsUploading] = useState<string | null>(null)
 
@@ -170,7 +173,7 @@ function AdminDashboard() {
       } else if (type === 'hero' && heroForm) {
         setHeroForm({ ...heroForm, hero_image: imageUrl });
       } else if (type === 'gallery' && galleryForm) {
-        setGalleryForm([...galleryForm, imageUrl])
+        setGalleryForm([...galleryForm, { url: imageUrl, tag: 'ambos' }])
       }
 
       toast.success('Upload concluído com sucesso!')
@@ -329,18 +332,33 @@ function AdminDashboard() {
 
         <TabsContent value="gallery" activeValue={activeTab}>
           <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 space-y-8">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {galleryForm.map((src, i) => (
-                <div key={i} className="relative aspect-square rounded-2xl overflow-hidden group">
-                  <img src={src} className="w-full h-full object-cover" />
-                  <button onClick={() => setGalleryForm(galleryForm.filter((_, idx) => idx !== i))} className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="w-4 h-4" /></button>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {galleryForm.map((photo, i) => (
+                <div key={i} className="rounded-2xl border bg-gray-50 overflow-hidden">
+                  <div className="relative aspect-square group">
+                    <img src={photo.url} className="w-full h-full object-cover" alt={`Foto ${i + 1}`} />
+                    <button onClick={() => setGalleryForm(galleryForm.filter((_, idx) => idx !== i))} className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="w-4 h-4" /></button>
+                  </div>
+                  <div className="p-2 flex gap-1">
+                    {TAG_OPTIONS.map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setGalleryForm(galleryForm.map((p, idx) => idx === i ? { ...p, tag: opt.value as PhotoTag } : p))}
+                        className={`flex-1 text-[10px] font-bold py-2 rounded-lg border transition-all ${photo.tag === opt.value ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-500 hover:border-[#FE8330]/40'}`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               ))}
               <label className="aspect-square border-2 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-[#FE8330] transition-all">
                 <Plus className="w-8 h-8 text-gray-300" />
-                <input type="file" className="hidden" onChange={e => handleFileUpload(e, 'gallery')} />
+                <input type="file" className="hidden" accept="image/*" onChange={e => handleFileUpload(e, 'gallery')} />
               </label>
             </div>
+
             <button onClick={() => updateContentMutation.mutate({ section: 'gallery', content: galleryForm })} className="w-full py-4 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR GALERIA</button>
           </div>
         </TabsContent>

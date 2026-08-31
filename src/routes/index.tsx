@@ -12,6 +12,11 @@ import { DayPicker, type DateRange } from "react-day-picker";
 import { ptBR } from "date-fns/locale";
 import { format, isWithinInterval, startOfDay } from "date-fns";
 import "react-day-picker/dist/style.css";
+import { useDayNight } from "@/hooks/useDayNight";
+import { DayNightToggle } from "@/components/DayNightToggle";
+import { GalleryPhotoCard } from "@/components/GalleryPhotoCard";
+import { normalizeGallery, filterByMode } from "@/lib/gallery";
+
 
 
 const SITE_URL = "https://sitiocrishori.lovable.app";
@@ -53,7 +58,7 @@ function Index() {
   const { data: hero } = useSuspenseQuery({ queryKey: ['site-content', 'hero'], queryFn: () => getSiteContent({ data: 'hero' }) }) as { data: HeroContent };
   const { data: infrastructure } = useSuspenseQuery({ queryKey: ['site-content', 'infrastructure'], queryFn: () => getSiteContent({ data: 'infrastructure' }) }) as { data: InfrastructureItem[] };
   const { data: faq } = useSuspenseQuery({ queryKey: ['site-content', 'faq'], queryFn: () => getSiteContent({ data: 'faq' }) }) as { data: FAQItem[] };
-  const { data: galleryData } = useSuspenseQuery({ queryKey: ['site-content', 'gallery'], queryFn: () => getSiteContent({ data: 'gallery' }) }) as { data: string[] };
+  const { data: galleryData } = useSuspenseQuery({ queryKey: ['site-content', 'gallery'], queryFn: () => getSiteContent({ data: 'gallery' }) }) as { data: unknown };
 
 
   const { data: reservas } = useSuspenseQuery({ queryKey: ['reservas'], queryFn: () => getReservas() }) as { data: any[] };
@@ -94,14 +99,21 @@ function Index() {
   }));
 
   const isDayReserved = (day: Date) => reservedDays.some(range => isWithinInterval(startOfDay(day), { start: range.from, end: range.to }));
+  const { mode, toggle: toggleMode } = useDayNight();
+  const photos = filterByMode(normalizeGallery(galleryData), mode);
+
 
 
 
   return (
     <div 
-      className="min-h-screen bg-[#FAF8F5] text-[#1E2229] selection:bg-[#FE8330] selection:text-white"
+      className={`min-h-screen selection:bg-[#FE8330] selection:text-white ${mode === "noite" ? "mode-noite" : "mode-dia"}`}
     >
+      <div className="ambient-layer" aria-hidden="true" />
+      <DayNightToggle mode={mode} onToggle={toggleMode} />
       <SeasonalEffects ref={seasonalEffectsRef} season={activeSeason} isEnabled={effectsEnabled} isSoundEnabled={soundEnabled} />
+      
+
       
 
       <main>
@@ -516,32 +528,28 @@ function Index() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="text-left space-y-4">
                 <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-right">Galeria de Fotos</h2>
-                <p className="text-sm md:text-lg text-muted-foreground font-medium" data-aos="fade-right" data-aos-delay="100">Explore cada canto do nosso paraíso.</p>
+                <p className="text-sm md:text-lg text-muted-foreground font-medium" data-aos="fade-right" data-aos-delay="100">
+                  {mode === "noite" ? "O sítio sob a luz suave da noite." : "Explore cada canto do nosso paraíso à luz do dia."}
+                </p>
               </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
+                {mode === "noite" ? "🌙 Modo Noite" : "☀️ Modo Dia"}
+              </span>
             </div>
 
-
-            <div className="relative min-h-[600px]">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
-                {(galleryData || []).map((src, i) => (
-                  <motion.div 
-                    key={i} 
-                    layoutId={`gallery-${i}`}
-                    className="relative group cursor-pointer overflow-hidden rounded-[2.5rem] shadow-lg hover:shadow-2xl transition-all duration-700" 
-                    onClick={() => setSelectedImage(src)}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                  >
-                    <img src={src} className="w-full aspect-[4/5] object-cover transition-all duration-1000 group-hover:scale-110" alt={`Foto da galeria ${i + 1} do sítio de eventos`} loading="lazy" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
-                      <span className="text-white font-bold bg-[#FE8330] px-8 py-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">AMPLIAR</span>
-                    </div>
-                  </motion.div>
+            <div className="relative">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8 py-10 md:py-20">
+                {photos.map((photo, i) => (
+                  <GalleryPhotoCard
+                    key={`${photo.url}-${i}`}
+                    photo={photo}
+                    index={i}
+                    onClick={() => setSelectedImage(photo.url)}
+                  />
                 ))}
               </div>
             </div>
+
 
           </div>
         </section>
