@@ -8,7 +8,7 @@ export function DayNightToggle({ mode, onToggle }: { mode: DayNightMode; onToggl
     <button
       onClick={onToggle}
       aria-label={isNight ? "Ativar Modo Dia" : "Ativar Modo Noite"}
-      className="fixed top-3 right-3 md:top-6 md:right-6 z-[90] flex min-h-11 min-w-11 items-center justify-center gap-2 p-1.5 rounded-full backdrop-blur-xl border shadow-lg transition-colors duration-500 daynight-toggle"
+      className="fixed bottom-20 right-4 z-40 flex min-h-11 min-w-11 items-center justify-center gap-2 p-1.5 rounded-full backdrop-blur-xl border shadow-lg transition-colors duration-500 daynight-toggle"
     >
       <span className="relative flex items-center w-[70px] h-9 md:w-20 md:h-10">
         <motion.span
