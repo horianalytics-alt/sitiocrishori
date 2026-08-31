@@ -350,7 +350,7 @@ function AdminDashboard() {
                           onClick={() => setGalleryForm(galleryForm.map((p, idx) => idx === i ? { ...p, tag: opt.value as PhotoTag } : p))}
                           title={word}
                           aria-label={word}
-                          className={`w-full flex-1 min-w-0 flex flex-col lg:flex-row items-center justify-center gap-0.5 lg:gap-1 text-[0.75rem] leading-none font-bold py-2 px-2.5 rounded-lg border transition-all whitespace-nowrap ${photo.tag === opt.value ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-500 hover:border-[#FE8330]/40'}`}
+                          className={`w-full flex-1 min-w-0 flex flex-col lg:flex-row items-center justify-center gap-0.5 lg:gap-1 text-[0.75rem] leading-none font-bold py-2 px-1 md:px-2.5 rounded-lg border transition-all whitespace-nowrap ${photo.tag === opt.value ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-500 hover:border-[#FE8330]/40'}`}
                         >
                           <span>{emoji}</span>
                           <span className="text-[0.65rem] lg:text-[0.75rem]">{word}</span>
