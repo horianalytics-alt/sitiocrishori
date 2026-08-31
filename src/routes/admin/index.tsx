@@ -17,6 +17,8 @@ import { toast } from 'sonner'
 import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon, Calendar, Star } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { normalizeGallery, TAG_OPTIONS, type GalleryPhoto, type PhotoTag } from "@/lib/gallery"
+
 
 export const Route = createFileRoute('/admin/')({
   loader: async ({ context }) => {
@@ -64,7 +66,8 @@ function AdminDashboard() {
   const { data: galleryContent } = useSuspenseQuery({
     queryKey: ['site-content', 'gallery'],
     queryFn: () => getSiteContent({ data: 'gallery' }),
-  }) as { data: string[] }
+  }) as { data: unknown }
+
 
   const { data: faqContent } = useSuspenseQuery({
     queryKey: ['site-content', 'faq'],
@@ -84,7 +87,7 @@ function AdminDashboard() {
   // Forms
   const [heroForm, setHeroForm] = useState(heroContent)
   const [infraForm, setInfraForm] = useState(infrastructureContent)
-  const [galleryForm, setGalleryForm] = useState(Array.isArray(galleryContent) ? galleryContent : [])
+  const [galleryForm, setGalleryForm] = useState<GalleryPhoto[]>(() => normalizeGallery(galleryContent))
   const [faqForm, setFaqForm] = useState(faqContent)
   const [isUploading, setIsUploading] = useState<string | null>(null)
 
