@@ -332,18 +332,33 @@ function AdminDashboard() {
 
         <TabsContent value="gallery" activeValue={activeTab}>
           <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 space-y-8">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {galleryForm.map((src, i) => (
-                <div key={i} className="relative aspect-square rounded-2xl overflow-hidden group">
-                  <img src={src} className="w-full h-full object-cover" />
-                  <button onClick={() => setGalleryForm(galleryForm.filter((_, idx) => idx !== i))} className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="w-4 h-4" /></button>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {galleryForm.map((photo, i) => (
+                <div key={i} className="rounded-2xl border bg-gray-50 overflow-hidden">
+                  <div className="relative aspect-square group">
+                    <img src={photo.url} className="w-full h-full object-cover" alt={`Foto ${i + 1}`} />
+                    <button onClick={() => setGalleryForm(galleryForm.filter((_, idx) => idx !== i))} className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="w-4 h-4" /></button>
+                  </div>
+                  <div className="p-2 flex gap-1">
+                    {TAG_OPTIONS.map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setGalleryForm(galleryForm.map((p, idx) => idx === i ? { ...p, tag: opt.value as PhotoTag } : p))}
+                        className={`flex-1 text-[10px] font-bold py-2 rounded-lg border transition-all ${photo.tag === opt.value ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-500 hover:border-[#FE8330]/40'}`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               ))}
               <label className="aspect-square border-2 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-[#FE8330] transition-all">
                 <Plus className="w-8 h-8 text-gray-300" />
-                <input type="file" className="hidden" onChange={e => handleFileUpload(e, 'gallery')} />
+                <input type="file" className="hidden" accept="image/*" onChange={e => handleFileUpload(e, 'gallery')} />
               </label>
             </div>
+
             <button onClick={() => updateContentMutation.mutate({ section: 'gallery', content: galleryForm })} className="w-full py-4 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR GALERIA</button>
           </div>
         </TabsContent>
