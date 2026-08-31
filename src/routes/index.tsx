@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SeasonalEffects, type Season, type SeasonalEffectsHandle } from "@/components/SeasonalEffects";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Star, Calendar as CalendarIcon, MapPin, Users, CheckCircle, Sparkles, Volume2, VolumeX } from "lucide-react";
 import { DayPicker, type DateRange } from "react-day-picker";
 import { ptBR } from "date-fns/locale";
