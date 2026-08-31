@@ -288,3 +288,79 @@
   background-color: var(--color-primary);
   border-radius: 20px;
 }
+
+/* ============================================================
+   MODO DIA / MODO NOITE — atmosferas visuais distintas
+   ============================================================ */
+
+.mode-dia {
+  --amb-bg: #FAF8F5;
+  --amb-surface: #FFFFFF;
+  --amb-text: #1E2229;
+  --amb-muted: #7A7269;
+  --amb-border: rgba(30, 34, 41, 0.08);
+}
+
+.mode-noite {
+  --amb-bg: #14110E;
+  --amb-surface: #1E1A16;
+  --amb-text: #F5EDE3;
+  --amb-muted: #A99A88;
+  --amb-border: rgba(245, 237, 227, 0.10);
+  color-scheme: dark;
+}
+
+.mode-dia,
+.mode-noite {
+  background-color: var(--amb-bg);
+  color: var(--amb-text);
+  transition: background-color 0.8s var(--ease-out-expo), color 0.8s var(--ease-out-expo);
+}
+
+/* Atmosfera: luz natural (dia) / iluminação suave e intimista (noite) */
+.ambient-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 1s var(--ease-out-expo);
+}
+
+.mode-dia .ambient-layer {
+  background:
+    radial-gradient(900px 600px at 12% -5%, rgba(255, 214, 150, 0.35), transparent 65%),
+    radial-gradient(700px 500px at 95% 10%, rgba(254, 131, 48, 0.12), transparent 60%);
+}
+
+.mode-noite .ambient-layer {
+  background:
+    radial-gradient(800px 600px at 85% -10%, rgba(120, 150, 255, 0.10), transparent 65%),
+    radial-gradient(700px 500px at 8% 25%, rgba(254, 160, 70, 0.14), transparent 60%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45));
+}
+
+/* Remapeamento das superfícies existentes para o Modo Noite */
+.mode-noite [class*="bg-[#FAF8F5]"] { background-color: #1A1613 !important; }
+.mode-noite .bg-white { background-color: var(--amb-surface) !important; }
+.mode-noite [class*="text-[#1E2229]"] { color: var(--amb-text) !important; }
+.mode-noite .text-muted-foreground { color: var(--amb-muted) !important; }
+.mode-noite .text-gray-700,
+.mode-noite .text-gray-600 { color: #D9CDBF !important; }
+.mode-noite .border,
+.mode-noite .border-gray-100,
+.mode-noite .border-gray-200,
+.mode-noite .border-gray-50 { border-color: var(--amb-border) !important; }
+.mode-noite .shadow-inner { box-shadow: inset 0 2px 30px rgba(0, 0, 0, 0.35) !important; }
+.mode-noite input,
+.mode-noite textarea { background-color: #1A1613; color: var(--amb-text); }
+.mode-noite img:not(.no-dim) { filter: brightness(0.9) saturate(1.05); }
+.mode-noite .rdp { color: var(--amb-text); }
+
+/* Modo Dia: leve calor nas imagens, sensação de luz natural */
+.mode-dia img:not(.no-dim) { filter: saturate(1.05) brightness(1.02); }
+
+.daynight-toggle {
+  background-color: color-mix(in oklab, var(--amb-surface) 75%, transparent);
+  border-color: var(--amb-border);
+  color: var(--amb-text);
+}
