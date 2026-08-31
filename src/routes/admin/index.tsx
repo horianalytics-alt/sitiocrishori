@@ -192,7 +192,7 @@ function AdminDashboard() {
       </header>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap h-auto gap-2 bg-transparent p-0 mb-6 md:mb-8">
+        <TabsList className="flex flex-col md:flex-row md:flex-wrap h-auto gap-0 md:gap-2 bg-transparent p-0 mb-6 md:mb-8 border-b md:border-0 border-gray-100">
           {[
             { id: "hero", icon: Home, label: "Hero" },
             { id: "reservas", icon: Calendar, label: "Reservas" },
@@ -206,9 +206,9 @@ function AdminDashboard() {
               value={tab.id} 
               activeValue={activeTab} 
               onClick={setActiveTab}
-              className="w-full md:flex-1 md:min-w-[120px] min-h-12 py-3 px-3 text-sm rounded-2xl border bg-white data-[state=active]:bg-[#FE8330] data-[state=active]:text-white shadow-sm transition-all"
+              className="w-full md:flex-1 md:min-w-[120px] min-h-[52px] py-3 px-4 text-sm rounded-none md:rounded-2xl border-0 md:border bg-white/50 md:bg-white data-[state=active]:bg-transparent md:data-[state=active]:bg-[#FE8330] data-[state=active]:text-[#FE8330] md:data-[state=active]:text-white shadow-none md:shadow-sm transition-all border-b border-gray-100 md:border-transparent last:border-b-0"
             >
-              <tab.icon className="w-4 h-4 mr-2" /> {tab.label}
+              <tab.icon className="w-5 h-5 mr-3 md:w-4 md:mr-2 shrink-0" /> {tab.label}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -334,18 +334,18 @@ function AdminDashboard() {
           <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6 md:space-y-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
               {galleryForm.map((photo, i) => (
-                <div key={i} className="rounded-2xl border bg-gray-50 overflow-hidden">
-                  <div className="relative aspect-square group">
-                    <img src={photo.url} className="w-full h-full object-cover" alt={`Foto ${i + 1}`} />
-                    <button onClick={() => setGalleryForm(galleryForm.filter((_, idx) => idx !== i))} className="absolute top-2 right-2 bg-red-500 text-white p-3 min-h-11 min-w-11 flex items-center justify-center rounded-xl opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity" aria-label="Excluir foto"><Trash2 className="w-4 h-4" /></button>
+                <div key={i} className="rounded-2xl border bg-gray-50 overflow-visible">
+                  <div className="relative aspect-square group overflow-visible rounded-t-2xl">
+                    <img src={photo.url} className="w-full h-full object-cover rounded-t-2xl" alt={`Foto ${i + 1}`} />
+                    <button onClick={() => setGalleryForm(galleryForm.filter((_, idx) => idx !== i))} className="absolute -top-2 -right-2 md:top-2 md:right-2 w-9 h-9 md:w-10 md:h-10 md:p-2.5 bg-red-500 text-white flex items-center justify-center rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow-md" aria-label="Excluir foto"><Trash2 className="w-3.5 h-3.5 md:w-4 md:h-4" /></button>
                   </div>
-                  <div className="p-2 flex gap-1">
+                  <div className="p-2 flex gap-1.5 overflow-visible">
                     {TAG_OPTIONS.map(opt => (
                       <button
                         key={opt.value}
                         type="button"
                         onClick={() => setGalleryForm(galleryForm.map((p, idx) => idx === i ? { ...p, tag: opt.value as PhotoTag } : p))}
-                        className={`flex-1 text-[10px] font-bold py-3 min-h-11 rounded-lg border transition-all ${photo.tag === opt.value ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-500 hover:border-[#FE8330]/40'}`}
+                        className={`flex-1 text-[0.75rem] md:text-xs font-bold py-2 px-2.5 rounded-lg border transition-all whitespace-nowrap ${photo.tag === opt.value ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-500 hover:border-[#FE8330]/40'}`}
                       >
                         {opt.label}
                       </button>
