@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { getSiteContent, getReservas, getDepoimentos, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,6 +16,8 @@ import { useDayNight } from "@/hooks/useDayNight";
 import { DayNightToggle } from "@/components/DayNightToggle";
 import { GalleryPhotoCard } from "@/components/GalleryPhotoCard";
 import { normalizeGallery, filterByMode } from "@/lib/gallery";
+
+const SEASON_SECTION: Record<string, string> = { natal: "gallery_natal", pascoa: "gallery_pascoa", "ano-novo": "gallery_ano_novo" };
 
 
 
@@ -101,6 +103,14 @@ function Index() {
   const isDayReserved = (day: Date) => reservedDays.some(range => isWithinInterval(startOfDay(day), { start: range.from, end: range.to }));
   const { mode, toggle: toggleMode } = useDayNight();
   const photos = filterByMode(normalizeGallery(galleryData), mode);
+
+  const seasonSection = SEASON_SECTION[activeSeason] ?? null;
+  const { data: seasonalData } = useQuery({
+    queryKey: ['site-content', seasonSection],
+    queryFn: () => getSiteContent({ data: seasonSection as string }),
+    enabled: !!seasonSection,
+  });
+  const seasonalPhotos = seasonSection ? normalizeGallery(seasonalData) : [];
 
 
 
@@ -576,6 +586,24 @@ function Index() {
               </span>
             </div>
 
+            {seasonalPhotos.length > 0 && (
+              <div className="space-y-6">
+                <h3 className="text-xl md:text-3xl font-black tracking-tight">
+                  {activeSeason === "natal" ? "🎄 Natal no Sítio" : activeSeason === "pascoa" ? "🥚 Páscoa no Sítio" : "🎆 Ano Novo no Sítio"}
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+                  {seasonalPhotos.map((photo, i) => (
+                    <GalleryPhotoCard
+                      key={`seasonal-${photo.url}-${i}`}
+                      photo={photo}
+                      index={i}
+                      onClick={() => photo.tipo === "foto" && setSelectedImage(photo.url)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="relative">
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-8 md:py-20">
                 {photos.map((photo, i) => (
@@ -583,7 +611,7 @@ function Index() {
                     key={`${photo.url}-${i}`}
                     photo={photo}
                     index={i}
-                    onClick={() => setSelectedImage(photo.url)}
+                    onClick={() => photo.tipo === "foto" && setSelectedImage(photo.url)}
                   />
                 ))}
               </div>
