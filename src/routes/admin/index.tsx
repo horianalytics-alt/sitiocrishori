@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useSuspenseQuery, useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   getSiteContent, 
   updateSiteContent, 
@@ -200,7 +200,7 @@ function AdminDashboard() {
       } else if (type === 'hero' && heroForm) {
         setHeroForm({ ...heroForm, hero_image: imageUrl });
       } else if (type === 'gallery' && galleryForm) {
-        setGalleryForm([...galleryForm, { url: imageUrl, tag: 'ambos' }])
+        setGalleryForm([...galleryForm, { url: imageUrl, tag: 'ambos', tipo: 'foto' }])
       }
 
       toast.success('Upload concluído com sucesso!')
@@ -216,7 +216,12 @@ function AdminDashboard() {
       <header className="space-y-2">
         <h1 className="text-2xl md:text-4xl font-black text-[#1E2229]">Painel Administrativo</h1>
         <p className="text-muted-foreground text-base md:text-lg">Gerenciamento completo do Sítio</p>
+        <button type="button" onClick={() => setShowPreview(true)} className="mt-2 inline-flex items-center gap-2 min-h-12 px-5 rounded-2xl bg-[#1E2229] text-white font-bold">
+          <Eye className="w-5 h-5" /> Pré-visualizar Site
+        </button>
       </header>
+
+      {showPreview && <SitePreviewModal onClose={() => setShowPreview(false)} />}
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="flex flex-col md:flex-row md:flex-wrap h-auto gap-0 md:gap-2 bg-transparent p-0 mb-6 md:mb-8 border-b md:border-0 border-gray-100">
@@ -225,6 +230,7 @@ function AdminDashboard() {
             { id: "reservas", icon: Calendar, label: "Reservas" },
             { id: "infra", icon: Grid, label: "Estrutura" },
             { id: "gallery", icon: ImageIcon, label: "Galeria" },
+            { id: "sazonais", icon: Sparkles, label: "Sazonais" },
             { id: "dep", icon: Star, label: "Depoimentos" },
             { id: "faq", icon: MessageCircle, label: "FAQ" },
           ].map(tab => (
