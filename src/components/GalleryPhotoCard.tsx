@@ -38,13 +38,26 @@ export function GalleryPhotoCard({
       viewport={{ once: true, margin: "-10%" }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
     >
-      <motion.img
-        src={photo.url}
-        style={{ scale }}
-        className="w-full aspect-[4/5] object-cover"
-        alt={`Foto ${index + 1} do sítio de eventos`}
-        loading="lazy"
-      />
+      {photo.tipo === "video" ? (
+        <motion.video
+          src={photo.url}
+          style={{ scale }}
+          className="w-full aspect-[4/5] object-cover bg-black"
+          controls
+          muted
+          preload="metadata"
+          playsInline
+        />
+      ) : (
+        <motion.img
+          src={photo.url}
+          style={{ scale }}
+          className="w-full aspect-[4/5] object-cover"
+          alt={`Foto ${index + 1} do sítio de eventos`}
+          loading="lazy"
+        />
+      )}
+
       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
         <span className="text-white font-bold bg-[#FE8330] px-6 py-3 rounded-full shadow-lg translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
           AMPLIAR
