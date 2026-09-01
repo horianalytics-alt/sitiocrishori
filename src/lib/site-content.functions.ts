@@ -209,6 +209,7 @@ const gallerySchema = z.array(
     z.object({
       url: z.string().max(2000),
       tag: z.enum(["dia", "noite", "ambos"]),
+      tipo: z.enum(["foto", "video"]).optional(),
     }),
   ]),
 ).max(100);
@@ -219,6 +220,9 @@ const sectionSchemas = {
   infrastructure: infrastructureSchema,
   faq: faqSchema,
   gallery: gallerySchema,
+  gallery_natal: gallerySchema,
+  gallery_pascoa: gallerySchema,
+  gallery_ano_novo: gallerySchema,
 } as const;
 
 export const updateSiteContent = createServerFn({ method: "POST" })

@@ -1,21 +1,34 @@
 export type PhotoTag = "dia" | "noite" | "ambos";
+export type MediaKind = "foto" | "video";
 
 export type GalleryPhoto = {
   url: string;
   tag: PhotoTag;
+  tipo: MediaKind;
 };
+
+const VIDEO_RE = /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i;
+
+export function isVideoUrl(url: string): boolean {
+  return VIDEO_RE.test(url) || /(?:[?&])(?:path|p)=[^&]*\.(?:mp4|webm|mov|m4v)/i.test(url);
+}
 
 /** Aceita o formato antigo (array de strings) e o novo (array de objetos). */
 export function normalizeGallery(data: unknown): GalleryPhoto[] {
   if (!Array.isArray(data)) return [];
   return data
     .map((item): GalleryPhoto | null => {
-      if (typeof item === "string") return { url: item, tag: "ambos" };
+      if (typeof item === "string") {
+        return { url: item, tag: "ambos", tipo: isVideoUrl(item) ? "video" : "foto" };
+      }
       if (item && typeof item === "object" && typeof (item as any).url === "string") {
+        const url = (item as any).url as string;
         const tag = (item as any).tag;
+        const tipo = (item as any).tipo;
         return {
-          url: (item as any).url,
+          url,
           tag: tag === "dia" || tag === "noite" ? tag : "ambos",
+          tipo: tipo === "video" || tipo === "foto" ? tipo : isVideoUrl(url) ? "video" : "foto",
         };
       }
       return null;
@@ -33,3 +46,11 @@ export const TAG_OPTIONS: { value: PhotoTag; label: string }[] = [
   { value: "noite", label: "🌙 Noite" },
   { value: "ambos", label: "📷 Ambos" },
 ];
+
+export const SEASONAL_SECTIONS = [
+  { id: "gallery_natal", label: "🎄 Natal", season: "natal" },
+  { id: "gallery_pascoa", label: "🥚 Páscoa", season: "pascoa" },
+  { id: "gallery_ano_novo", label: "🎆 Ano Novo", season: "ano-novo" },
+] as const;
+
+export type SeasonalSectionId = (typeof SEASONAL_SECTIONS)[number]["id"];

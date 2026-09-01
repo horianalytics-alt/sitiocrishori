@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useSuspenseQuery, useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   getSiteContent, 
   updateSiteContent, 
@@ -14,10 +14,13 @@ import {
   type FAQItem 
 } from '@/lib/site-content.functions'
 import { toast } from 'sonner'
-import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon, Calendar, Star } from 'lucide-react'
+import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon, Calendar, Star, Eye, X, Sparkles } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { normalizeGallery, TAG_OPTIONS, type GalleryPhoto, type PhotoTag } from "@/lib/gallery"
+import { normalizeGallery, SEASONAL_SECTIONS, type GalleryPhoto } from "@/lib/gallery"
+import { MediaManager } from "@/components/admin/MediaManager"
+import { SitePreviewModal } from "@/components/admin/SitePreviewModal"
+
 
 
 export const Route = createFileRoute('/admin/')({
@@ -84,12 +87,36 @@ function AdminDashboard() {
     queryFn: () => getDepoimentos(),
   }) as { data: any[] }
 
+  // Seasonal galleries
+  const seasonalQueries = SEASONAL_SECTIONS.map(s => useQuery({
+    queryKey: ['site-content', s.id],
+    queryFn: () => getSiteContent({ data: s.id }),
+  }))
+
   // Forms
   const [heroForm, setHeroForm] = useState(heroContent)
   const [infraForm, setInfraForm] = useState(infrastructureContent)
   const [galleryForm, setGalleryForm] = useState<GalleryPhoto[]>(() => normalizeGallery(galleryContent))
   const [faqForm, setFaqForm] = useState(faqContent)
   const [isUploading, setIsUploading] = useState<string | null>(null)
+  const [mediaUploading, setMediaUploading] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
+  const [seasonTab, setSeasonTab] = useState<string>(SEASONAL_SECTIONS[0].id)
+  const [seasonalForms, setSeasonalForms] = useState<Record<string, GalleryPhoto[]>>({})
+  const seasonalKey = SEASONAL_SECTIONS.map((s, i) => `${s.id}:${JSON.stringify(seasonalQueries[i]?.data ?? null)}`).join('|')
+
+  useEffect(() => {
+    setSeasonalForms(prev => {
+      const next = { ...prev }
+      SEASONAL_SECTIONS.forEach((s, i) => {
+        if (next[s.id] === undefined && seasonalQueries[i]?.data !== undefined) {
+          next[s.id] = normalizeGallery(seasonalQueries[i]?.data)
+        }
+      })
+      return next
+    })
+  }, [seasonalKey])
+
 
   // Mutations
   const updateContentMutation = useMutation({
@@ -173,7 +200,7 @@ function AdminDashboard() {
       } else if (type === 'hero' && heroForm) {
         setHeroForm({ ...heroForm, hero_image: imageUrl });
       } else if (type === 'gallery' && galleryForm) {
-        setGalleryForm([...galleryForm, { url: imageUrl, tag: 'ambos' }])
+        setGalleryForm([...galleryForm, { url: imageUrl, tag: 'ambos', tipo: 'foto' }])
       }
 
       toast.success('Upload concluído com sucesso!')
@@ -189,7 +216,12 @@ function AdminDashboard() {
       <header className="space-y-2">
         <h1 className="text-2xl md:text-4xl font-black text-[#1E2229]">Painel Administrativo</h1>
         <p className="text-muted-foreground text-base md:text-lg">Gerenciamento completo do Sítio</p>
+        <button type="button" onClick={() => setShowPreview(true)} className="mt-2 inline-flex items-center gap-2 min-h-12 px-5 rounded-2xl bg-[#1E2229] text-white font-bold">
+          <Eye className="w-5 h-5" /> Pré-visualizar Site
+        </button>
       </header>
+
+      {showPreview && <SitePreviewModal onClose={() => setShowPreview(false)} />}
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="flex flex-col md:flex-row md:flex-wrap h-auto gap-0 md:gap-2 bg-transparent p-0 mb-6 md:mb-8 border-b md:border-0 border-gray-100">
@@ -198,6 +230,7 @@ function AdminDashboard() {
             { id: "reservas", icon: Calendar, label: "Reservas" },
             { id: "infra", icon: Grid, label: "Estrutura" },
             { id: "gallery", icon: ImageIcon, label: "Galeria" },
+            { id: "sazonais", icon: Sparkles, label: "Sazonais" },
             { id: "dep", icon: Star, label: "Depoimentos" },
             { id: "faq", icon: MessageCircle, label: "FAQ" },
           ].map(tab => (
@@ -332,43 +365,59 @@ function AdminDashboard() {
 
         <TabsContent value="gallery" activeValue={activeTab}>
           <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6 md:space-y-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-              {galleryForm.map((photo, i) => (
-                <div key={i} className="rounded-2xl border bg-gray-50 overflow-visible">
-                  <div className="relative aspect-square group overflow-visible rounded-t-2xl">
-                    <img src={photo.url} className="w-full h-full object-cover rounded-t-2xl" alt={`Foto ${i + 1}`} />
-                    <button onClick={() => setGalleryForm(galleryForm.filter((_, idx) => idx !== i))} className="absolute top-2 right-2 w-9 h-9 md:w-10 md:h-10 bg-red-500 text-white flex items-center justify-center rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow-md" aria-label="Excluir foto"><Trash2 className="w-3.5 h-3.5 md:w-4 md:h-4" /></button>
-                  </div>
-                  <div className="p-2 flex flex-nowrap gap-1 md:gap-1.5 overflow-visible">
-                    {TAG_OPTIONS.map(opt => {
-                      const [emoji, ...rest] = opt.label.split(" ")
-                      const word = rest.join(" ")
-                      return (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          onClick={() => setGalleryForm(galleryForm.map((p, idx) => idx === i ? { ...p, tag: opt.value as PhotoTag } : p))}
-                          title={word}
-                          aria-label={word}
-                          className={`w-full flex-1 min-w-0 flex flex-col lg:flex-row items-center justify-center gap-0.5 lg:gap-1 text-[0.75rem] leading-none font-bold py-2 px-1 md:px-2.5 rounded-lg border transition-all whitespace-nowrap ${photo.tag === opt.value ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-500 hover:border-[#FE8330]/40'}`}
-                        >
-                          <span>{emoji}</span>
-                          <span className="text-[0.65rem] lg:text-[0.75rem]">{word}</span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              ))}
-              <label className="aspect-square border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2 text-center px-2 cursor-pointer hover:border-[#FE8330] transition-all">
-                <Plus className="w-8 h-8 text-gray-300" /><span className="text-[11px] font-bold uppercase tracking-wide text-gray-400">Toque para enviar foto</span>
-                <input type="file" className="hidden" accept="image/*" onChange={e => handleFileUpload(e, 'gallery')} />
-              </label>
-            </div>
-
-            <button onClick={() => updateContentMutation.mutate({ section: 'gallery', content: galleryForm })} className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR GALERIA</button>
+            <MediaManager
+              items={galleryForm}
+              onChange={setGalleryForm}
+              folder="galeria"
+              onUploadingChange={setMediaUploading}
+            />
+            <button
+              disabled={mediaUploading}
+              onClick={() => updateContentMutation.mutate({ section: 'gallery', content: galleryForm })}
+              className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl disabled:opacity-50"
+            >
+              {mediaUploading ? 'ENVIANDO ARQUIVOS...' : 'SALVAR GALERIA'}
+            </button>
           </div>
         </TabsContent>
+
+        <TabsContent value="sazonais" activeValue={activeTab}>
+          <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold">Eventos Sazonais</h2>
+              <p className="text-sm text-muted-foreground">Fotos e vídeos exclusivos de cada tema. Aparecem em destaque quando o tema está ativo no site.</p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              {SEASONAL_SECTIONS.map(s => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setSeasonTab(s.id)}
+                  className={`flex-1 min-h-[52px] rounded-xl font-bold border transition-all ${seasonTab === s.id ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-600'}`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+
+            <MediaManager
+              items={seasonalForms[seasonTab] || []}
+              onChange={(items) => setSeasonalForms(prev => ({ ...prev, [seasonTab]: items }))}
+              folder={seasonTab}
+              showTags={false}
+              onUploadingChange={setMediaUploading}
+            />
+
+            <button
+              disabled={mediaUploading}
+              onClick={() => updateContentMutation.mutate({ section: seasonTab, content: seasonalForms[seasonTab] || [] })}
+              className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl disabled:opacity-50"
+            >
+              {mediaUploading ? 'ENVIANDO ARQUIVOS...' : 'SALVAR MÍDIAS DO EVENTO'}
+            </button>
+          </div>
+        </TabsContent>
+
 
         <TabsContent value="dep" activeValue={activeTab}>
           <div className="space-y-6">
