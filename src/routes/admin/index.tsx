@@ -335,43 +335,59 @@ function AdminDashboard() {
 
         <TabsContent value="gallery" activeValue={activeTab}>
           <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6 md:space-y-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-              {galleryForm.map((photo, i) => (
-                <div key={i} className="rounded-2xl border bg-gray-50 overflow-visible">
-                  <div className="relative aspect-square group overflow-visible rounded-t-2xl">
-                    <img src={photo.url} className="w-full h-full object-cover rounded-t-2xl" alt={`Foto ${i + 1}`} />
-                    <button onClick={() => setGalleryForm(galleryForm.filter((_, idx) => idx !== i))} className="absolute top-2 right-2 w-9 h-9 md:w-10 md:h-10 bg-red-500 text-white flex items-center justify-center rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow-md" aria-label="Excluir foto"><Trash2 className="w-3.5 h-3.5 md:w-4 md:h-4" /></button>
-                  </div>
-                  <div className="p-2 flex flex-nowrap gap-1 md:gap-1.5 overflow-visible">
-                    {TAG_OPTIONS.map(opt => {
-                      const [emoji, ...rest] = opt.label.split(" ")
-                      const word = rest.join(" ")
-                      return (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          onClick={() => setGalleryForm(galleryForm.map((p, idx) => idx === i ? { ...p, tag: opt.value as PhotoTag } : p))}
-                          title={word}
-                          aria-label={word}
-                          className={`w-full flex-1 min-w-0 flex flex-col lg:flex-row items-center justify-center gap-0.5 lg:gap-1 text-[0.75rem] leading-none font-bold py-2 px-1 md:px-2.5 rounded-lg border transition-all whitespace-nowrap ${photo.tag === opt.value ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-500 hover:border-[#FE8330]/40'}`}
-                        >
-                          <span>{emoji}</span>
-                          <span className="text-[0.65rem] lg:text-[0.75rem]">{word}</span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              ))}
-              <label className="aspect-square border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2 text-center px-2 cursor-pointer hover:border-[#FE8330] transition-all">
-                <Plus className="w-8 h-8 text-gray-300" /><span className="text-[11px] font-bold uppercase tracking-wide text-gray-400">Toque para enviar foto</span>
-                <input type="file" className="hidden" accept="image/*" onChange={e => handleFileUpload(e, 'gallery')} />
-              </label>
-            </div>
-
-            <button onClick={() => updateContentMutation.mutate({ section: 'gallery', content: galleryForm })} className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR GALERIA</button>
+            <MediaManager
+              items={galleryForm}
+              onChange={setGalleryForm}
+              folder="galeria"
+              onUploadingChange={setMediaUploading}
+            />
+            <button
+              disabled={mediaUploading}
+              onClick={() => updateContentMutation.mutate({ section: 'gallery', content: galleryForm })}
+              className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl disabled:opacity-50"
+            >
+              {mediaUploading ? 'ENVIANDO ARQUIVOS...' : 'SALVAR GALERIA'}
+            </button>
           </div>
         </TabsContent>
+
+        <TabsContent value="sazonais" activeValue={activeTab}>
+          <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold">Eventos Sazonais</h2>
+              <p className="text-sm text-muted-foreground">Fotos e vídeos exclusivos de cada tema. Aparecem em destaque quando o tema está ativo no site.</p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              {SEASONAL_SECTIONS.map(s => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setSeasonTab(s.id)}
+                  className={`flex-1 min-h-[52px] rounded-xl font-bold border transition-all ${seasonTab === s.id ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-600'}`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+
+            <MediaManager
+              items={seasonalForms[seasonTab] || []}
+              onChange={(items) => setSeasonalForms(prev => ({ ...prev, [seasonTab]: items }))}
+              folder={seasonTab}
+              showTags={false}
+              onUploadingChange={setMediaUploading}
+            />
+
+            <button
+              disabled={mediaUploading}
+              onClick={() => updateContentMutation.mutate({ section: seasonTab, content: seasonalForms[seasonTab] || [] })}
+              className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl disabled:opacity-50"
+            >
+              {mediaUploading ? 'ENVIANDO ARQUIVOS...' : 'SALVAR MÍDIAS DO EVENTO'}
+            </button>
+          </div>
+        </TabsContent>
+
 
         <TabsContent value="dep" activeValue={activeTab}>
           <div className="space-y-6">
