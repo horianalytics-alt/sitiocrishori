@@ -14,10 +14,13 @@ import {
   type FAQItem 
 } from '@/lib/site-content.functions'
 import { toast } from 'sonner'
-import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon, Calendar, Star } from 'lucide-react'
+import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon, Calendar, Star, Eye, X, Sparkles } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { normalizeGallery, TAG_OPTIONS, type GalleryPhoto, type PhotoTag } from "@/lib/gallery"
+import { normalizeGallery, SEASONAL_SECTIONS, type GalleryPhoto } from "@/lib/gallery"
+import { MediaManager } from "@/components/admin/MediaManager"
+import { SitePreviewModal } from "@/components/admin/SitePreviewModal"
+
 
 
 export const Route = createFileRoute('/admin/')({
