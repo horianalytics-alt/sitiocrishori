@@ -87,12 +87,36 @@ function AdminDashboard() {
     queryFn: () => getDepoimentos(),
   }) as { data: any[] }
 
+  // Seasonal galleries
+  const seasonalQueries = SEASONAL_SECTIONS.map(s => useQuery({
+    queryKey: ['site-content', s.id],
+    queryFn: () => getSiteContent({ data: s.id }),
+  }))
+
   // Forms
   const [heroForm, setHeroForm] = useState(heroContent)
   const [infraForm, setInfraForm] = useState(infrastructureContent)
   const [galleryForm, setGalleryForm] = useState<GalleryPhoto[]>(() => normalizeGallery(galleryContent))
   const [faqForm, setFaqForm] = useState(faqContent)
   const [isUploading, setIsUploading] = useState<string | null>(null)
+  const [mediaUploading, setMediaUploading] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
+  const [seasonTab, setSeasonTab] = useState<string>(SEASONAL_SECTIONS[0].id)
+  const [seasonalForms, setSeasonalForms] = useState<Record<string, GalleryPhoto[]>>({})
+  const seasonalKey = SEASONAL_SECTIONS.map((s, i) => `${s.id}:${JSON.stringify(seasonalQueries[i]?.data ?? null)}`).join('|')
+
+  useEffect(() => {
+    setSeasonalForms(prev => {
+      const next = { ...prev }
+      SEASONAL_SECTIONS.forEach((s, i) => {
+        if (next[s.id] === undefined && seasonalQueries[i]?.data !== undefined) {
+          next[s.id] = normalizeGallery(seasonalQueries[i]?.data)
+        }
+      })
+      return next
+    })
+  }, [seasonalKey])
+
 
   // Mutations
   const updateContentMutation = useMutation({
