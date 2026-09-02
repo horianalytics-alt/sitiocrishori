@@ -105,23 +105,39 @@ function Index() {
   });
   const seasonalEffectsRef = useRef<SeasonalEffectsHandle>(null);
 
-  // Efeito global (admin) ou Tema Ativo (admin)
-  const adminActiveSeason: Season = useMemo(() => {
+  // Efeito global contínuo (ativado explicitamente pelo toggle do admin)
+  const globalSeason: Season = useMemo(() => {
     if (efeitoGlobalAtivo && efeitoGlobalAtivo.efeito_global_ativo) {
       return getSeasonTypeFromName(efeitoGlobalAtivo.nome);
     }
-    if (eventoSazonalAtivo && eventoSazonalAtivo.ativo) {
-      return getSeasonTypeFromName(eventoSazonalAtivo.nome);
-    }
     return "none";
-  }, [efeitoGlobalAtivo, eventoSazonalAtivo]);
+  }, [efeitoGlobalAtivo]);
 
-  // Se o admin tiver algum tema/efeito ativo, ele roda no site
-  // Caso contrário, usa o modo automático do visitante ao selecionar ou rolar na galeria
+  // Se o efeito global estiver ativo, roda contínuo no site
+  // Caso contrário, roda no modo automático (quando o visitante chega ou seleciona o evento sazonal na galeria)
   const activeSeason: Season = useMemo(() => {
-    if (adminActiveSeason !== "none") return adminActiveSeason;
+    if (globalSeason !== "none") return globalSeason;
     return inViewSeason;
-  }, [adminActiveSeason, inViewSeason]);
+  }, [globalSeason, inViewSeason]);
+
+  // Tema sazonal selecionado na seção da galeria (inicia no tema ativo ou primeiro da lista)
+  const [selectedSeasonalId, setSelectedSeasonalId] = useState<string>(() => {
+    return eventoSazonalAtivo?.id || "natal";
+  });
+
+  useEffect(() => {
+    if (eventoSazonalAtivo?.id) {
+      setSelectedSeasonalId(eventoSazonalAtivo.id);
+    }
+  }, [eventoSazonalAtivo?.id]);
+
+  const currentSeasonalEvento = useMemo(() => {
+    return (
+      todosEventosSazonais.find((e: any) => e.id === selectedSeasonalId) ||
+      eventoSazonalAtivo ||
+      todosEventosSazonais[0]
+    );
+  }, [todosEventosSazonais, selectedSeasonalId, eventoSazonalAtivo]);
 
   useEffect(() => {
     localStorage.setItem('soundEnabled', JSON.stringify(soundEnabled));
@@ -434,6 +450,7 @@ function Index() {
                         setInViewSeason("none");
                       } else {
                         setAmbienteFilter(`sazonal_${evento.id}`);
+                        setSelectedSeasonalId(evento.id);
                         setInViewSeason(evSeason);
                       }
                     }}
@@ -478,17 +495,60 @@ function Index() {
               </AnimatePresence>
             </div>
 
-            {/* Seções de Fotos de Cada Evento Sazonal com detecção de visualização para disparo do efeito */}
-            {todosEventosSazonais.map((evento: any) => (
-              <SeasonalGallerySection
-                key={evento.id}
-                evento={evento}
-                fallbackUrl={config?.foto_fallback}
-                onSelectImage={(url) => setSelectedImage(url)}
-                onEnter={(season) => setInViewSeason(season)}
-                onLeave={(season) => setInViewSeason((current) => (current === season ? 'none' : current))}
-              />
-            ))}
+            {/* Seletor & Galeria de Eventos Sazonais (Apenas 1 por vez para não sobrepor múltiplos efeitos) */}
+            {currentSeasonalEvento && (
+              <div className="pt-10 sm:pt-14 border-t border-gray-100 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <span className="text-xs font-black uppercase tracking-widest text-[#FE8330]">
+                      Temas Especiais & Épocas
+                    </span>
+                    <h3 className="text-2xl sm:text-3xl font-black text-[#1E2229]">
+                      Galeria de Eventos Sazonais
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                      Veja fotos e decorações do sítio em datas comemorativas.
+                    </p>
+                  </div>
+
+                  {/* Abas dos Eventos Sazonais */}
+                  <div className="flex flex-wrap gap-2">
+                    {todosEventosSazonais.map((evento: any) => {
+                      const isTabSelected = currentSeasonalEvento.id === evento.id;
+                      const evSeason = getSeasonTypeFromName(evento.nome);
+                      return (
+                        <button
+                          key={evento.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedSeasonalId(evento.id);
+                            setInViewSeason(evSeason);
+                          }}
+                          className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                            isTabSelected
+                              ? 'bg-[#FE8330] text-white border-[#FE8330] shadow-sm scale-105'
+                              : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <span>{evento.emoji}</span>
+                          <span>{evento.nome}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Exibe APENAS a seção do evento selecionado: dispara efeito SOMENTE dele */}
+                <SeasonalGallerySection
+                  key={currentSeasonalEvento.id}
+                  evento={currentSeasonalEvento}
+                  fallbackUrl={config?.foto_fallback}
+                  onSelectImage={(url) => setSelectedImage(url)}
+                  onEnter={(season) => setInViewSeason(season)}
+                  onLeave={(season) => setInViewSeason((current) => (current === season ? 'none' : current))}
+                />
+              </div>
+            )}
           </div>
         </section>
 

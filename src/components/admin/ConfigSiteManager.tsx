@@ -303,20 +303,34 @@ export function ConfigSiteManager() {
               onChange={e => {
                 const raw = e.target.value
                 const match = raw.match(/src=["']([^"']+)["']/)
-                setForm(f => ({ ...f, mapa_embed_url: match && match[1] ? match[1] : raw.trim() }))
+                const val = match && match[1] ? match[1] : raw.trim()
+                setForm(f => {
+                  const updated = { ...f, mapa_embed_url: val }
+                  if (!f.mapa_link_direto && !val.includes("/embed") && val.startsWith("http")) {
+                    updated.mapa_link_direto = val
+                  }
+                  return updated
+                })
               }}
             />
           </div>
 
           <div className="space-y-2">
             <label className="text-sm font-bold text-gray-800">
-              Link direto do Google Maps (para abrir no app/celular)
+              Link direto do Google Maps (botão "Abrir no Google Maps" no site) *
             </label>
+            <p className="text-xs text-gray-500 font-medium">
+              Cole o link do seu local obtido em Compartilhar → Copiar link (ex: https://maps.app.goo.gl/...)
+            </p>
             <input
               className="w-full min-h-[52px] px-4 py-3 rounded-2xl border bg-white text-base focus:outline-none focus:ring-2 ring-[#FE8330]/30 font-medium"
               placeholder="Ex: https://maps.app.goo.gl/... ou https://maps.google.com/?q=..."
               value={form.mapa_link_direto}
-              onChange={e => setForm(f => ({ ...f, mapa_link_direto: e.target.value.trim() }))}
+              onChange={e => {
+                const raw = e.target.value.trim()
+                const match = raw.match(/src=["']([^"']+)["']/)
+                setForm(f => ({ ...f, mapa_link_direto: match && match[1] ? match[1] : raw }))
+              }}
             />
           </div>
 

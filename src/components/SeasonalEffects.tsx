@@ -50,8 +50,8 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
 
     let animationFrameId: number;
     const isMobile = window.innerWidth < 768;
-    // Limites de performance obrigatórios
-    const maxElements = isMobile ? 30 : 60;
+    // Limite sutil e ambient: máximo 6 no mobile e 10 no desktop para não poluir nem atrapalhar a leitura
+    const maxElements = isMobile ? 6 : 10;
 
     const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 1.5);
     const resize = () => {
@@ -111,37 +111,37 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
 
       switch (season) {
         case 'natal': {
-          const isGift = Math.random() < 0.25;
+          const isGift = Math.random() < 0.08;
           return {
             type: isGift ? 'gift' : 'snow',
             x: Math.random() * w,
-            y: Math.random() * -h,
-            size: isGift ? 12 + Math.random() * 12 : 2 + Math.random() * 4,
-            speedX: (Math.random() - 0.5) * 1.2,
-            speedY: isGift ? 1 + Math.random() * 1.5 : 1.2 + Math.random() * 2.5,
+            y: Math.random() * -h * 0.4,
+            size: isGift ? 9 + Math.random() * 3 : 1.8 + Math.random() * 2.2,
+            speedX: (Math.random() - 0.5) * 0.5,
+            speedY: isGift ? 0.7 + Math.random() * 0.6 : 0.8 + Math.random() * 1.0,
             angle: Math.random() * Math.PI * 2,
-            angleSpeed: (Math.random() - 0.5) * 0.03,
-            opacity: 0.6 + Math.random() * 0.4,
+            angleSpeed: (Math.random() - 0.5) * 0.02,
+            opacity: 0.25 + Math.random() * 0.15,
             color: isGift ? (Math.random() > 0.5 ? '#E53E3E' : '#22543D') : '#FFFFFF',
             secondaryColor: '#ECC94B'
           };
         }
 
         case 'ano-novo': {
-          const isFirework = Math.random() < 0.4;
+          const isFirework = Math.random() < 0.25;
           return {
             type: isFirework ? 'firework' : 'confetti',
             x: isFirework ? Math.random() * w : Math.random() * w,
-            y: isFirework ? h * 0.2 + Math.random() * (h * 0.5) : Math.random() * -50,
-            size: isFirework ? 1 + Math.random() * 3 : 6 + Math.random() * 6,
-            speedX: isFirework ? (Math.random() - 0.5) * 4 : (Math.random() - 0.5) * 2,
-            speedY: isFirework ? (Math.random() - 0.5) * 4 : 2 + Math.random() * 3,
+            y: isFirework ? h * 0.2 + Math.random() * (h * 0.35) : Math.random() * -30,
+            size: isFirework ? 1 + Math.random() * 2 : 4 + Math.random() * 4,
+            speedX: isFirework ? (Math.random() - 0.5) * 2 : (Math.random() - 0.5) * 1,
+            speedY: isFirework ? (Math.random() - 0.5) * 2 : 1.2 + Math.random() * 1.5,
             angle: Math.random() * Math.PI * 2,
-            angleSpeed: (Math.random() - 0.5) * 0.08,
-            opacity: 1,
+            angleSpeed: (Math.random() - 0.5) * 0.04,
+            opacity: 0.30 + Math.random() * 0.18,
             color: COLORS.anoNovo[Math.floor(Math.random() * COLORS.anoNovo.length)]!,
             life: 0,
-            maxLife: isFirework ? 40 + Math.floor(Math.random() * 40) : 0
+            maxLife: isFirework ? 30 + Math.floor(Math.random() * 25) : 0
           };
         }
 
@@ -149,13 +149,13 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
           return {
             type: 'easter_egg',
             x: Math.random() * w,
-            y: Math.random() * -h,
-            size: 14 + Math.random() * 10,
-            speedX: (Math.random() - 0.5) * 1.2,
-            speedY: 1.5 + Math.random() * 2,
+            y: Math.random() * -h * 0.4,
+            size: 9 + Math.random() * 5, // ovinhos delicados e discretos
+            speedX: (Math.random() - 0.5) * 0.6,
+            speedY: 0.6 + Math.random() * 0.8,
             angle: Math.random() * Math.PI * 2,
-            angleSpeed: (Math.random() - 0.5) * 0.04,
-            opacity: 0.85,
+            angleSpeed: (Math.random() - 0.5) * 0.02,
+            opacity: 0.24 + Math.random() * 0.12, // pastel sutil e translúcido para não tampar a leitura
             color: COLORS.pascoa[Math.floor(Math.random() * COLORS.pascoa.length)]!,
             secondaryColor: COLORS.pascoa[Math.floor(Math.random() * COLORS.pascoa.length)]!,
             extra: { vy: 0, bounces: 0, ground: h - 35 - Math.random() * 20 }
@@ -163,18 +163,18 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
         }
 
         case 'halloween': {
-          const isBat = Math.random() < 0.4;
+          const isBat = Math.random() < 0.35;
           return {
             type: isBat ? 'bat' : 'pumpkin',
-            x: isBat ? (Math.random() > 0.5 ? -20 : w + 20) : Math.random() * w,
-            y: isBat ? Math.random() * (h * 0.7) : h + 30 + Math.random() * 100,
-            size: isBat ? 16 + Math.random() * 8 : 18 + Math.random() * 12,
-            speedX: isBat ? (Math.random() > 0.5 ? 2 : -2) : (Math.random() - 0.5) * 0.8,
-            speedY: isBat ? (Math.random() - 0.5) * 1.5 : -(1 + Math.random() * 1.8),
+            x: isBat ? (Math.random() > 0.5 ? -15 : w + 15) : Math.random() * w,
+            y: isBat ? 20 + Math.random() * (h * 0.3) : h + 20, // morcegos no alto, abóboras subindo suavemente
+            size: isBat ? 11 + Math.random() * 4 : 12 + Math.random() * 4, // tamanho reduzido e elegante
+            speedX: isBat ? (Math.random() > 0.5 ? 0.9 : -0.9) : (Math.random() - 0.5) * 0.4,
+            speedY: isBat ? (Math.random() - 0.5) * 0.5 : -(0.5 + Math.random() * 0.7),
             angle: 0,
-            angleSpeed: (Math.random() - 0.5) * 0.02,
-            opacity: 0.85,
-            color: isBat ? '#1A202C' : '#ED8936',
+            angleSpeed: (Math.random() - 0.5) * 0.015,
+            opacity: 0.22 + Math.random() * 0.13, // translúcido, nunca rouba foco do texto
+            color: isBat ? '#2D3748' : '#DD6B20',
             secondaryColor: '#44337A',
             extra: { wavePhase: Math.random() * Math.PI * 2 }
           };
@@ -182,17 +182,17 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
 
         case 'carnaval': {
           const r = Math.random();
-          const type: ElementType = r < 0.25 ? 'mask' : r < 0.6 ? 'streamer' : 'confetti';
+          const type: ElementType = r < 0.15 ? 'mask' : r < 0.45 ? 'streamer' : 'confetti';
           return {
             type,
             x: Math.random() * w,
-            y: Math.random() * -h * 0.5,
-            size: type === 'mask' ? 22 + Math.random() * 8 : type === 'streamer' ? 20 + Math.random() * 15 : 6 + Math.random() * 5,
-            speedX: (Math.random() - 0.5) * 2,
-            speedY: type === 'mask' ? 1.2 + Math.random() * 1.5 : 2 + Math.random() * 3,
+            y: Math.random() * -h * 0.4,
+            size: type === 'mask' ? 14 + Math.random() * 4 : type === 'streamer' ? 14 + Math.random() * 8 : 4 + Math.random() * 4,
+            speedX: (Math.random() - 0.5) * 1.2,
+            speedY: type === 'mask' ? 0.7 + Math.random() * 0.8 : 1.2 + Math.random() * 1.6,
             angle: Math.random() * Math.PI * 2,
-            angleSpeed: (Math.random() - 0.5) * 0.05,
-            opacity: 0.9,
+            angleSpeed: (Math.random() - 0.5) * 0.03,
+            opacity: 0.25 + Math.random() * 0.15,
             color: COLORS.carnaval[Math.floor(Math.random() * COLORS.carnaval.length)]!,
             secondaryColor: COLORS.carnaval[Math.floor(Math.random() * COLORS.carnaval.length)]!,
             extra: { wavePhase: Math.random() * Math.PI * 2 }
@@ -204,14 +204,14 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
             type: 'star',
             x: Math.random() * w,
             y: Math.random() * h,
-            size: 2 + Math.random() * 4,
+            size: 1.5 + Math.random() * 2.5,
             speedX: 0,
             speedY: 0,
             angle: Math.random() * Math.PI,
-            angleSpeed: 0.04 + Math.random() * 0.06,
-            opacity: 0.2 + Math.random() * 0.8,
+            angleSpeed: 0.02 + Math.random() * 0.03,
+            opacity: 0.18 + Math.random() * 0.22,
             color: '#ECC94B',
-            extra: { twinkleSpeed: 0.03 + Math.random() * 0.05 }
+            extra: { twinkleSpeed: 0.02 + Math.random() * 0.03 }
           };
         }
 
@@ -573,6 +573,12 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
     return () => {
       window.removeEventListener('resize', resize);
       cancelAnimationFrame(animationFrameId);
+      if (canvasRef.current) {
+        const c = canvasRef.current;
+        const cCtx = c.getContext('2d');
+        if (cCtx) cCtx.clearRect(0, 0, c.width, c.height);
+      }
+      elements = [];
     };
   }, [season, isEnabled]);
 
@@ -587,29 +593,25 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
           />
 
           {/* ───────────────────────────────────────────────────────────── */}
-          {/* EFEITOS SVG / CSS ESPECÍFICOS POR TEMA */}
+          {/* EFEITOS SVG / CSS ESPECÍFICOS POR TEMA (SUTIS E DISCRETOS) */}
           {/* ───────────────────────────────────────────────────────────── */}
 
-          {/* 🎄 NATAL: Meias penduradas nos cantos superiores */}
+          {/* 🎄 NATAL: Meias discretas nos cantos superiores */}
           {season === 'natal' && (
             <>
               {/* Canto Superior Esquerdo */}
-              <div className="absolute top-0 left-2 sm:left-6 animate-[sway_3s_ease-in-out_infinite] origin-top">
-                <svg width="48" height="64" viewBox="0 0 48 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-md">
-                  {/* Cordinha */}
+              <div className="absolute top-0 left-2 sm:left-6 animate-[sway_3.5s_ease-in-out_infinite] origin-top opacity-60 scale-75">
+                <svg width="40" height="52" viewBox="0 0 48 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-xs">
                   <line x1="24" y1="0" x2="24" y2="8" stroke="#ECC94B" strokeWidth="2" strokeDasharray="2 2" />
-                  {/* Borda branca da meia */}
                   <rect x="12" y="8" width="24" height="10" rx="4" fill="#FFFFFF" />
-                  {/* Corpo da meia */}
                   <path d="M14 18H34V42C34 46 31 52 24 54L16 54C10 54 8 48 8 42C8 38 12 36 14 36V18Z" fill="#E53E3E" />
-                  {/* Detalhe calcanhar e ponta */}
                   <path d="M8 42C8 48 10 54 16 54L22 54C16 52 14 46 14 42H8Z" fill="#FFFFFF" opacity="0.8" />
                 </svg>
               </div>
 
               {/* Canto Superior Direito */}
-              <div className="absolute top-0 right-2 sm:right-6 animate-[sway_3.5s_ease-in-out_infinite_reverse] origin-top">
-                <svg width="48" height="64" viewBox="0 0 48 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-md">
+              <div className="absolute top-0 right-2 sm:right-6 animate-[sway_4s_ease-in-out_infinite_reverse] origin-top opacity-60 scale-75">
+                <svg width="40" height="52" viewBox="0 0 48 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-xs">
                   <line x1="24" y1="0" x2="24" y2="8" stroke="#ECC94B" strokeWidth="2" strokeDasharray="2 2" />
                   <rect x="12" y="8" width="24" height="10" rx="4" fill="#FFFFFF" />
                   <path d="M34 18H14V42C14 46 17 52 24 54L32 54C38 54 40 48 40 42C40 38 36 36 34 36V18Z" fill="#22543D" />
@@ -622,53 +624,39 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
           {/* 🎆 ANO NOVO: Marca d'água translúcida do ano seguinte */}
           {season === 'ano-novo' && (
             <div className="fixed inset-0 flex items-center justify-center pointer-events-none select-none z-10">
-              <span className="text-[20vw] font-black tracking-widest text-amber-300/10 md:text-amber-300/15 blur-[0.5px]">
+              <span className="text-[18vw] font-black tracking-widest text-amber-300/5 md:text-amber-300/10 blur-[1px]">
                 {incomingYear}
               </span>
             </div>
           )}
 
-          {/* 🥚 PÁSCOA: Borboletas e Flores nas Laterais */}
+          {/* 🥚 PÁSCOA: Borboletinha suave no topo (sem poluir o centro da leitura) */}
           {season === 'pascoa' && (
-            <>
-              {/* Borboleta Lateral Esquerda */}
-              <div className="absolute top-1/3 left-4 animate-[flutter_4s_ease-in-out_infinite]">
-                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                  <ellipse cx="12" cy="14" rx="8" ry="6" fill="#F687B3" opacity="0.85" />
-                  <ellipse cx="24" cy="14" rx="8" ry="6" fill="#D6BCFA" opacity="0.85" />
-                  <ellipse cx="14" cy="22" rx="5" ry="4" fill="#FAF089" opacity="0.85" />
-                  <ellipse cx="22" cy="22" rx="5" ry="4" fill="#9AE6B4" opacity="0.85" />
-                  <line x1="18" y1="10" x2="18" y2="26" stroke="#4A5568" strokeWidth="1.5" />
-                </svg>
-              </div>
-
-              {/* Florzinha Lateral Direita */}
-              <div className="absolute top-1/2 right-4 animate-[spin_12s_linear_infinite]">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                  <circle cx="20" cy="10" r="6" fill="#F687B3" opacity="0.8" />
-                  <circle cx="20" cy="30" r="6" fill="#F687B3" opacity="0.8" />
-                  <circle cx="10" cy="20" r="6" fill="#FAF089" opacity="0.8" />
-                  <circle cx="30" cy="20" r="6" fill="#FAF089" opacity="0.8" />
-                  <circle cx="20" cy="20" r="5" fill="#ED8936" />
-                </svg>
-              </div>
-            </>
+            <div className="absolute top-16 left-4 animate-[flutter_5s_ease-in-out_infinite] opacity-25 scale-75">
+              <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+                <ellipse cx="12" cy="14" rx="8" ry="6" fill="#F687B3" />
+                <ellipse cx="24" cy="14" rx="8" ry="6" fill="#D6BCFA" />
+                <ellipse cx="14" cy="22" rx="5" ry="4" fill="#FAF089" />
+                <ellipse cx="22" cy="22" rx="5" ry="4" fill="#9AE6B4" />
+                <line x1="18" y1="10" x2="18" y2="26" stroke="#718096" strokeWidth="1.5" />
+              </svg>
+            </div>
           )}
 
-          {/* 🎃 HALLOWEEN: Teias de aranha nos cantos superiores */}
+          {/* 🎃 HALLOWEEN: Teias discretas apenas nos cantos extremos */}
           {season === 'halloween' && (
             <>
-              {/* Teia Top-Left */}
-              <div className="absolute top-0 left-0 w-28 sm:w-40 opacity-40">
-                <svg viewBox="0 0 100 100" fill="none" stroke="#A0AEC0" strokeWidth="1.5">
+              {/* Teia Top-Left bem suave */}
+              <div className="absolute top-0 left-0 w-24 sm:w-32 opacity-15">
+                <svg viewBox="0 0 100 100" fill="none" stroke="#CBD5E0" strokeWidth="1">
                   <path d="M0,0 L100,0 M0,0 L0,100 M0,0 L100,100 M0,0 L40,100 M0,0 L100,40" />
                   <path d="M20,0 Q20,20 0,20 M40,0 Q40,40 0,40 M60,0 Q60,60 0,60 M80,0 Q80,80 0,80" />
                 </svg>
               </div>
 
-              {/* Teia Top-Right */}
-              <div className="absolute top-0 right-0 w-28 sm:w-40 opacity-40 -scale-x-100">
-                <svg viewBox="0 0 100 100" fill="none" stroke="#A0AEC0" strokeWidth="1.5">
+              {/* Teia Top-Right bem suave */}
+              <div className="absolute top-0 right-0 w-24 sm:w-32 opacity-15 -scale-x-100">
+                <svg viewBox="0 0 100 100" fill="none" stroke="#CBD5E0" strokeWidth="1">
                   <path d="M0,0 L100,0 M0,0 L0,100 M0,0 L100,100 M0,0 L40,100 M0,0 L100,40" />
                   <path d="M20,0 Q20,20 0,20 M40,0 Q40,40 0,40 M60,0 Q60,60 0,60 M80,0 Q80,80 0,80" />
                 </svg>
@@ -679,13 +667,13 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
           {/* 🎪 FESTA JUNINA: Bandeirinhas no topo e Fogueiras na base */}
           {season === 'festa-junina' && (
             <>
-              {/* Varal de Bandeirinhas Coloridas no Topo (CSS puro + SVG) */}
-              <div className="fixed top-0 left-0 w-full flex justify-between overflow-hidden z-30 pointer-events-none">
-                <div className="w-full flex items-start justify-around border-t-2 border-amber-800/40 pt-0.5">
+              {/* Varal de Bandeirinhas Coloridas no Topo (discretas e translúcidas) */}
+              <div className="fixed top-0 left-0 w-full flex justify-between overflow-hidden z-30 pointer-events-none opacity-40">
+                <div className="w-full flex items-start justify-around border-t border-amber-800/20 pt-0.5">
                   {['#E53E3E', '#ECC94B', '#3182CE', '#38A169', '#ED8936', '#E53E3E', '#3182CE', '#ECC94B', '#38A169', '#E53E3E', '#3182CE', '#ECC94B'].map((cor, i) => (
                     <div
                       key={i}
-                      className="w-0 h-0 border-l-[12px] sm:border-l-[16px] border-l-transparent border-r-[12px] sm:border-r-[16px] border-r-transparent border-t-[20px] sm:border-t-[28px] animate-[sway_2.5s_ease-in-out_infinite]"
+                      className="w-0 h-0 border-l-[8px] sm:border-l-[12px] border-l-transparent border-r-[8px] sm:border-r-[12px] border-r-transparent border-t-[14px] sm:border-t-[20px] animate-[sway_3s_ease-in-out_infinite]"
                       style={{
                         borderTopColor: cor,
                         animationDelay: `${i * 0.15}s`
@@ -696,20 +684,18 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
               </div>
 
               {/* Fogueira Animada na Parte Inferior Esquerda */}
-              <div className="fixed bottom-3 left-4 sm:left-8 z-30 pointer-events-none">
-                <svg width="44" height="48" viewBox="0 0 44 48" fill="none" className="animate-[pulse_1.5s_ease-in-out_infinite]">
-                  {/* Troncos */}
+              <div className="fixed bottom-3 left-4 sm:left-8 z-30 pointer-events-none opacity-40 scale-75">
+                <svg width="44" height="48" viewBox="0 0 44 48" fill="none" className="animate-[pulse_2s_ease-in-out_infinite]">
                   <rect x="6" y="38" width="32" height="6" rx="2" fill="#7B341E" transform="rotate(-10 22 41)" />
                   <rect x="6" y="38" width="32" height="6" rx="2" fill="#5C2513" transform="rotate(10 22 41)" />
-                  {/* Chamas com flickering */}
                   <path d="M22 6C22 6 12 18 12 28C12 34 16 38 22 38C28 38 32 34 32 28C32 18 22 6 22 6Z" fill="#ED8936" className="animate-[flicker_0.8s_ease-in-out_infinite]" />
                   <path d="M22 14C22 14 16 22 16 28C16 32 18 35 22 35C26 35 28 32 28 28C28 22 22 14 22 14Z" fill="#ECC94B" className="animate-[flicker_0.5s_ease-in-out_infinite_reverse]" />
                 </svg>
               </div>
 
               {/* Fogueira Animada na Parte Inferior Direita */}
-              <div className="fixed bottom-3 right-4 sm:right-8 z-30 pointer-events-none">
-                <svg width="44" height="48" viewBox="0 0 44 48" fill="none" className="animate-[pulse_1.5s_ease-in-out_infinite_0.3s]">
+              <div className="fixed bottom-3 right-4 sm:right-8 z-30 pointer-events-none opacity-40 scale-75">
+                <svg width="44" height="48" viewBox="0 0 44 48" fill="none" className="animate-[pulse_2s_ease-in-out_infinite_0.4s]">
                   <rect x="6" y="38" width="32" height="6" rx="2" fill="#7B341E" transform="rotate(10 22 41)" />
                   <rect x="6" y="38" width="32" height="6" rx="2" fill="#5C2513" transform="rotate(-10 22 41)" />
                   <path d="M22 6C22 6 12 18 12 28C12 34 16 38 22 38C28 38 32 34 32 28C32 18 22 6 22 6Z" fill="#ED8936" className="animate-[flicker_0.7s_ease-in-out_infinite]" />

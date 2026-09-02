@@ -15,15 +15,25 @@ export function ComoChegarSection({ config }: ComoChegarProps) {
   // Extrai a URL se o usuário colou a tag <iframe> inteira
   const rawEmbed = config?.mapa_embed_url || ""
   const match = rawEmbed.match(/src=["']([^"']+)["']/)
-  const embedUrl = match && match[1] ? match[1] : rawEmbed
+  const extractedEmbed = match && match[1] ? match[1] : rawEmbed.trim()
 
   const cidade = config?.mapa_cidade || "Ibiúna, SP"
   const distancia = config?.mapa_distancia || "65 km de São Paulo"
   const tempo = config?.mapa_tempo || "50 min da capital"
 
+  // Link direto para abrir no Google Maps:
+  // 1. Usa o link direto colocado no admin (mapa_link_direto)
+  // 2. Se o usuário colou um link direto no campo embed (ex: maps.app.goo.gl)
+  // 3. Fallback: busca exata pelo Sítio Cris Hori na cidade
   const directMapUrl = 
     config?.mapa_link_direto?.trim() || 
-    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cidade + " Sitio de Eventos")}`
+    (!extractedEmbed.includes("/embed") && extractedEmbed.startsWith("http") ? extractedEmbed : "") ||
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("Sítio Cris Hori " + cidade)}`
+
+  // URL para exibição dentro do iframe:
+  const embedUrl = extractedEmbed.includes("/embed")
+    ? extractedEmbed
+    : `https://maps.google.com/maps?q=${encodeURIComponent("Sítio Cris Hori " + cidade)}&t=&z=15&ie=UTF8&iwloc=&output=embed`
 
   return (
     <section id="como-chegar" className="py-20 md:py-32 bg-[#FAF8F5] px-4 md:px-6 relative overflow-hidden">
