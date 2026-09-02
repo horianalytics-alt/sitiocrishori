@@ -9,6 +9,8 @@ type FormModalProps = {
     tipo_evento?: 'festa' | 'final_de_semana'
     num_convidados?: number
     data_evento?: Date | null
+    pacote_nome?: string
+    pacote_id?: string
   }
   adminPhone: string
 }
@@ -16,6 +18,7 @@ type FormModalProps = {
 export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModalProps) {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [pacoteNome, setPacoteNome] = useState<string | undefined>(initialData?.pacote_nome)
 
   // Estados dos 5 passos
   const [nome, setNome] = useState("")
@@ -91,6 +94,10 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
   const handleFinalSubmit = async () => {
     setLoading(true)
     try {
+      const observacaoFinal = pacoteNome 
+        ? `[Pacote: ${pacoteNome}] ${mensagem.trim()}`.trim()
+        : mensagem.trim() || undefined
+
       const data = await criarReservaPublica({
         data: {
           cliente_nome: nome.trim(),
@@ -98,7 +105,7 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
           data_evento: dataEvento,
           num_convidados: numConvidados,
           tipo_evento: tipoEvento,
-          mensagem: mensagem.trim() || undefined,
+          mensagem: observacaoFinal,
         }
       })
 
@@ -107,7 +114,7 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
       const tipoNome = tipoEvento === 'festa' ? 'Festa & Evento (1 Dia)' : 'Final de Semana'
       const dataFormatada = dataEvento ? dataEvento.split('-').reverse().join('/') : 'A combinar'
 
-      const zapMsg = `Olá! Meu nome é *${nome}* e acabei de solicitar uma pré-reserva no site.\n\n📅 Data: *${dataFormatada}*\n👥 Convidados: *${numConvidados}*\n🎈 Tipo: *${tipoNome}*\n${mensagem ? `💬 Observação: ${mensagem}\n` : ''}\n🔗 Meu link de acompanhamento:\n${linkUnico}`
+      const zapMsg = `Olá! Meu nome é *${nome}* e acabei de solicitar uma pré-reserva no site.\n\n${pacoteNome ? `🎁 Pacote: *${pacoteNome}*\n` : ''}📅 Data: *${dataFormatada}*\n👥 Convidados: *${numConvidados}*\n🎈 Tipo: *${tipoNome}*\n${mensagem ? `💬 Observação: ${mensagem}\n` : ''}\n🔗 Meu link de acompanhamento:\n${linkUnico}`
 
       const cleanPhone = (adminPhone || "11999999999").replace(/\D/g, "")
       window.open(`https://wa.me/55${cleanPhone}?text=${encodeURIComponent(zapMsg)}`, '_blank')
@@ -132,6 +139,23 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
             style={{ width: `${(step / 5) * 100}%` }}
           />
         </div>
+
+        {/* Banner de Pacote Pré-selecionado */}
+        {pacoteNome && (
+          <div className="mx-5 sm:mx-6 mt-3 px-4 py-2 bg-orange-50/90 rounded-2xl border border-orange-200 flex items-center justify-between text-xs sm:text-sm font-bold text-orange-950">
+            <span className="flex items-center gap-1.5 truncate">
+              <Sparkles className="w-4 h-4 text-[#FE8330] shrink-0" />
+              Pacote: <span className="text-[#FE8330] font-black">{pacoteNome}</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => setPacoteNome(undefined)}
+              className="text-orange-500 hover:text-orange-700 underline text-xs ml-2 cursor-pointer shrink-0 font-medium"
+            >
+              remover
+            </button>
+          </div>
+        )}
 
         {/* Topo com Botão Fechar e Indicador de Passo */}
         <div className="p-5 sm:p-6 pb-2 flex items-center justify-between border-b border-gray-100">
@@ -380,6 +404,15 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
               </div>
 
               <div className="bg-gray-50 p-5 rounded-2xl border space-y-3 text-sm">
+                {pacoteNome && (
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-500 font-medium">Pacote Escolhido:</span>
+                    <span className="font-bold text-[#FE8330] flex items-center gap-1">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      {pacoteNome}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-gray-500 font-medium">Nome:</span>
                   <span className="font-bold text-gray-900">{nome}</span>

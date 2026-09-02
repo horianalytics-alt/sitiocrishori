@@ -26,7 +26,7 @@ import { DayNightToggle } from "@/components/DayNightToggle";
 import { InfraImageLoop } from "@/components/InfraImageLoop";
 import { GalleryPhotoCard } from "@/components/GalleryPhotoCard";
 import { normalizeGallery, filterByMode, AMBIENTE_OPTIONS, type AmbienteTag } from "@/lib/gallery";
-import { SimuladorOrcamento } from "@/components/SimuladorOrcamento";
+import { NossosPacotes, type PacotePublico } from "@/components/NossosPacotes";
 import { LeadCapturePopup } from "@/components/LeadCapturePopup";
 import { InstagramGrid } from "@/components/InstagramGrid";
 import { ReservaFormModal } from "@/components/ReservaFormModal";
@@ -73,6 +73,7 @@ function Index() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [ambienteFilter, setAmbienteFilter] = useState<string>("todos");
   const [showReservaModal, setShowReservaModal] = useState(false);
+  const [selectedPacote, setSelectedPacote] = useState<PacotePublico | null>(null);
   
   const [effectsEnabled, setEffectsEnabled] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(() => {
@@ -260,28 +261,31 @@ function Index() {
           </div>
         </section>
 
-        {/* Seção Dedicada: Simule seu Evento */}
-        <section id="simulador" className="py-20 md:py-28 bg-[#FAF8F5] border-y border-orange-100/60 px-4 md:px-6">
-          <div className="max-w-7xl mx-auto space-y-10">
+        {/* Seção Dedicada: Nossos Pacotes */}
+        <section id="pacotes" className="py-20 md:py-28 bg-[#FAF8F5] border-y border-orange-100/60 px-4 md:px-6">
+          <div className="max-w-7xl mx-auto space-y-12">
             <div className="text-center space-y-4 max-w-2xl mx-auto" data-aos="fade-up">
-              <span className="text-xs font-bold tracking-widest uppercase text-[#FE8330]">
-                Orçamento Online
+              <span className="text-xs font-black tracking-widest uppercase text-[#FE8330]">
+                Opções Prontas
               </span>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#1E2229] tracking-tight">
-                Simule seu Evento
+                Nossos Pacotes
               </h2>
               <p className="text-base sm:text-lg text-muted-foreground">
-                Descubra em poucos cliques uma estimativa transparente para celebrar seus melhores momentos conosco.
+                Escolha uma opção completa pensada para o seu conforto ou monte um evento sob medida.
               </p>
             </div>
 
             <div data-aos="fade-up" data-aos-delay="100">
-              <SimuladorOrcamento
-                precoFesta={config?.preco_base_festa}
-                precoFimSemana={config?.preco_base_fim_semana}
-                fimSemanaTipo={config?.fim_semana_tipo_preco}
-                adminPhone={config?.whatsapp_contato || "11999999999"}
-                selectedDate={selectedRange?.from || null}
+              <NossosPacotes
+                onSelectPacote={(pacote) => {
+                  setSelectedPacote(pacote);
+                  setShowReservaModal(true);
+                }}
+                onCustomReserva={() => {
+                  setSelectedPacote(null);
+                  setShowReservaModal(true);
+                }}
               />
             </div>
           </div>
@@ -503,11 +507,16 @@ function Index() {
 
       {showReservaModal && (
         <ReservaFormModal
-          onClose={() => setShowReservaModal(false)}
+          onClose={() => {
+            setShowReservaModal(false);
+            setSelectedPacote(null);
+          }}
           initialData={{
-            tipo_evento: 'festa',
-            num_convidados: 30,
+            tipo_evento: selectedPacote?.nome.toLowerCase().includes('semana') ? 'final_de_semana' : 'festa',
+            num_convidados: selectedPacote?.num_pessoas || 30,
             data_evento: selectedRange?.from || null,
+            pacote_nome: selectedPacote?.nome,
+            pacote_id: selectedPacote?.id,
           }}
           adminPhone={hero?.whatsapp_number || config?.whatsapp_contato || "11999999999"}
         />

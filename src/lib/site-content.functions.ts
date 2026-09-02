@@ -742,3 +742,141 @@ export const excluirEventoSazonal = createServerFn({ method: "POST" })
     return { success: true };
   });
 
+// ─────────────────────────────────────────────
+// SISTEMA DE PACOTES GERENCIÁVEIS
+// ─────────────────────────────────────────────
+
+export const getPacotesAdmin = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await verifyAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await (supabaseAdmin as any)
+      .from("pacotes")
+      .select("*")
+      .order("ordem", { ascending: true })
+      .order("created_at", { ascending: true });
+    if (error) throw error;
+    return data || [];
+  });
+
+export const getPacotesPublica = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await (supabaseAdmin as any)
+    .from("pacotes")
+    .select("*")
+    .eq("ativo", true)
+    .order("ordem", { ascending: true })
+    .order("created_at", { ascending: true });
+  if (error) throw error;
+  return data || [];
+});
+
+export const criarPacote = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: {
+    nome: string;
+    num_pessoas?: number | null;
+    preco_total?: number | null;
+    preco_por_pessoa?: number | null;
+    itens_incluidos?: string[];
+    destaque?: boolean;
+    texto_destaque?: string | null;
+    ativo?: boolean;
+  }) => data)
+  .handler(async ({ data, context }) => {
+    await verifyAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    
+    const { data: maxOrdemData } = await (supabaseAdmin as any)
+      .from("pacotes")
+      .select("ordem")
+      .order("ordem", { ascending: false })
+      .limit(1);
+    
+    const nextOrdem = (maxOrdemData?.[0]?.ordem ?? 0) + 1;
+
+    const { data: created, error } = await (supabaseAdmin as any)
+      .from("pacotes")
+      .insert({
+        nome: data.nome.trim(),
+        num_pessoas: data.num_pessoas ? Number(data.num_pessoas) : null,
+        preco_total: data.preco_total ? Number(data.preco_total) : null,
+        preco_por_pessoa: data.preco_por_pessoa ? Number(data.preco_por_pessoa) : null,
+        itens_incluidos: data.itens_incluidos || [],
+        destaque: Boolean(data.destaque),
+        texto_destaque: data.destaque ? (data.texto_destaque?.trim() || null) : null,
+        ativo: data.ativo ?? true,
+        ordem: nextOrdem,
+      })
+      .select("*")
+      .single();
+    if (error) throw error;
+    return created;
+  });
+
+export const atualizarPacote = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: {
+    id: string;
+    nome: string;
+    num_pessoas?: number | null;
+    preco_total?: number | null;
+    preco_por_pessoa?: number | null;
+    itens_incluidos?: string[];
+    destaque?: boolean;
+    texto_destaque?: string | null;
+    ativo?: boolean;
+  }) => data)
+  .handler(async ({ data, context }) => {
+    await verifyAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: updated, error } = await (supabaseAdmin as any)
+      .from("pacotes")
+      .update({
+        nome: data.nome.trim(),
+        num_pessoas: data.num_pessoas ? Number(data.num_pessoas) : null,
+        preco_total: data.preco_total ? Number(data.preco_total) : null,
+        preco_por_pessoa: data.preco_por_pessoa ? Number(data.preco_por_pessoa) : null,
+        itens_incluidos: data.itens_incluidos || [],
+        destaque: Boolean(data.destaque),
+        texto_destaque: data.destaque ? (data.texto_destaque?.trim() || null) : null,
+        ativo: data.ativo ?? true,
+      })
+      .eq("id", data.id)
+      .select("*")
+      .single();
+    if (error) throw error;
+    return updated;
+  });
+
+export const excluirPacote = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: { id: string }) => data)
+  .handler(async ({ data, context }) => {
+    await verifyAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await (supabaseAdmin as any)
+      .from("pacotes")
+      .delete()
+      .eq("id", data.id);
+    if (error) throw error;
+    return { success: true };
+  });
+
+export const reordenarPacotes = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: { updates: { id: string; ordem: number }[] }) => data)
+  .handler(async ({ data, context }) => {
+    await verifyAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    for (const item of data.updates) {
+      await (supabaseAdmin as any)
+        .from("pacotes")
+        .update({ ordem: item.ordem })
+        .eq("id", item.id);
+    }
+    return { success: true };
+  });
+
+

@@ -9,7 +9,7 @@ import {
   type FAQItem 
 } from '@/lib/site-content.functions'
 import { toast } from 'sonner'
-import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon, Calendar, Star, Eye, Sparkles, Phone, Settings, FileText } from 'lucide-react'
+import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon, Calendar, Star, Eye, Sparkles, Phone, Settings, FileText, Package } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { normalizeGallery, SEASONAL_SECTIONS, type GalleryPhoto } from "@/lib/gallery"
@@ -19,6 +19,7 @@ import { SitePreviewModal } from "@/components/admin/SitePreviewModal"
 // Novas abas
 import { DisponibilidadeCalendar } from '@/components/admin/DisponibilidadeCalendar'
 import { ReservasManager } from '@/components/admin/ReservasManager'
+import { PacotesManager } from '@/components/admin/PacotesManager'
 import { DepoimentosManager } from '@/components/admin/DepoimentosManager'
 import { RegrasPoliticasManager } from '@/components/admin/RegrasPoliticasManager'
 import { LeadsManager } from '@/components/admin/LeadsManager'
@@ -192,6 +193,7 @@ function AdminDashboard() {
               { id: "hero", icon: Home, label: "Hero" },
               { id: "disponibilidade", icon: Calendar, label: "Disponibilidade" },
               { id: "reservas", icon: Calendar, label: "Reservas" },
+              { id: "pacotes", icon: Package, label: "Pacotes" },
               { id: "infra", icon: Grid, label: "Estrutura" },
               { id: "gallery", icon: ImageIcon, label: "Galeria" },
               { id: "sazonais", icon: Sparkles, label: "Sazonais" },
@@ -326,6 +328,10 @@ function AdminDashboard() {
 
         <TabsContent value="reservas" activeValue={activeTab}>
           <ReservasManager />
+        </TabsContent>
+
+        <TabsContent value="pacotes" activeValue={activeTab}>
+          <PacotesManager />
         </TabsContent>
 
         <TabsContent value="infra" activeValue={activeTab}>

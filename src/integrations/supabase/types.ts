@@ -263,6 +263,48 @@ export type Database = {
         }
         Relationships: []
       }
+      pacotes: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          destaque: boolean
+          id: string
+          itens_incluidos: string[] | any
+          nome: string
+          num_pessoas: number | null
+          ordem: number
+          preco_por_pessoa: number | null
+          preco_total: number | null
+          texto_destaque: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          destaque?: boolean
+          id?: string
+          itens_incluidos?: string[] | any
+          nome: string
+          num_pessoas?: number | null
+          ordem?: number
+          preco_por_pessoa?: number | null
+          preco_total?: number | null
+          texto_destaque?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          destaque?: boolean
+          id?: string
+          itens_incluidos?: string[] | any
+          nome?: string
+          num_pessoas?: number | null
+          ordem?: number
+          preco_por_pessoa?: number | null
+          preco_total?: number | null
+          texto_destaque?: string | null
+        }
+        Relationships: []
+      }
       regras_politicas: {
         Row: {
           conteudo: string
