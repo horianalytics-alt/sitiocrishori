@@ -106,7 +106,7 @@ export function SeasonalGallerySection({
             key={`${photo.url}-${i}`}
             photo={photo}
             index={i}
-            fallbackUrl={fallbackUrl}
+            fallbackUrl={fallbackUrl ?? null}
             onClick={() => photo.tipo === 'foto' && onSelectImage(photo.url)}
           />
         ))}

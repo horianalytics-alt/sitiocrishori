@@ -139,7 +139,7 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
             angle: Math.random() * Math.PI * 2,
             angleSpeed: (Math.random() - 0.5) * 0.08,
             opacity: 1,
-            color: COLORS.anoNovo[Math.floor(Math.random() * COLORS.anoNovo.length)],
+            color: COLORS.anoNovo[Math.floor(Math.random() * COLORS.anoNovo.length)]!,
             life: 0,
             maxLife: isFirework ? 40 + Math.floor(Math.random() * 40) : undefined
           };
@@ -156,7 +156,7 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
             angle: Math.random() * Math.PI * 2,
             angleSpeed: (Math.random() - 0.5) * 0.04,
             opacity: 0.85,
-            color: COLORS.pascoa[Math.floor(Math.random() * COLORS.pascoa.length)],
+            color: COLORS.pascoa[Math.floor(Math.random() * COLORS.pascoa.length)]!,
             secondaryColor: COLORS.pascoa[Math.floor(Math.random() * COLORS.pascoa.length)],
             extra: { vy: 0, bounces: 0, ground: h - 35 - Math.random() * 20 }
           };
@@ -193,7 +193,7 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
             angle: Math.random() * Math.PI * 2,
             angleSpeed: (Math.random() - 0.5) * 0.05,
             opacity: 0.9,
-            color: COLORS.carnaval[Math.floor(Math.random() * COLORS.carnaval.length)],
+            color: COLORS.carnaval[Math.floor(Math.random() * COLORS.carnaval.length)]!,
             secondaryColor: COLORS.carnaval[Math.floor(Math.random() * COLORS.carnaval.length)],
             extra: { wavePhase: Math.random() * Math.PI * 2 }
           };
@@ -477,6 +477,8 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
 
       for (let i = 0; i < elements.length; i++) {
         const p = elements[i];
+        if (!p) continue;
+
 
         // Atualização de posição e estado
         p.x += p.speedX;
