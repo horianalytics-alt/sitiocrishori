@@ -81,8 +81,9 @@ export function DisponibilidadeCalendar() {
     setMutation.mutate({
       data: selectedDate,
       status: newStatus,
-      observacao: obsText.trim() || undefined,
+      ...(obsText.trim() ? { observacao: obsText.trim() } : {}),
     })
+
   }
 
   function prevMonth() {
