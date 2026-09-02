@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery } from "@tanstack/react-query";
-import { getSiteContent, getDepoimentos, getConfigSite, getDisponibilidadePublica, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
+import { getSiteContent, getDepoimentos, getConfigSitePublica, getDisponibilidadePublica, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData({ queryKey: ['site-content', 'faq'], queryFn: () => getSiteContent({ data: 'faq' }) }),
       context.queryClient.ensureQueryData({ queryKey: ['site-content', 'gallery'], queryFn: () => getSiteContent({ data: 'gallery' }) }),
       context.queryClient.ensureQueryData({ queryKey: ['depoimentos'], queryFn: () => getDepoimentos() }),
-      context.queryClient.ensureQueryData({ queryKey: ['config_site'], queryFn: () => getConfigSite() }),
+      context.queryClient.ensureQueryData({ queryKey: ['config_site'], queryFn: () => getConfigSitePublica() }),
       context.queryClient.ensureQueryData({ queryKey: ['disponibilidade_publica'], queryFn: () => getDisponibilidadePublica() }),
     ]);
   },
@@ -52,7 +52,7 @@ function Index() {
   const { data: faq } = useSuspenseQuery({ queryKey: ['site-content', 'faq'], queryFn: () => getSiteContent({ data: 'faq' }) }) as { data: FAQItem[] };
   const { data: galleryData } = useSuspenseQuery({ queryKey: ['site-content', 'gallery'], queryFn: () => getSiteContent({ data: 'gallery' }) }) as { data: unknown };
   const { data: depoimentos } = useSuspenseQuery({ queryKey: ['depoimentos'], queryFn: () => getDepoimentos() }) as { data: any[] };
-  const { data: config } = useSuspenseQuery({ queryKey: ['config_site'], queryFn: () => getConfigSite() }) as { data: any };
+  const { data: config } = useSuspenseQuery({ queryKey: ['config_site'], queryFn: () => getConfigSitePublica() }) as { data: any };
   const { data: disponibilidade = [] } = useSuspenseQuery({ queryKey: ['disponibilidade_publica'], queryFn: () => getDisponibilidadePublica() }) as { data: any[] };
 
   const [selectedRange, setSelectedRange] = useState<DateRange | undefined>();
