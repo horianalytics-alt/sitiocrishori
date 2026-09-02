@@ -1,9 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { getRegrasPoliticas } from '@/lib/site-content.functions'
+import { getRegrasPoliticas, getConfigSitePublica } from '@/lib/site-content.functions'
 import { supabase } from '@/integrations/supabase/client'
 import { MapPin, Calendar, Clock, CheckCircle, AlertTriangle, MessageCircle, PartyPopper, Loader2 } from 'lucide-react'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
+
 
 export const Route = createFileRoute('/reserva/$linkUnico')({
   component: ClientArea,
