@@ -161,11 +161,12 @@ function ClientArea() {
           <h3 className="text-xl font-black">Ficou com alguma dúvida?</h3>
           <p className="text-gray-500">Nossa equipe está à disposição no WhatsApp para ajudar no que for preciso.</p>
           <WhatsAppButton 
-            phoneNumber="11999999999" // Poderíamos puxar do config_site, mas como não tá no escopo desta view
+            phoneNumber={whatsappContato}
             label="Falar com o Sítio"
             message={`Olá! Sou ${reserva.cliente_nome} e tenho uma dúvida sobre minha reserva.`}
             className="w-full md:w-auto"
           />
+
         </div>
 
       </main>
