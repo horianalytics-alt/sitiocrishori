@@ -19,8 +19,8 @@ export type Database = {
           countdown_mensagem: string | null
           datas_quase_lotadas: string | null
           id: string
-          instagram_usuario: string | null
           instagram_token: string | null
+          instagram_usuario: string | null
           mapa_embed_url: string | null
           mapa_texto: string | null
           preco_base_festa: number | null
@@ -32,8 +32,8 @@ export type Database = {
           countdown_mensagem?: string | null
           datas_quase_lotadas?: string | null
           id?: string
-          instagram_usuario?: string | null
           instagram_token?: string | null
+          instagram_usuario?: string | null
           mapa_embed_url?: string | null
           mapa_texto?: string | null
           preco_base_festa?: number | null
@@ -45,8 +45,8 @@ export type Database = {
           countdown_mensagem?: string | null
           datas_quase_lotadas?: string | null
           id?: string
-          instagram_usuario?: string | null
           instagram_token?: string | null
+          instagram_usuario?: string | null
           mapa_embed_url?: string | null
           mapa_texto?: string | null
           preco_base_festa?: number | null
@@ -74,7 +74,6 @@ export type Database = {
         }
         Relationships: []
       }
-
       depoimentos: {
         Row: {
           aprovado: boolean
@@ -186,6 +185,42 @@ export type Database = {
           nome?: string | null
           origem?: string | null
           whatsapp?: string
+        }
+        Relationships: []
+      }
+      midias: {
+        Row: {
+          ambiente: Database["public"]["Enums"]["midia_ambiente"]
+          created_at: string
+          evento: Database["public"]["Enums"]["midia_evento"] | null
+          id: string
+          is_tour: boolean
+          modo: Database["public"]["Enums"]["midia_modo"]
+          storage_path: string
+          tipo: Database["public"]["Enums"]["midia_tipo"]
+          url: string
+        }
+        Insert: {
+          ambiente?: Database["public"]["Enums"]["midia_ambiente"]
+          created_at?: string
+          evento?: Database["public"]["Enums"]["midia_evento"] | null
+          id?: string
+          is_tour?: boolean
+          modo?: Database["public"]["Enums"]["midia_modo"]
+          storage_path: string
+          tipo?: Database["public"]["Enums"]["midia_tipo"]
+          url: string
+        }
+        Update: {
+          ambiente?: Database["public"]["Enums"]["midia_ambiente"]
+          created_at?: string
+          evento?: Database["public"]["Enums"]["midia_evento"] | null
+          id?: string
+          is_tour?: boolean
+          modo?: Database["public"]["Enums"]["midia_modo"]
+          storage_path?: string
+          tipo?: Database["public"]["Enums"]["midia_tipo"]
+          url?: string
         }
         Relationships: []
       }
@@ -335,6 +370,16 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      midia_ambiente:
+        | "piscina"
+        | "area_gourmet"
+        | "suites"
+        | "salao"
+        | "area_externa"
+        | "geral"
+      midia_evento: "natal" | "pascoa" | "ano_novo"
+      midia_modo: "dia" | "noite" | "ambos"
+      midia_tipo: "foto" | "video"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -463,6 +508,17 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      midia_ambiente: [
+        "piscina",
+        "area_gourmet",
+        "suites",
+        "salao",
+        "area_externa",
+        "geral",
+      ],
+      midia_evento: ["natal", "pascoa", "ano_novo"],
+      midia_modo: ["dia", "noite", "ambos"],
+      midia_tipo: ["foto", "video"],
     },
   },
 } as const
