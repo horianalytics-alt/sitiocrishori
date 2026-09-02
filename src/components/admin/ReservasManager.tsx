@@ -169,7 +169,7 @@ export function ReservasManager() {
         <div className="grid gap-4">
           {(reservas as any[]).map(res => {
             const status = res.status_novo ?? res.status ?? "pendente"
-            const statusCfg = STATUS_LABELS[status] ?? STATUS_LABELS.pendente!
+            const statusCfg = STATUS_LABELS[status] ?? STATUS_LABELS['pendente']!
             return (
               <div
                 key={res.id}
