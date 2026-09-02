@@ -9,8 +9,8 @@ type FormModalProps = {
     tipo_evento?: 'festa' | 'final_de_semana'
     num_convidados?: number
     data_evento?: Date | null
-    pacote_nome?: string
-    pacote_id?: string
+    pacote_nome?: string | undefined
+    pacote_id?: string | undefined
   }
   adminPhone: string
 }
