@@ -79,7 +79,13 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
     return GUEST_CONFIG[initialData?.tipo_evento || 'festa'].default
   })
 
-  // PASSO 4: Data (Data única para Day Use / Festa, ou De/Até para Final de Semana)
+  // PASSO 4: Data (Data única vs De/Até Período)
+  type DateSelectionMode = 'unico' | 'periodo'
+  const [dateMode, setDateMode] = useState<DateSelectionMode>(() => {
+    if (initialData?.tipo_evento === 'final_de_semana') return 'periodo'
+    return 'unico'
+  })
+
   const initialDateStr = initialData?.data_evento 
     ? initialData.data_evento.toISOString().slice(0, 10) 
     : ""
@@ -97,6 +103,31 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
     return undefined
   })
   const [mensagem, setMensagem] = useState("")
+
+  // Helper para cálculo de diárias entre duas datas YYYY-MM-DD
+  const calculateDiarias = (ini: string, fim: string) => {
+    if (!ini || !fim) return 0
+    const d1 = new Date(ini + "T00:00:00")
+    const d2 = new Date(fim + "T00:00:00")
+    const diff = Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24))
+    return Math.max(0, diff)
+  }
+
+  const handleDateModeChange = (mode: DateSelectionMode) => {
+    setDateMode(mode)
+    if (mode === 'periodo') {
+      if (!dataInicio && dataEvento) {
+        setDataInicio(dataEvento)
+        const fromD = new Date(dataEvento + "T00:00:00")
+        setCalendarRange({ from: fromD, to: undefined })
+      }
+    } else {
+      if (!dataEvento && dataInicio) {
+        setDataEvento(dataInicio)
+        setCalendarSingle(new Date(dataInicio + "T00:00:00"))
+      }
+    }
+  }
 
   // Buscar disponibilidade pública para destacar datas
   const { data: disponibilidade = [] } = useQuery({
@@ -123,6 +154,9 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
     setTipoEvento(tipo)
     const cfg = GUEST_CONFIG[tipo]
     setNumConvidados(prev => Math.min(Math.max(prev, cfg.min), cfg.max))
+    if (tipo === 'final_de_semana') {
+      handleDateModeChange('periodo')
+    }
   }
 
   // Formatação de telefone
@@ -159,7 +193,7 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
       return numConvidados >= cfg.min && numConvidados <= cfg.max
     }
     if (step === 4) {
-      if (tipoEvento === 'final_de_semana') {
+      if (dateMode === 'periodo') {
         return !!dataInicio && !!dataFim && dataFim >= dataInicio
       }
       return !!dataEvento
@@ -171,7 +205,7 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
     if (!canGoNext()) {
       if (step === 1) toast.error("Por favor, preencha seu nome e WhatsApp com DDD.")
       if (step === 4) {
-        if (tipoEvento === 'final_de_semana') {
+        if (dateMode === 'periodo') {
           if (!dataInicio || !dataFim) {
             toast.error("Por favor, escolha as datas de entrada e saída.")
           } else if (dataFim < dataInicio) {
@@ -225,8 +259,9 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
         ? `[Pacote: ${pacoteNome}] ${mensagem.trim()}`.trim()
         : mensagem.trim() || undefined
 
-      const finalInicio = tipoEvento === 'final_de_semana' ? dataInicio : dataEvento
-      const finalFim = tipoEvento === 'final_de_semana' ? dataFim : dataEvento
+      const isPeriodo = dateMode === 'periodo'
+      const finalInicio = isPeriodo ? dataInicio : dataEvento
+      const finalFim = isPeriodo ? (dataFim || dataInicio) : dataEvento
 
       const data = await criarReservaPublica({
         data: {
@@ -248,16 +283,17 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
       if (tipoEvento === 'day_use') tipoNome = '☀️ Day Use (08h às 18h)'
       if (tipoEvento === 'final_de_semana') tipoNome = '🌿 Final de Semana Completo (Pernoite)'
 
+      const numDiarias = isPeriodo ? calculateDiarias(dataInicio, dataFim) : 1
       let dataTexto = ''
-      if (tipoEvento === 'final_de_semana') {
+      if (isPeriodo) {
         const dIni = dataInicio ? dataInicio.split('-').reverse().join('/') : 'A combinar'
         const dFim = dataFim ? dataFim.split('-').reverse().join('/') : 'A combinar'
-        dataTexto = `*De ${dIni} até ${dFim}*`
+        dataTexto = `*De ${dIni} até ${dFim}* (${numDiarias} ${numDiarias === 1 ? 'diária' : 'diárias'})`
       } else {
-        dataTexto = `*${dataEvento ? dataEvento.split('-').reverse().join('/') : 'A combinar'}*`
+        dataTexto = `*${dataEvento ? dataEvento.split('-').reverse().join('/') : 'A combinar'}* (1 dia)`
       }
 
-      const zapMsg = `Olá! Meu nome é *${nome}* e acabei de solicitar uma pré-reserva no site.\n\n${pacoteNome ? `🎁 Pacote: *${pacoteNome}*\n` : ''}📌 Tipo de Evento: *${tipoNome}*\n📅 Data/Período: ${dataTexto}\n👥 Convidados: *${numConvidados} pessoas*\n${mensagem ? `💬 Observação: ${mensagem}\n` : ''}\n🔗 Meu link de acompanhamento:\n${linkUnico}`
+      const zapMsg = `Olá! Meu nome é *${nome}* e acabei de solicitar uma pré-reserva no site.\n\n${pacoteNome ? `🎁 Pacote: *${pacoteNome}*\n` : ''}📌 Tipo de Evento: *${tipoNome}*\n📅 Duração: *${isPeriodo ? `${numDiarias} diárias` : '1 dia'}*\n🗓️ Data/Período: ${dataTexto}\n👥 Convidados: *${numConvidados} pessoas*\n${mensagem ? `💬 Observação: ${mensagem}\n` : ''}\n🔗 Meu link de acompanhamento:\n${linkUnico}`
 
       const cleanPhone = (adminPhone || "11999999999").replace(/\D/g, "")
       window.open(`https://wa.me/55${cleanPhone}?text=${encodeURIComponent(zapMsg)}`, '_blank')
@@ -514,64 +550,111 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
             </div>
           )}
 
-          {/* PASSO 4: Data (Data única para Day Use/Festa vs De/Até para Final de Semana) */}
+          {/* PASSO 4: Data (1 Dia vs Mais de 1 Dia / Período) */}
           {step === 4 && (
             <div className="space-y-5 animate-in fade-in slide-in-from-right-2">
               <div className="space-y-1">
                 <h3 className="text-xl sm:text-2xl font-black text-[#1E2229]">
-                  {tipoEvento === 'final_de_semana' ? "Escolha a data de entrada e saída" : "Qual data você prefere?"}
+                  Qual a data do seu evento?
                 </h3>
                 <p className="text-sm text-gray-500">
-                  {tipoEvento === 'final_de_semana' 
-                    ? "Selecione o dia do check-in e check-out no sítio."
-                    : "Escolha o dia previsto para o seu evento."}
+                  Escolha se o evento será em um único dia ou um período com entrada e saída (ex: sábado a segunda).
                 </p>
               </div>
 
+              {/* Seletor de Modo: 1 Dia vs Mais de 1 Dia */}
+              <div className="bg-gray-100/90 p-1.5 rounded-2xl flex items-center gap-1.5 border border-gray-200/60">
+                <button
+                  type="button"
+                  onClick={() => handleDateModeChange('unico')}
+                  className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    dateMode === 'unico'
+                      ? 'bg-white text-[#FE8330] shadow-sm ring-1 ring-black/5'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <span>📅</span>
+                  <span>1 Dia</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleDateModeChange('periodo')}
+                  className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    dateMode === 'periodo'
+                      ? 'bg-white text-[#FE8330] shadow-sm ring-1 ring-black/5'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <span>🗓️</span>
+                  <span>Mais de 1 Dia (Período)</span>
+                </button>
+              </div>
+
               {/* Campos de Input */}
-              {tipoEvento === 'final_de_semana' ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                      De (Entrada): *
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      value={dataInicio}
-                      min={todayStr}
-                      onChange={e => {
-                        const newIni = e.target.value
-                        setDataInicio(newIni)
-                        if (dataFim && newIni > dataFim) {
-                          setDataFim(newIni)
-                        }
-                        const fromD = newIni ? new Date(newIni + "T00:00:00") : undefined
-                        const toD = dataFim ? new Date(dataFim + "T00:00:00") : undefined
-                        setCalendarRange({ from: fromD, to: toD })
-                      }}
-                      className="w-full min-h-[52px] px-4 py-3 bg-gray-50 rounded-2xl border text-base font-bold focus:outline-none focus:ring-2 ring-[#FE8330]/30"
-                    />
+              {dateMode === 'periodo' ? (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                        De (Entrada): *
+                      </label>
+                      <input
+                        type="date"
+                        required
+                        value={dataInicio}
+                        min={todayStr}
+                        onChange={e => {
+                          const newIni = e.target.value
+                          setDataInicio(newIni)
+                          if (dataFim && newIni > dataFim) {
+                            setDataFim(newIni)
+                          }
+                          const fromD = newIni ? new Date(newIni + "T00:00:00") : undefined
+                          const toD = (dataFim && dataFim >= newIni) ? new Date(dataFim + "T00:00:00") : fromD
+                          setCalendarRange({ from: fromD, to: toD })
+                        }}
+                        className="w-full min-h-[52px] px-4 py-3 bg-gray-50 rounded-2xl border text-base font-bold focus:outline-none focus:ring-2 ring-[#FE8330]/30"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                        Até (Saída): *
+                      </label>
+                      <input
+                        type="date"
+                        required
+                        value={dataFim}
+                        min={dataInicio || todayStr}
+                        onChange={e => {
+                          const newFim = e.target.value
+                          setDataFim(newFim)
+                          const fromD = dataInicio ? new Date(dataInicio + "T00:00:00") : undefined
+                          const toD = newFim ? new Date(newFim + "T00:00:00") : undefined
+                          setCalendarRange({ from: fromD, to: toD })
+                        }}
+                        className="w-full min-h-[52px] px-4 py-3 bg-gray-50 rounded-2xl border text-base font-bold focus:outline-none focus:ring-2 ring-[#FE8330]/30"
+                      />
+                    </div>
                   </div>
 
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                      Até (Saída): *
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      value={dataFim}
-                      min={dataInicio || todayStr}
-                      onChange={e => {
-                        setDataFim(e.target.value)
-                        const fromD = dataInicio ? new Date(dataInicio + "T00:00:00") : undefined
-                        const toD = e.target.value ? new Date(e.target.value + "T00:00:00") : undefined
-                        setCalendarRange({ from: fromD, to: toD })
-                      }}
-                      className="w-full min-h-[52px] px-4 py-3 bg-gray-50 rounded-2xl border text-base font-bold focus:outline-none focus:ring-2 ring-[#FE8330]/30"
-                    />
-                  </div>
+                  {/* Resumo do período selecionado */}
+                  {dataInicio && dataFim && dataFim >= dataInicio ? (
+                    <div className="p-3 rounded-2xl bg-orange-50/80 border border-orange-200 text-xs sm:text-sm font-bold text-[#FE8330] flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <Sparkles className="w-4 h-4 text-[#FE8330]" />
+                        Período selecionado:
+                      </span>
+                      <span className="font-black text-gray-900 bg-white px-2.5 py-1 rounded-xl shadow-xs border border-orange-100">
+                        {calculateDiarias(dataInicio, dataFim)} {calculateDiarias(dataInicio, dataFim) === 1 ? 'diária' : 'diárias'}
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-gray-500 italic text-center">
+                      💡 Ideal para quem quer entrar no sábado e sair na segunda-feira, feriados ou finais de semana estendidos.
+                    </p>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-1.5">
@@ -594,11 +677,13 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
 
               {/* Calendário Visual com Disponibilidade Integrada */}
               <div className="p-3 sm:p-4 bg-[#FAF8F5] rounded-3xl border border-gray-200/80 flex flex-col items-center">
-                <span className="text-xs font-bold text-gray-500 mb-1">
-                  Toque no calendário para selecionar uma data:
+                <span className="text-xs font-bold text-gray-500 mb-1 text-center">
+                  {dateMode === 'periodo'
+                    ? "Toque nos dias de entrada e saída no calendário:"
+                    : "Toque no calendário para selecionar o dia do evento:"}
                 </span>
 
-                {tipoEvento === 'final_de_semana' ? (
+                {dateMode === 'periodo' ? (
                   <DayPicker
                     mode="range"
                     selected={calendarRange}
@@ -648,14 +733,14 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
               {/* Observações Opcionais */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                  Alguma observação ou dúvida? (opcional)
+                  Alguma observação ou pedido especial? (Opcional)
                 </label>
                 <textarea
                   rows={2}
-                  placeholder="Ex: Gostaria de saber sobre horário de som, bebidas..."
                   value={mensagem}
                   onChange={e => setMensagem(e.target.value)}
-                  className="w-full p-3.5 bg-gray-50 rounded-2xl border text-sm focus:outline-none focus:ring-2 ring-[#FE8330]/30"
+                  placeholder="Ex: Horários preferidos, detalhes do evento..."
+                  className="w-full px-4 py-3 bg-gray-50 rounded-2xl border text-sm focus:outline-none focus:ring-2 ring-[#FE8330]/30 resize-none"
                 />
               </div>
             </div>
@@ -710,13 +795,13 @@ export function ReservaFormModal({ onClose, initialData, adminPhone }: FormModal
 
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-gray-500 font-medium">
-                    {tipoEvento === 'final_de_semana' ? "Período:" : "Data desejada:"}
+                    {dateMode === 'periodo' ? "Período (Entrada / Saída):" : "Data desejada:"}
                   </span>
                   <span className="font-black text-[#FE8330]">
-                    {tipoEvento === 'final_de_semana' ? (
-                      `De ${dataInicio ? dataInicio.split('-').reverse().join('/') : 'A combinar'} até ${dataFim ? dataFim.split('-').reverse().join('/') : 'A combinar'}`
+                    {dateMode === 'periodo' ? (
+                      `De ${dataInicio ? dataInicio.split('-').reverse().join('/') : 'A combinar'} até ${dataFim ? dataFim.split('-').reverse().join('/') : 'A combinar'} (${calculateDiarias(dataInicio, dataFim)} ${calculateDiarias(dataInicio, dataFim) === 1 ? 'diária' : 'diárias'})`
                     ) : (
-                      dataEvento ? dataEvento.split('-').reverse().join('/') : 'A combinar'
+                      dataEvento ? `${dataEvento.split('-').reverse().join('/')} (1 dia)` : 'A combinar'
                     )}
                   </span>
                 </div>
