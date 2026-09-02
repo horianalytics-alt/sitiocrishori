@@ -25,7 +25,6 @@ export type Database = {
           mapa_texto: string | null
           preco_base_festa: number | null
           preco_base_fim_semana: number | null
-          fim_semana_tipo_preco: string | null
           updated_at: string
           whatsapp_contato: string | null
         }
@@ -39,7 +38,6 @@ export type Database = {
           mapa_texto?: string | null
           preco_base_festa?: number | null
           preco_base_fim_semana?: number | null
-          fim_semana_tipo_preco?: string | null
           updated_at?: string
           whatsapp_contato?: string | null
         }
@@ -53,7 +51,6 @@ export type Database = {
           mapa_texto?: string | null
           preco_base_festa?: number | null
           preco_base_fim_semana?: number | null
-          fim_semana_tipo_preco?: string | null
           updated_at?: string
           whatsapp_contato?: string | null
         }
@@ -228,7 +225,7 @@ export type Database = {
         Row: {
           ambiente: Database["public"]["Enums"]["midia_ambiente"]
           created_at: string
-          evento: Database["public"]["Enums"]["midia_evento"] | null
+          evento: string | null
           id: string
           is_tour: boolean
           modo: Database["public"]["Enums"]["midia_modo"]
@@ -239,7 +236,7 @@ export type Database = {
         Insert: {
           ambiente?: Database["public"]["Enums"]["midia_ambiente"]
           created_at?: string
-          evento?: Database["public"]["Enums"]["midia_evento"] | null
+          evento?: string | null
           id?: string
           is_tour?: boolean
           modo?: Database["public"]["Enums"]["midia_modo"]
@@ -250,7 +247,7 @@ export type Database = {
         Update: {
           ambiente?: Database["public"]["Enums"]["midia_ambiente"]
           created_at?: string
-          evento?: Database["public"]["Enums"]["midia_evento"] | null
+          evento?: string | null
           id?: string
           is_tour?: boolean
           modo?: Database["public"]["Enums"]["midia_modo"]

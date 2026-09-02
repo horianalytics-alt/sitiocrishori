@@ -1,9 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { getRegrasPoliticas } from '@/lib/site-content.functions'
+import { getRegrasPoliticas, getConfigSitePublica } from '@/lib/site-content.functions'
 import { supabase } from '@/integrations/supabase/client'
 import { MapPin, Calendar, Clock, CheckCircle, AlertTriangle, MessageCircle, PartyPopper, Loader2 } from 'lucide-react'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
+
 
 export const Route = createFileRoute('/reserva/$linkUnico')({
   component: ClientArea,
@@ -30,7 +31,15 @@ function ClientArea() {
     queryFn: () => getRegrasPoliticas(),
   })
 
+  const { data: configSite } = useQuery({
+    queryKey: ['config_site_publica'],
+    queryFn: () => getConfigSitePublica(),
+  })
+
+  const whatsappContato = configSite?.whatsapp_contato?.replace(/\D/g, '') || '5511973000753'
+
   if (isLoadingReserva) {
+
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5]">
         <Loader2 className="w-8 h-8 text-[#FE8330] animate-spin" />
@@ -152,11 +161,12 @@ function ClientArea() {
           <h3 className="text-xl font-black">Ficou com alguma dúvida?</h3>
           <p className="text-gray-500">Nossa equipe está à disposição no WhatsApp para ajudar no que for preciso.</p>
           <WhatsAppButton 
-            phoneNumber="11999999999" // Poderíamos puxar do config_site, mas como não tá no escopo desta view
+            phoneNumber={whatsappContato}
             label="Falar com o Sítio"
             message={`Olá! Sou ${reserva.cliente_nome} e tenho uma dúvida sobre minha reserva.`}
             className="w-full md:w-auto"
           />
+
         </div>
 
       </main>
