@@ -241,12 +241,14 @@ export const getDisponibilidade = createServerFn({ method: "GET" })
     await verifyAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const start = `${data.ano}-${String(data.mes).padStart(2, "0")}-01`;
-    const end = `${data.ano}-${String(data.mes).padStart(2, "0")}-31`;
+    const nextYear = data.mes === 12 ? data.ano + 1 : data.ano;
+    const nextMonth = data.mes === 12 ? 1 : data.mes + 1;
+    const end = `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`;
     const { data: rows, error } = await (supabaseAdmin as any)
       .from("disponibilidade")
       .select("*")
       .gte("data", start)
-      .lte("data", end);
+      .lt("data", end);
     if (error) throw error;
     return (rows as any[]) || [];
   });
@@ -476,8 +478,10 @@ export const getDisponibilidadePublica = createServerFn({ method: "GET" })
     
     if (data) {
       const start = `${data.ano}-${String(data.mes).padStart(2, "0")}-01`;
-      const end = `${data.ano}-${String(data.mes).padStart(2, "0")}-31`;
-      query = query.gte("data", start).lte("data", end);
+      const nextYear = data.mes === 12 ? data.ano + 1 : data.ano;
+      const nextMonth = data.mes === 12 ? 1 : data.mes + 1;
+      const end = `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`;
+      query = query.gte("data", start).lt("data", end);
     }
     
     const { data: rows, error } = await query;
