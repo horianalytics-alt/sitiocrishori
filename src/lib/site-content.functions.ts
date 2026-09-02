@@ -478,8 +478,10 @@ export const getDisponibilidadePublica = createServerFn({ method: "GET" })
     
     if (data) {
       const start = `${data.ano}-${String(data.mes).padStart(2, "0")}-01`;
-      const end = `${data.ano}-${String(data.mes).padStart(2, "0")}-31`;
-      query = query.gte("data", start).lte("data", end);
+      const nextYear = data.mes === 12 ? data.ano + 1 : data.ano;
+      const nextMonth = data.mes === 12 ? 1 : data.mes + 1;
+      const end = `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`;
+      query = query.gte("data", start).lt("data", end);
     }
     
     const { data: rows, error } = await query;
