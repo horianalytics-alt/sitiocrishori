@@ -73,7 +73,7 @@ export function DisponibilidadeCalendar() {
     const idx = STATUS_CYCLE.indexOf(current)
     const next = STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length]!
     const obs = statusMap.get(dateStr)?.observacao
-    setMutation.mutate({ data: dateStr, status: next, observacao: obs })
+    setMutation.mutate({ data: dateStr, status: next, ...(obs ? { observacao: obs } : {}) })
     toast.success(`${dateStr} → ${STATUS_CONFIG[next].label}`)
   }
 

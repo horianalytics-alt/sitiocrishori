@@ -34,6 +34,7 @@ export type Database = {
       }
       depoimentos: {
         Row: {
+          aprovado: boolean
           created_at: string
           depoimento: string
           estrelas: number | null
@@ -43,6 +44,7 @@ export type Database = {
           nome: string
         }
         Insert: {
+          aprovado?: boolean
           created_at?: string
           depoimento: string
           estrelas?: number | null
@@ -52,6 +54,7 @@ export type Database = {
           nome: string
         }
         Update: {
+          aprovado?: boolean
           created_at?: string
           depoimento?: string
           estrelas?: number | null
