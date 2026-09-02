@@ -497,3 +497,73 @@ export const criarReservaPublica = createServerFn({ method: "POST" })
     if (error) throw error;
     return res;
   });
+// ─────────────────────────────────────────────
+// INSTAGRAM
+// ─────────────────────────────────────────────
+
+export const getInstagramPosts = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: config } = await (supabaseAdmin as any)
+      .from("config_site")
+      .select("instagram_token")
+      .single();
+
+    if (!config?.instagram_token) {
+      return null; // Silent fail se não tiver token
+    }
+
+    try {
+      const token = config.instagram_token;
+      // Chamada oficial da Instagram Basic Display API
+      const res = await fetch(`https://graph.instagram.com/me/media?fields=id,media_type,media_url,permalink,thumbnail_url&access_token=${token}&limit=9`);
+      if (!res.ok) {
+        return null; // Silent fail
+      }
+      const data = await res.json();
+      return data.data;
+    } catch (e) {
+      return null;
+    }
+  });
+
+// ─────────────────────────────────────────────
+// TOUR VIRTUAL
+// ─────────────────────────────────────────────
+
+export const setTourVideo = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((id: string) => id)
+  .handler(async ({ data: id, context }) => {
+    await verifyAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    
+    // Zera todos os tours antigos
+    await (supabaseAdmin as any)
+      .from("midias")
+      .update({ is_tour: false })
+      .eq("is_tour", true);
+
+    // Seta o novo
+    if (id) {
+      const { error } = await (supabaseAdmin as any)
+        .from("midias")
+        .update({ is_tour: true })
+        .eq("id", id);
+      if (error) throw error;
+    }
+    
+    return { success: true };
+  });
+
+export const getTourVideo = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data } = await (supabaseAdmin as any)
+      .from("midias")
+      .select("url")
+      .eq("is_tour", true)
+      .single();
+    
+    return data?.url || null;
+  });

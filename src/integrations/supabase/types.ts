@@ -38,6 +38,7 @@ export type Database = {
           countdown_mensagem: string | null
           datas_quase_lotadas: string | null
           instagram_usuario: string | null
+          instagram_token: string | null
           whatsapp_contato: string | null
           preco_base_festa: number | null
           preco_base_fim_semana: number | null
@@ -50,6 +51,7 @@ export type Database = {
           countdown_mensagem?: string | null
           datas_quase_lotadas?: string | null
           instagram_usuario?: string | null
+          instagram_token?: string | null
           whatsapp_contato?: string | null
           preco_base_festa?: number | null
           preco_base_fim_semana?: number | null
@@ -62,6 +64,7 @@ export type Database = {
           countdown_mensagem?: string | null
           datas_quase_lotadas?: string | null
           instagram_usuario?: string | null
+          instagram_token?: string | null
           whatsapp_contato?: string | null
           preco_base_festa?: number | null
           preco_base_fim_semana?: number | null

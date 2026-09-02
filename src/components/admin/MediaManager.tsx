@@ -174,6 +174,25 @@ export function MediaManager({
                     ))}
                   </select>
                 )}
+                {item.tipo === 'video' && (
+                  <label className="flex items-center gap-2 mt-2 px-2 py-1 bg-gray-50 border rounded-lg cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={!!item.is_tour}
+                      onChange={(e) => {
+                        const isChecked = e.target.checked;
+                        onChange(items.map((p, idx) => {
+                          if (idx === i) return { ...p, is_tour: isChecked };
+                          // se marcou este, desmarca todos os outros (tour único)
+                          if (isChecked && p.tipo === 'video') return { ...p, is_tour: false };
+                          return p;
+                        }))
+                      }}
+                      className="accent-[#FE8330] w-4 h-4"
+                    />
+                    <span className="text-xs font-bold text-gray-600">Usar como Tour Virtual</span>
+                  </label>
+                )}
               </div>
             )}
           </div>

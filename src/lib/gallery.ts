@@ -7,6 +7,7 @@ export type GalleryPhoto = {
   tag: PhotoTag;
   tipo: MediaKind;
   ambiente?: AmbienteTag;
+  is_tour?: boolean;
 };
 
 const VIDEO_RE = /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i;

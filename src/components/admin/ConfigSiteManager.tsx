@@ -9,6 +9,7 @@ type ConfigForm = {
   countdown_mensagem: string
   datas_quase_lotadas: string
   instagram_usuario: string
+  instagram_token: string
   whatsapp_contato: string
   preco_base_festa: number
   preco_base_fim_semana: number
@@ -20,6 +21,7 @@ const EMPTY_FORM: ConfigForm = {
   countdown_mensagem: "",
   datas_quase_lotadas: "",
   instagram_usuario: "",
+  instagram_token: "",
   whatsapp_contato: "",
   preco_base_festa: 0,
   preco_base_fim_semana: 0,
@@ -43,6 +45,7 @@ export function ConfigSiteManager() {
         countdown_mensagem: (config as any).countdown_mensagem ?? "",
         datas_quase_lotadas: (config as any).datas_quase_lotadas ?? "",
         instagram_usuario: (config as any).instagram_usuario ?? "",
+        instagram_token: (config as any).instagram_token ?? "",
         whatsapp_contato: (config as any).whatsapp_contato ?? "",
         preco_base_festa: (config as any).preco_base_festa ?? 0,
         preco_base_fim_semana: (config as any).preco_base_fim_semana ?? 0,
@@ -110,6 +113,16 @@ export function ConfigSiteManager() {
                 onChange={e => setForm(f => ({ ...f, instagram_usuario: e.target.value }))}
               />
             </div>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Token da API do Instagram</label>
+            <input
+              type="password"
+              className="w-full p-4 rounded-2xl border focus:outline-none focus:ring-2 ring-[#FE8330]/20 bg-transparent"
+              placeholder="IGQWR..."
+              value={form.instagram_token}
+              onChange={e => setForm(f => ({ ...f, instagram_token: e.target.value }))}
+            />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-bold uppercase tracking-wider text-gray-400">WhatsApp Principal</label>

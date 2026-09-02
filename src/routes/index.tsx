@@ -7,7 +7,7 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SeasonalEffects, type Season, type SeasonalEffectsHandle } from "@/components/SeasonalEffects";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { Star, Calendar as CalendarIcon, MapPin, CheckCircle, Sparkles } from "lucide-react";
+import { Star, Calendar as CalendarIcon, MapPin, CheckCircle, Sparkles, PlayCircle } from "lucide-react";
 import { DayPicker, type DateRange } from "react-day-picker";
 import { ptBR } from "date-fns/locale";
 import { format, isWithinInterval, startOfDay } from "date-fns";
@@ -18,6 +18,7 @@ import { GalleryPhotoCard } from "@/components/GalleryPhotoCard";
 import { normalizeGallery, filterByMode, AMBIENTE_OPTIONS, type AmbienteTag } from "@/lib/gallery";
 import { SimuladorOrcamento } from "@/components/SimuladorOrcamento";
 import { LeadCapturePopup } from "@/components/LeadCapturePopup";
+import { InstagramGrid } from "@/components/InstagramGrid";
 
 const SEASON_SECTION: Record<string, string> = { natal: "gallery_natal", pascoa: "gallery_pascoa", "ano-novo": "gallery_ano_novo" };
 const SITE_URL = "https://sitiocrishori.lovable.app";
@@ -81,6 +82,8 @@ function Index() {
 
   const { mode, toggle: toggleMode } = useDayNight();
   const allPhotos = filterByMode(normalizeGallery(galleryData), mode);
+  const tourVideo = allPhotos.find(p => p.tipo === "video" && p.is_tour);
+  
   const photos = useMemo(() => {
     if (ambienteFilter === "todos") return allPhotos;
     return allPhotos.filter(p => p.ambiente === ambienteFilter);
@@ -229,6 +232,32 @@ function Index() {
           </div>
         </section>
 
+        {/* Tour Virtual */}
+        {tourVideo && (
+          <section className="py-20 md:py-32 bg-[#FAF8F5] relative">
+            <div className="max-w-5xl mx-auto px-4 md:px-6">
+              <div className="text-center mb-10 md:mb-16 space-y-4">
+                <div className="w-16 h-16 bg-[#FE8330]/10 rounded-2xl flex items-center justify-center text-[#FE8330] mx-auto">
+                  <PlayCircle className="w-8 h-8" />
+                </div>
+                <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Tour Virtual</h2>
+                <p className="text-base md:text-lg text-muted-foreground font-medium max-w-[60ch] mx-auto" data-aos="fade-up" data-aos-delay="100">
+                  Sinta-se aqui antes mesmo de chegar. Dê um play e conheça o espaço.
+                </p>
+              </div>
+              <div className="rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl bg-black border-[4px] border-white relative aspect-video" data-aos="fade-up">
+                <video 
+                  src={tourVideo.url}
+                  className="w-full h-full object-cover"
+                  controls
+                  controlsList="nodownload"
+                  preload="metadata"
+                />
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Gallery Section com Filtros */}
         <section id="galeria" className="py-20 md:py-32 bg-white px-4 md:px-6 overflow-hidden">
           <div className="max-w-7xl mx-auto space-y-12 md:space-y-16">
@@ -349,6 +378,9 @@ function Index() {
             </div>
           </section>
         )}
+
+        {/* Instagram Grid */}
+        <InstagramGrid />
 
         {/* FAQ */}
         <section className="py-20 md:py-32 px-4 md:px-6 max-w-4xl mx-auto">
