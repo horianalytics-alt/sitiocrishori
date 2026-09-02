@@ -498,8 +498,9 @@ export const getDisponibilidadePublica = createServerFn({ method: "GET" })
   .validator((data?: { ano: number; mes: number }) => data)
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    let query = (supabaseAdmin as any).from("disponibilidade").select("*");
-    
+    // Apenas data e status são públicos — observacao pode conter dados de clientes
+    let query = (supabaseAdmin as any).from("disponibilidade").select("data, status");
+
     if (data) {
       const start = `${data.ano}-${String(data.mes).padStart(2, "0")}-01`;
       const nextYear = data.mes === 12 ? data.ano + 1 : data.ano;
@@ -507,7 +508,7 @@ export const getDisponibilidadePublica = createServerFn({ method: "GET" })
       const end = `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`;
       query = query.gte("data", start).lt("data", end);
     }
-    
+
     const { data: rows, error } = await query;
     if (error) throw error;
     return rows as any[];
