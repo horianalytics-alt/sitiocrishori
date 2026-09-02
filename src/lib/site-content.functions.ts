@@ -497,3 +497,15 @@ export const criarReservaPublica = createServerFn({ method: "POST" })
     if (error) throw error;
     return res;
   });
+
+// Config pública (sem autenticação) — usada pela homepage
+export const getConfigSitePublica = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await (supabaseAdmin as any)
+    .from("config_site")
+    .select("id, countdown_mensagem, datas_quase_lotadas, instagram_usuario, whatsapp_contato, preco_base_festa, preco_base_fim_semana, mapa_embed_url, mapa_texto")
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+});

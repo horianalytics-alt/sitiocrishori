@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
+import { Route as RegrasRouteImport } from './routes/regras'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as ReservaLinkUnicoRouteImport } from './routes/reserva/$linkUnico'
 import { Route as ApiPublicImageRouteImport } from './routes/api/public/image'
 import { Route as ApiPublicMediaRouteImport } from './routes/api/public/media'
 
@@ -25,6 +27,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRouteRoute = AdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegrasRoute = RegrasRouteImport.update({
+  id: '/regras',
+  path: '/regras',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -42,6 +49,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const ReservaLinkUnicoRoute = ReservaLinkUnicoRouteImport.update({
+  id: '/reserva/$linkUnico',
+  path: '/reserva/$linkUnico',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicImageRoute = ApiPublicImageRouteImport.update({
   id: '/api/public/image',
   path: '/api/public/image',
@@ -56,16 +68,20 @@ const ApiPublicMediaRoute = ApiPublicMediaRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/regras': typeof RegrasRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
+  '/reserva/$linkUnico': typeof ReservaLinkUnicoRoute
   '/admin/': typeof AdminIndexRoute
   '/api/public/image': typeof ApiPublicImageRoute
   '/api/public/media': typeof ApiPublicMediaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/regras': typeof RegrasRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
+  '/reserva/$linkUnico': typeof ReservaLinkUnicoRoute
   '/admin': typeof AdminIndexRoute
   '/api/public/image': typeof ApiPublicImageRoute
   '/api/public/media': typeof ApiPublicMediaRoute
@@ -74,8 +90,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/regras': typeof RegrasRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/login': typeof AdminLoginRoute
+  '/reserva/$linkUnico': typeof ReservaLinkUnicoRoute
   '/admin/': typeof AdminIndexRoute
   '/api/public/image': typeof ApiPublicImageRoute
   '/api/public/media': typeof ApiPublicMediaRoute
@@ -85,16 +103,20 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/regras'
     | '/sitemap.xml'
     | '/admin/login'
+    | '/reserva/$linkUnico'
     | '/admin/'
     | '/api/public/image'
     | '/api/public/media'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/regras'
     | '/sitemap.xml'
     | '/admin/login'
+    | '/reserva/$linkUnico'
     | '/admin'
     | '/api/public/image'
     | '/api/public/media'
@@ -102,8 +124,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/regras'
     | '/sitemap.xml'
     | '/admin/login'
+    | '/reserva/$linkUnico'
     | '/admin/'
     | '/api/public/image'
     | '/api/public/media'
@@ -112,7 +136,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  RegrasRoute: typeof RegrasRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ReservaLinkUnicoRoute: typeof ReservaLinkUnicoRoute
   ApiPublicImageRoute: typeof ApiPublicImageRoute
   ApiPublicMediaRoute: typeof ApiPublicMediaRoute
 }
@@ -131,6 +157,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/regras': {
+      id: '/regras'
+      path: '/regras'
+      fullPath: '/regras'
+      preLoaderRoute: typeof RegrasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -153,6 +186,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRouteRoute
+    }
+    '/reserva/$linkUnico': {
+      id: '/reserva/$linkUnico'
+      path: '/reserva/$linkUnico'
+      fullPath: '/reserva/$linkUnico'
+      preLoaderRoute: typeof ReservaLinkUnicoRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/image': {
       id: '/api/public/image'
@@ -188,7 +228,9 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
+  RegrasRoute: RegrasRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ReservaLinkUnicoRoute: ReservaLinkUnicoRoute,
   ApiPublicImageRoute: ApiPublicImageRoute,
   ApiPublicMediaRoute: ApiPublicMediaRoute,
 }
