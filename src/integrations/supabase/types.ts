@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      config_site: {
+        Row: {
+          countdown_mensagem: string | null
+          datas_quase_lotadas: string | null
+          id: string
+          instagram_usuario: string | null
+          updated_at: string
+          whatsapp_contato: string | null
+        }
+        Insert: {
+          countdown_mensagem?: string | null
+          datas_quase_lotadas?: string | null
+          id?: string
+          instagram_usuario?: string | null
+          updated_at?: string
+          whatsapp_contato?: string | null
+        }
+        Update: {
+          countdown_mensagem?: string | null
+          datas_quase_lotadas?: string | null
+          id?: string
+          instagram_usuario?: string | null
+          updated_at?: string
+          whatsapp_contato?: string | null
+        }
+        Relationships: []
+      }
       configuracoes: {
         Row: {
           chave: string
@@ -34,31 +61,61 @@ export type Database = {
       }
       depoimentos: {
         Row: {
+          aprovado: boolean
           created_at: string
           depoimento: string
           estrelas: number | null
           evento: string | null
+          foto_evento_url: string | null
           foto_url: string | null
           id: string
           nome: string
         }
         Insert: {
+          aprovado?: boolean
           created_at?: string
           depoimento: string
           estrelas?: number | null
           evento?: string | null
+          foto_evento_url?: string | null
           foto_url?: string | null
           id?: string
           nome: string
         }
         Update: {
+          aprovado?: boolean
           created_at?: string
           depoimento?: string
           estrelas?: number | null
           evento?: string | null
+          foto_evento_url?: string | null
           foto_url?: string | null
           id?: string
           nome?: string
+        }
+        Relationships: []
+      }
+      disponibilidade: {
+        Row: {
+          created_at: string
+          data: string
+          id: string
+          observacao: string | null
+          status: Database["public"]["Enums"]["disponibilidade_status"]
+        }
+        Insert: {
+          created_at?: string
+          data: string
+          id?: string
+          observacao?: string | null
+          status?: Database["public"]["Enums"]["disponibilidade_status"]
+        }
+        Update: {
+          created_at?: string
+          data?: string
+          id?: string
+          observacao?: string | null
+          status?: Database["public"]["Enums"]["disponibilidade_status"]
         }
         Relationships: []
       }
@@ -89,39 +146,138 @@ export type Database = {
         }
         Relationships: []
       }
+      leads_capturados: {
+        Row: {
+          created_at: string
+          id: string
+          origem: string | null
+          whatsapp: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          origem?: string | null
+          whatsapp: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          origem?: string | null
+          whatsapp?: string
+        }
+        Relationships: []
+      }
+      midias: {
+        Row: {
+          ambiente: Database["public"]["Enums"]["midia_ambiente"]
+          created_at: string
+          evento: Database["public"]["Enums"]["midia_evento"] | null
+          id: string
+          modo: Database["public"]["Enums"]["midia_modo"]
+          storage_path: string
+          tipo: Database["public"]["Enums"]["midia_tipo"]
+          url: string
+        }
+        Insert: {
+          ambiente?: Database["public"]["Enums"]["midia_ambiente"]
+          created_at?: string
+          evento?: Database["public"]["Enums"]["midia_evento"] | null
+          id?: string
+          modo?: Database["public"]["Enums"]["midia_modo"]
+          storage_path: string
+          tipo?: Database["public"]["Enums"]["midia_tipo"]
+          url: string
+        }
+        Update: {
+          ambiente?: Database["public"]["Enums"]["midia_ambiente"]
+          created_at?: string
+          evento?: Database["public"]["Enums"]["midia_evento"] | null
+          id?: string
+          modo?: Database["public"]["Enums"]["midia_modo"]
+          storage_path?: string
+          tipo?: Database["public"]["Enums"]["midia_tipo"]
+          url?: string
+        }
+        Relationships: []
+      }
+      regras_politicas: {
+        Row: {
+          conteudo: string
+          id: string
+          ordem: number
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          conteudo: string
+          id?: string
+          ordem?: number
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          conteudo?: string
+          id?: string
+          ordem?: number
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reservas: {
         Row: {
           cliente_nome: string | null
           cliente_telefone: string | null
           created_at: string
+          data_evento: string | null
           data_fim: string
           data_inicio: string
           id: string
+          link_unico: string | null
+          mensagem: string | null
+          num_convidados: number | null
           sinal_pago: boolean | null
           status: string | null
+          status_novo: Database["public"]["Enums"]["reserva_status"] | null
+          tipo_evento: Database["public"]["Enums"]["tipo_evento"] | null
           valor_total: number | null
+          whatsapp: string | null
         }
         Insert: {
           cliente_nome?: string | null
           cliente_telefone?: string | null
           created_at?: string
+          data_evento?: string | null
           data_fim: string
           data_inicio: string
           id?: string
+          link_unico?: string | null
+          mensagem?: string | null
+          num_convidados?: number | null
           sinal_pago?: boolean | null
           status?: string | null
+          status_novo?: Database["public"]["Enums"]["reserva_status"] | null
+          tipo_evento?: Database["public"]["Enums"]["tipo_evento"] | null
           valor_total?: number | null
+          whatsapp?: string | null
         }
         Update: {
           cliente_nome?: string | null
           cliente_telefone?: string | null
           created_at?: string
+          data_evento?: string | null
           data_fim?: string
           data_inicio?: string
           id?: string
+          link_unico?: string | null
+          mensagem?: string | null
+          num_convidados?: number | null
           sinal_pago?: boolean | null
           status?: string | null
+          status_novo?: Database["public"]["Enums"]["reserva_status"] | null
+          tipo_evento?: Database["public"]["Enums"]["tipo_evento"] | null
           valor_total?: number | null
+          whatsapp?: string | null
         }
         Relationships: []
       }
@@ -181,6 +337,13 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      disponibilidade_status: "disponivel" | "ocupado" | "reservado"
+      midia_ambiente: "piscina" | "area_gourmet" | "suites" | "salao" | "area_externa" | "geral"
+      midia_evento: "natal" | "pascoa" | "ano_novo"
+      midia_modo: "dia" | "noite" | "ambos"
+      midia_tipo: "foto" | "video"
+      reserva_status: "pendente" | "confirmado" | "cancelado"
+      tipo_evento: "final_de_semana" | "festa"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -309,6 +472,13 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      disponibilidade_status: ["disponivel", "ocupado", "reservado"],
+      midia_ambiente: ["piscina", "area_gourmet", "suites", "salao", "area_externa", "geral"],
+      midia_evento: ["natal", "pascoa", "ano_novo"],
+      midia_modo: ["dia", "noite", "ambos"],
+      midia_tipo: ["foto", "video"],
+      reserva_status: ["pendente", "confirmado", "cancelado"],
+      tipo_evento: ["final_de_semana", "festa"],
     },
   },
 } as const
