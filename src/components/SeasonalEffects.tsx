@@ -141,7 +141,7 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
             opacity: 1,
             color: COLORS.anoNovo[Math.floor(Math.random() * COLORS.anoNovo.length)]!,
             life: 0,
-            maxLife: isFirework ? 40 + Math.floor(Math.random() * 40) : undefined
+            maxLife: isFirework ? 40 + Math.floor(Math.random() * 40) : 0
           };
         }
 
@@ -157,7 +157,7 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
             angleSpeed: (Math.random() - 0.5) * 0.04,
             opacity: 0.85,
             color: COLORS.pascoa[Math.floor(Math.random() * COLORS.pascoa.length)]!,
-            secondaryColor: COLORS.pascoa[Math.floor(Math.random() * COLORS.pascoa.length)],
+            secondaryColor: COLORS.pascoa[Math.floor(Math.random() * COLORS.pascoa.length)]!,
             extra: { vy: 0, bounces: 0, ground: h - 35 - Math.random() * 20 }
           };
         }
@@ -194,7 +194,7 @@ export const SeasonalEffects = forwardRef<SeasonalEffectsHandle, SeasonalEffects
             angleSpeed: (Math.random() - 0.5) * 0.05,
             opacity: 0.9,
             color: COLORS.carnaval[Math.floor(Math.random() * COLORS.carnaval.length)]!,
-            secondaryColor: COLORS.carnaval[Math.floor(Math.random() * COLORS.carnaval.length)],
+            secondaryColor: COLORS.carnaval[Math.floor(Math.random() * COLORS.carnaval.length)]!,
             extra: { wavePhase: Math.random() * Math.PI * 2 }
           };
         }
