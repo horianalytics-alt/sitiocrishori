@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      config_site: {
+        Row: {
+          countdown_mensagem: string | null
+          datas_quase_lotadas: string | null
+          id: string
+          instagram_usuario: string | null
+          instagram_token: string | null
+          mapa_embed_url: string | null
+          mapa_texto: string | null
+          preco_base_festa: number | null
+          preco_base_fim_semana: number | null
+          updated_at: string
+          whatsapp_contato: string | null
+        }
+        Insert: {
+          countdown_mensagem?: string | null
+          datas_quase_lotadas?: string | null
+          id?: string
+          instagram_usuario?: string | null
+          instagram_token?: string | null
+          mapa_embed_url?: string | null
+          mapa_texto?: string | null
+          preco_base_festa?: number | null
+          preco_base_fim_semana?: number | null
+          updated_at?: string
+          whatsapp_contato?: string | null
+        }
+        Update: {
+          countdown_mensagem?: string | null
+          datas_quase_lotadas?: string | null
+          id?: string
+          instagram_usuario?: string | null
+          instagram_token?: string | null
+          mapa_embed_url?: string | null
+          mapa_texto?: string | null
+          preco_base_festa?: number | null
+          preco_base_fim_semana?: number | null
+          updated_at?: string
+          whatsapp_contato?: string | null
+        }
+        Relationships: []
+      }
       configuracoes: {
         Row: {
           chave: string
@@ -32,48 +74,7 @@ export type Database = {
         }
         Relationships: []
       }
-      config_site: {
-        Row: {
-          id: string
-          countdown_mensagem: string | null
-          datas_quase_lotadas: string | null
-          instagram_usuario: string | null
-          instagram_token: string | null
-          whatsapp_contato: string | null
-          preco_base_festa: number | null
-          preco_base_fim_semana: number | null
-          mapa_embed_url: string | null
-          mapa_texto: string | null
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          countdown_mensagem?: string | null
-          datas_quase_lotadas?: string | null
-          instagram_usuario?: string | null
-          instagram_token?: string | null
-          whatsapp_contato?: string | null
-          preco_base_festa?: number | null
-          preco_base_fim_semana?: number | null
-          mapa_embed_url?: string | null
-          mapa_texto?: string | null
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          countdown_mensagem?: string | null
-          datas_quase_lotadas?: string | null
-          instagram_usuario?: string | null
-          instagram_token?: string | null
-          whatsapp_contato?: string | null
-          preco_base_festa?: number | null
-          preco_base_fim_semana?: number | null
-          mapa_embed_url?: string | null
-          mapa_texto?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
+
       depoimentos: {
         Row: {
           aprovado: boolean
@@ -107,6 +108,33 @@ export type Database = {
         }
         Relationships: []
       }
+      disponibilidade: {
+        Row: {
+          created_at: string
+          data: string
+          id: string
+          observacao: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data: string
+          id?: string
+          observacao?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data?: string
+          id?: string
+          observacao?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       galeria: {
         Row: {
           categoria: string | null
@@ -134,39 +162,120 @@ export type Database = {
         }
         Relationships: []
       }
+      leads_capturados: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          nome: string | null
+          origem: string | null
+          whatsapp: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome?: string | null
+          origem?: string | null
+          whatsapp: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome?: string | null
+          origem?: string | null
+          whatsapp?: string
+        }
+        Relationships: []
+      }
+      regras_politicas: {
+        Row: {
+          conteudo: string
+          created_at: string
+          id: string
+          ordem: number
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          conteudo?: string
+          created_at?: string
+          id?: string
+          ordem?: number
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          conteudo?: string
+          created_at?: string
+          id?: string
+          ordem?: number
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reservas: {
         Row: {
           cliente_nome: string | null
           cliente_telefone: string | null
           created_at: string
-          data_fim: string
-          data_inicio: string
+          data_evento: string | null
+          data_fim: string | null
+          data_inicio: string | null
+          email: string | null
           id: string
+          link_unico: string | null
+          mensagem: string | null
+          nome: string | null
+          num_convidados: number | null
           sinal_pago: boolean | null
           status: string | null
+          status_novo: string | null
+          tipo_evento: string | null
           valor_total: number | null
+          whatsapp: string | null
         }
         Insert: {
           cliente_nome?: string | null
           cliente_telefone?: string | null
           created_at?: string
-          data_fim: string
-          data_inicio: string
+          data_evento?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          email?: string | null
           id?: string
+          link_unico?: string | null
+          mensagem?: string | null
+          nome?: string | null
+          num_convidados?: number | null
           sinal_pago?: boolean | null
           status?: string | null
+          status_novo?: string | null
+          tipo_evento?: string | null
           valor_total?: number | null
+          whatsapp?: string | null
         }
         Update: {
           cliente_nome?: string | null
           cliente_telefone?: string | null
           created_at?: string
-          data_fim?: string
-          data_inicio?: string
+          data_evento?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          email?: string | null
           id?: string
+          link_unico?: string | null
+          mensagem?: string | null
+          nome?: string | null
+          num_convidados?: number | null
           sinal_pago?: boolean | null
           status?: string | null
+          status_novo?: string | null
+          tipo_evento?: string | null
           valor_total?: number | null
+          whatsapp?: string | null
         }
         Relationships: []
       }

@@ -17,6 +17,7 @@ export type InfrastructureItem = {
   title: string;
   description: string;
   image: string;
+  images?: string[];
 };
 
 export type FAQItem = {
@@ -94,6 +95,7 @@ const infrastructureSchema = z.array(
     title: z.string().max(200),
     description: z.string().max(1000),
     image: z.string().max(2000),
+    images: z.array(z.string().max(2000)).max(30).optional(),
   }),
 ).max(50);
 
@@ -241,12 +243,14 @@ export const getDisponibilidade = createServerFn({ method: "GET" })
     await verifyAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const start = `${data.ano}-${String(data.mes).padStart(2, "0")}-01`;
-    const end = `${data.ano}-${String(data.mes).padStart(2, "0")}-31`;
+    const nextYear = data.mes === 12 ? data.ano + 1 : data.ano;
+    const nextMonth = data.mes === 12 ? 1 : data.mes + 1;
+    const end = `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`;
     const { data: rows, error } = await (supabaseAdmin as any)
       .from("disponibilidade")
       .select("*")
       .gte("data", start)
-      .lte("data", end);
+      .lt("data", end);
     if (error) throw error;
     return (rows as any[]) || [];
   });
@@ -476,8 +480,10 @@ export const getDisponibilidadePublica = createServerFn({ method: "GET" })
     
     if (data) {
       const start = `${data.ano}-${String(data.mes).padStart(2, "0")}-01`;
-      const end = `${data.ano}-${String(data.mes).padStart(2, "0")}-31`;
-      query = query.gte("data", start).lte("data", end);
+      const nextYear = data.mes === 12 ? data.ano + 1 : data.ano;
+      const nextMonth = data.mes === 12 ? 1 : data.mes + 1;
+      const end = `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`;
+      query = query.gte("data", start).lt("data", end);
     }
     
     const { data: rows, error } = await query;
@@ -567,3 +573,15 @@ export const getTourVideo = createServerFn({ method: "GET" })
     
     return data?.url || null;
   });
+
+// Config pública (sem autenticação) — usada pela homepage
+export const getConfigSitePublica = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await (supabaseAdmin as any)
+    .from("config_site")
+    .select("id, countdown_mensagem, datas_quase_lotadas, instagram_usuario, whatsapp_contato, preco_base_festa, preco_base_fim_semana, mapa_embed_url, mapa_texto")
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+});

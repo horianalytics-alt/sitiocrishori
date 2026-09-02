@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery } from "@tanstack/react-query";
-import { getSiteContent, getDepoimentos, getConfigSite, getDisponibilidadePublica, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
+import { getSiteContent, getDepoimentos, getConfigSitePublica, getDisponibilidadePublica, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
@@ -14,6 +14,7 @@ import { format, isWithinInterval, startOfDay } from "date-fns";
 import "react-day-picker/dist/style.css";
 import { useDayNight } from "@/hooks/useDayNight";
 import { DayNightToggle } from "@/components/DayNightToggle";
+import { InfraImageLoop } from "@/components/InfraImageLoop";
 import { GalleryPhotoCard } from "@/components/GalleryPhotoCard";
 import { normalizeGallery, filterByMode, AMBIENTE_OPTIONS, type AmbienteTag } from "@/lib/gallery";
 import { SimuladorOrcamento } from "@/components/SimuladorOrcamento";
@@ -40,7 +41,7 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData({ queryKey: ['site-content', 'faq'], queryFn: () => getSiteContent({ data: 'faq' }) }),
       context.queryClient.ensureQueryData({ queryKey: ['site-content', 'gallery'], queryFn: () => getSiteContent({ data: 'gallery' }) }),
       context.queryClient.ensureQueryData({ queryKey: ['depoimentos'], queryFn: () => getDepoimentos() }),
-      context.queryClient.ensureQueryData({ queryKey: ['config_site'], queryFn: () => getConfigSite() }),
+      context.queryClient.ensureQueryData({ queryKey: ['config_site'], queryFn: () => getConfigSitePublica() }),
       context.queryClient.ensureQueryData({ queryKey: ['disponibilidade_publica'], queryFn: () => getDisponibilidadePublica() }),
     ]);
   },
@@ -53,7 +54,7 @@ function Index() {
   const { data: faq } = useSuspenseQuery({ queryKey: ['site-content', 'faq'], queryFn: () => getSiteContent({ data: 'faq' }) }) as { data: FAQItem[] };
   const { data: galleryData } = useSuspenseQuery({ queryKey: ['site-content', 'gallery'], queryFn: () => getSiteContent({ data: 'gallery' }) }) as { data: unknown };
   const { data: depoimentos } = useSuspenseQuery({ queryKey: ['depoimentos'], queryFn: () => getDepoimentos() }) as { data: any[] };
-  const { data: config } = useSuspenseQuery({ queryKey: ['config_site'], queryFn: () => getConfigSite() }) as { data: any };
+  const { data: config } = useSuspenseQuery({ queryKey: ['config_site'], queryFn: () => getConfigSitePublica() }) as { data: any };
   const { data: disponibilidade = [] } = useSuspenseQuery({ queryKey: ['disponibilidade_publica'], queryFn: () => getDisponibilidadePublica() }) as { data: any[] };
 
   const [selectedRange, setSelectedRange] = useState<DateRange | undefined>();
@@ -217,7 +218,10 @@ function Index() {
             {infrastructure?.map((item, i) => (
               <div key={i} className="card-premium rounded-[2rem] md:rounded-[3rem] overflow-hidden group" data-aos="fade-up" data-aos-delay={i*100}>
                 <div className="aspect-[4/5] overflow-hidden relative">
-                  <img src={item.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={item.title} loading="lazy" />
+                  <InfraImageLoop
+                    images={(item.images && item.images.length > 0 ? item.images : [item.image]).filter(Boolean)}
+                    alt={item.title}
+                  />
                   <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60" />
                   <div className="absolute bottom-8 left-8 right-8 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                     <h3 className="text-2xl md:text-3xl font-bold mb-2">{item.title}</h3>
