@@ -27,28 +27,28 @@ export function DepoimentosManager() {
       aprovarDepoimento({ data: payload }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["depoimentos"] })
-      toast.success("Depoimento atualizado!")
+      toast.success("✅ Salvo com sucesso!")
     },
-    onError: (err: any) => toast.error("Erro: " + err.message),
+    onError: () => toast.error("❌ Erro ao salvar, tente novamente"),
   })
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteDepoimento({ data: id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["depoimentos"] })
-      toast.success("Depoimento excluído!")
+      toast.success("✅ Excluído com sucesso!")
     },
-    onError: (err: any) => toast.error("Erro: " + err.message),
+    onError: () => toast.error("❌ Erro ao salvar, tente novamente"),
   })
 
   const addMutation = useMutation({
     mutationFn: (data: any) => upsertDepoimento({ data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["depoimentos"] })
-      toast.success("Depoimento adicionado!")
+      toast.success("✅ Salvo com sucesso!")
       setShowForm(false)
     },
-    onError: (err: any) => toast.error("Erro: " + err.message),
+    onError: () => toast.error("❌ Erro ao salvar, tente novamente"),
   })
 
   const list = activeTab === "pendentes" ? pendentes : aprovados

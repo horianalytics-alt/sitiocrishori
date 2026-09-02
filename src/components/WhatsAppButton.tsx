@@ -13,12 +13,12 @@ export function WhatsAppButton({
   phoneNumber, 
   message = "Olá! Gostaria de saber mais sobre a disponibilidade do sítio.", 
   className,
-  label = "Verificar Disponibilidade",
+  label = "Falar no WhatsApp",
   floating = false
 }: WhatsAppButtonProps) {
-  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-  
-  const baseClasses = "inline-flex items-center justify-center gap-2 rounded-full bg-[#FE8330] px-6 py-3 text-white font-semibold transition-all hover:bg-[#E06B1B] active:scale-95 shadow-lg transition-btn btn-pill-interactive focus-ring";
+  const cleanPhone = (phoneNumber || "11999999999").replace(/\D/g, "");
+  const phoneWithDDI = cleanPhone.startsWith("55") ? cleanPhone : `55${cleanPhone}`;
+  const url = `https://wa.me/${phoneWithDDI}?text=${encodeURIComponent(message)}`;
   
   if (floating) {
     return (
@@ -26,13 +26,16 @@ export function WhatsAppButton({
         href={url}
         target="_blank"
         rel="noopener noreferrer"
+        aria-label={label}
         className={cn(
-          "fixed bottom-6 right-6 z-50 p-4 rounded-full bg-[#FE8330] text-white shadow-2xl hover:bg-[#E06B1B] active:scale-95 transition-all animate-bounce-subtle",
+          "fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 min-h-[56px] min-w-[56px] px-4 py-3 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl flex items-center justify-center gap-2.5 transition-all hover:scale-105 active:scale-95 group",
           className
         )}
       >
-        <MessageCircle size={24} />
-        <span className="sr-only">{label}</span>
+        <MessageCircle className="w-7 h-7 shrink-0 fill-current" />
+        <span className="hidden sm:inline-block font-black text-sm pr-1">
+          {label}
+        </span>
       </a>
     );
   }
@@ -42,9 +45,12 @@ export function WhatsAppButton({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className={cn(baseClasses, className)}
+      className={cn(
+        "inline-flex items-center justify-center gap-2 rounded-2xl bg-[#FE8330] hover:bg-[#E06B1B] px-6 py-3.5 text-white font-black text-base transition-all active:scale-95 shadow-md",
+        className
+      )}
     >
-      <MessageCircle size={20} />
+      <MessageCircle className="w-5 h-5" />
       {label}
     </a>
   );

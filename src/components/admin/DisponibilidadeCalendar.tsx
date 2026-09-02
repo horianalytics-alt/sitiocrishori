@@ -1,31 +1,32 @@
 import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Loader2, CheckCircle, XCircle, AlertCircle, Save } from "lucide-react"
 import { toast } from "sonner"
 import { getDisponibilidade, setDisponibilidade } from "@/lib/site-content.functions"
 
 type DisponibilidadeStatus = "disponivel" | "ocupado" | "reservado"
 
-const STATUS_CYCLE: DisponibilidadeStatus[] = ["disponivel", "ocupado", "reservado"]
-
 const STATUS_CONFIG = {
   disponivel: {
     label: "Disponível",
+    badge: "🟢 Disponível",
     bg: "bg-green-100 hover:bg-green-200",
     text: "text-green-800",
-    dot: "bg-green-500",
+    border: "border-green-300",
   },
   ocupado: {
     label: "Ocupado",
+    badge: "🔴 Ocupado",
     bg: "bg-red-100 hover:bg-red-200",
     text: "text-red-800",
-    dot: "bg-red-500",
+    border: "border-red-300",
   },
   reservado: {
     label: "Reservado",
+    badge: "🟡 Reservado",
     bg: "bg-yellow-100 hover:bg-yellow-200",
     text: "text-yellow-800",
-    dot: "bg-yellow-500",
+    border: "border-yellow-300",
   },
 } as const
 
@@ -44,7 +45,7 @@ export function DisponibilidadeCalendar() {
   const now = new Date()
   const [viewYear, setViewYear] = useState(now.getFullYear())
   const [viewMonth, setViewMonth] = useState(now.getMonth() + 1)
-  const [editingDate, setEditingDate] = useState<string | null>(null)
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [obsText, setObsText] = useState("")
 
   const queryClient = useQueryClient()
@@ -62,28 +63,26 @@ export function DisponibilidadeCalendar() {
   const setMutation = useMutation({
     mutationFn: (payload: { data: string; status: string; observacao?: string }) =>
       setDisponibilidade({ data: payload }),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey })
+      toast.success("✅ Salvo com sucesso!")
     },
-    onError: (err: any) => toast.error("Erro: " + err.message),
+    onError: () => toast.error("❌ Erro ao salvar, tente novamente"),
   })
 
-  function handleDayClick(dateStr: string) {
-    const current = statusMap.get(dateStr)?.status ?? "disponivel"
-    const idx = STATUS_CYCLE.indexOf(current)
-    const next = STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length]!
-    const obs = statusMap.get(dateStr)?.observacao
-    setMutation.mutate({ data: dateStr, status: next, ...(obs ? { observacao: obs } : {}) })
-    toast.success(`${dateStr} → ${STATUS_CONFIG[next].label}`)
+  function handleSelectDate(dateStr: string) {
+    setSelectedDate(dateStr)
+    const existing = statusMap.get(dateStr)
+    setObsText(existing?.observacao ?? "")
   }
 
-  function handleSaveObs() {
-    if (!editingDate) return
-    const current = statusMap.get(editingDate)?.status ?? "disponivel"
-    setMutation.mutate({ data: editingDate, status: current, observacao: obsText })
-    toast.success("Observação salva!")
-    setEditingDate(null)
-    setObsText("")
+  function handleSetStatus(newStatus: DisponibilidadeStatus) {
+    if (!selectedDate) return
+    setMutation.mutate({
+      data: selectedDate,
+      status: newStatus,
+      observacao: obsText.trim() || undefined,
+    })
   }
 
   function prevMonth() {
@@ -102,105 +101,193 @@ export function DisponibilidadeCalendar() {
     ...Array(firstDay).fill(null),
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ]
-  // Pad to full weeks
   while (cells.length % 7 !== 0) cells.push(null)
 
   const todayStr = toDateStr(now.getFullYear(), now.getMonth() + 1, now.getDate())
 
+  const selectedEntry = selectedDate ? statusMap.get(selectedDate) : null
+  const selectedStatus: DisponibilidadeStatus = selectedEntry?.status ?? "disponivel"
+
+  // Formatar data selecionada legível
+  const dataSelecionadaFormatada = selectedDate
+    ? selectedDate.split("-").reverse().join("/")
+    : null
+
   return (
     <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Calendário de Disponibilidade</h2>
-        {isLoading && <Loader2 className="w-5 h-5 text-[#FE8330] animate-spin" />}
+      
+      {/* Título e Descrição Clara */}
+      <div>
+        <h2 className="text-2xl md:text-3xl font-black text-[#1E2229]">
+          Calendário de Disponibilidade
+        </h2>
+        <p className="text-sm text-gray-500 mt-1">
+          Defina as datas livres e ocupadas para os visitantes consultarem no site.
+        </p>
       </div>
 
-      {/* Legend */}
-      <div className="flex flex-wrap gap-3">
-        {(Object.entries(STATUS_CONFIG) as [DisponibilidadeStatus, typeof STATUS_CONFIG["disponivel"]][]).map(([key, cfg]) => (
-          <span key={key} className="flex items-center gap-1.5 text-xs font-semibold">
-            <span className={`w-3 h-3 rounded-full ${cfg.dot}`} />
-            {cfg.label}
-          </span>
-        ))}
-        <span className="text-xs text-gray-400 ml-2">Clique para alternar status · Clique direito para observação</span>
+      {/* Instrução visível no topo */}
+      <div className="p-4 bg-orange-50/80 border-2 border-orange-200/80 rounded-2xl text-center text-[#1E2229] font-bold text-sm sm:text-base flex items-center justify-center gap-2">
+        <span>👆</span>
+        <span>Toque em uma data para marcá-la como disponível ou ocupada</span>
       </div>
 
-      {/* Month navigation */}
-      <div className="flex items-center justify-between">
-        <button onClick={prevMonth} className="p-2 rounded-xl hover:bg-gray-100 transition-colors">
-          <ChevronLeft className="w-5 h-5" />
+      {/* Navegação entre Meses */}
+      <div className="flex items-center justify-between bg-gray-50 p-3 rounded-2xl border">
+        <button
+          type="button"
+          onClick={prevMonth}
+          className="min-h-[52px] min-w-[52px] flex items-center justify-center rounded-xl bg-white border hover:bg-gray-100 active:scale-95 transition-all cursor-pointer"
+          aria-label="Mês anterior"
+        >
+          <ChevronLeft className="w-6 h-6 text-gray-700" />
         </button>
-        <span className="text-lg font-bold">
-          {MONTHS_PT[viewMonth - 1]} {viewYear}
+
+        <span className="text-lg md:text-xl font-black text-[#1E2229]">
+          {MONTHS_PT[viewMonth - 1]} de {viewYear}
         </span>
-        <button onClick={nextMonth} className="p-2 rounded-xl hover:bg-gray-100 transition-colors">
-          <ChevronRight className="w-5 h-5" />
+
+        <button
+          type="button"
+          onClick={nextMonth}
+          className="min-h-[52px] min-w-[52px] flex items-center justify-center rounded-xl bg-white border hover:bg-gray-100 active:scale-95 transition-all cursor-pointer"
+          aria-label="Próximo mês"
+        >
+          <ChevronRight className="w-6 h-6 text-gray-700" />
         </button>
       </div>
 
-      {/* Day of week headers */}
-      <div className="grid grid-cols-7 gap-1">
-        {DAYS_OF_WEEK.map(d => (
-          <div key={d} className="text-center text-xs font-bold text-gray-400 py-1">{d}</div>
-        ))}
+      {/* Grade do Calendário */}
+      <div className="space-y-1">
+        <div className="grid grid-cols-7 gap-1 sm:gap-2">
+          {DAYS_OF_WEEK.map(d => (
+            <div key={d} className="text-center text-xs sm:text-sm font-black text-gray-400 py-1">
+              {d}
+            </div>
+          ))}
+        </div>
 
-        {/* Day cells */}
-        {cells.map((day, idx) => {
-          if (day === null) return <div key={`empty-${idx}`} />
-          const dateStr = toDateStr(viewYear, viewMonth, day)
-          const entry = statusMap.get(dateStr)
-          const status: DisponibilidadeStatus = entry?.status ?? "disponivel"
-          const cfg = STATUS_CONFIG[status]
-          const isToday = dateStr === todayStr
-          return (
-            <button
-              key={dateStr}
-              onClick={() => handleDayClick(dateStr)}
-              onContextMenu={(e) => {
-                e.preventDefault()
-                setEditingDate(dateStr)
-                setObsText(entry?.observacao ?? "")
-              }}
-              title={entry?.observacao ? `📝 ${entry.observacao}` : cfg.label}
-              className={`
-                relative aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-bold transition-all
-                ${cfg.bg} ${cfg.text}
-                ${isToday ? "ring-2 ring-[#FE8330] ring-offset-1" : ""}
-              `}
-            >
-              {day}
-              {entry?.observacao && (
-                <span className="absolute bottom-1 right-1 w-1.5 h-1.5 rounded-full bg-current opacity-60" />
-              )}
-            </button>
-          )
-        })}
+        <div className="grid grid-cols-7 gap-1 sm:gap-2">
+          {cells.map((day, idx) => {
+            if (day === null) return <div key={`empty-${idx}`} />
+            const dateStr = toDateStr(viewYear, viewMonth, day)
+            const entry = statusMap.get(dateStr)
+            const status: DisponibilidadeStatus = entry?.status ?? "disponivel"
+            const cfg = STATUS_CONFIG[status]
+            const isToday = dateStr === todayStr
+            const isSelected = dateStr === selectedDate
+
+            return (
+              <button
+                key={dateStr}
+                type="button"
+                onClick={() => handleSelectDate(dateStr)}
+                className={`
+                  relative aspect-square min-h-[48px] sm:min-h-[60px] flex flex-col items-center justify-center rounded-2xl text-base sm:text-lg font-black transition-all cursor-pointer
+                  ${cfg.bg} ${cfg.text}
+                  ${isSelected ? "ring-4 ring-[#FE8330] scale-105 shadow-md z-10" : ""}
+                  ${isToday && !isSelected ? "ring-2 ring-gray-400" : ""}
+                `}
+              >
+                <span>{day}</span>
+                {entry?.observacao && (
+                  <span className="w-2 h-2 rounded-full bg-current opacity-75 mt-0.5" />
+                )}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
-      {/* Observation popover */}
-      {editingDate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-sm space-y-4">
-            <h3 className="font-bold text-lg">Observação para {editingDate}</h3>
-            <textarea
-              className="w-full border rounded-2xl p-3 min-h-[80px] focus:outline-none focus:ring-2 ring-[#FE8330]/30"
-              placeholder='Ex: "Casamento da família Silva"'
-              value={obsText}
-              onChange={e => setObsText(e.target.value)}
-            />
-            <div className="flex gap-3">
+      {/* Legenda das cores SEMPRE VISÍVEL abaixo do calendário */}
+      <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200/80 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-sm sm:text-base font-bold text-gray-700">
+        <div className="flex items-center gap-2">
+          <span>🟢</span>
+          <span>Disponível</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span>🔴</span>
+          <span>Ocupado</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span>🟡</span>
+          <span>Reservado</span>
+        </div>
+      </div>
+
+      {/* Painel simples ao tocar numa data (sem modal complexo) */}
+      {selectedDate && (
+        <div className="p-5 sm:p-6 bg-orange-50/40 border-2 border-[#FE8330]/40 rounded-[2rem] space-y-4 animate-in fade-in slide-in-from-bottom-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-orange-200/60 pb-3">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                Data selecionada
+              </span>
+              <h3 className="text-xl sm:text-2xl font-black text-[#1E2229]">
+                {dataSelecionadaFormatada}
+              </h3>
+            </div>
+            <div className="self-start sm:self-auto">
+              <span className="text-xs font-bold text-gray-500 mr-2">Status atual:</span>
+              <span className="text-sm font-black text-[#1E2229]">
+                {STATUS_CONFIG[selectedStatus].badge}
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-600 block">
+              Altere o status tocando em um dos botões abaixo:
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <button
-                onClick={() => { setEditingDate(null); setObsText("") }}
-                className="flex-1 py-3 rounded-xl border font-bold"
+                type="button"
+                disabled={setMutation.isPending}
+                onClick={() => handleSetStatus("disponivel")}
+                className="min-h-[52px] py-3.5 px-4 rounded-xl bg-green-500 hover:bg-green-600 text-white font-black text-base flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-all cursor-pointer"
               >
-                Cancelar
+                <CheckCircle className="w-5 h-5" /> Marcar Disponível
               </button>
+
               <button
-                onClick={handleSaveObs}
-                className="flex-1 py-3 rounded-xl bg-[#FE8330] text-white font-bold"
+                type="button"
+                disabled={setMutation.isPending}
+                onClick={() => handleSetStatus("ocupado")}
+                className="min-h-[52px] py-3.5 px-4 rounded-xl bg-red-500 hover:bg-red-600 text-white font-black text-base flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-all cursor-pointer"
               >
-                Salvar
+                <XCircle className="w-5 h-5" /> Marcar Ocupado
+              </button>
+
+              <button
+                type="button"
+                disabled={setMutation.isPending}
+                onClick={() => handleSetStatus("reservado")}
+                className="min-h-[52px] py-3.5 px-4 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-black text-base flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-all cursor-pointer"
+              >
+                <AlertCircle className="w-5 h-5" /> Marcar Reservado
+              </button>
+            </div>
+          </div>
+
+          <div className="pt-2 space-y-1.5">
+            <label className="text-xs font-bold text-gray-500 block">
+              Observação da data (opcional):
+            </label>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="text"
+                placeholder='Ex: "Casamento da família Silva"'
+                value={obsText}
+                onChange={e => setObsText(e.target.value)}
+                className="flex-1 px-4 py-3.5 rounded-xl border bg-white text-base focus:outline-none focus:ring-2 ring-[#FE8330]/30 font-medium"
+              />
+              <button
+                type="button"
+                disabled={setMutation.isPending}
+                onClick={() => handleSetStatus(selectedStatus)}
+                className="min-h-[52px] px-6 rounded-xl bg-[#1E2229] hover:bg-black text-white font-bold text-base flex items-center justify-center gap-2 cursor-pointer transition-colors"
+              >
+                <Save className="w-4 h-4" /> Salvar Nota
               </button>
             </div>
           </div>

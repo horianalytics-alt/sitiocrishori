@@ -62,9 +62,9 @@ export function ConfigSiteManager() {
     mutationFn: (data: ConfigForm) => updateConfigSite({ data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["config_site"] })
-      toast.success("Configurações salvas!")
+      toast.success("✅ Salvo com sucesso!")
     },
-    onError: (err: any) => toast.error("Erro: " + err.message),
+    onError: () => toast.error("❌ Erro ao salvar, tente novamente"),
   })
 
   if (isLoading) {

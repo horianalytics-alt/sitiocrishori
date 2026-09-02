@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import { Trash2, Plus, Loader2 } from "lucide-react"
+import { Trash2, Plus, Loader2, UploadCloud, CheckCircle } from "lucide-react"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
 import { TAG_OPTIONS, AMBIENTE_OPTIONS, type GalleryPhoto, type PhotoTag, type AmbienteTag } from "@/lib/gallery"
@@ -61,6 +61,7 @@ export function MediaManager({
   onUploadingChange?: (uploading: boolean) => void
 }) {
   const [queue, setQueue] = useState<QueueItem[]>([])
+  const [indexToDelete, setIndexToDelete] = useState<number | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const uploading = queue.some((q) => q.progress < 100 && !q.error)
 
@@ -91,50 +92,116 @@ export function MediaManager({
         setQueue((q) =>
           q.map((it, idx) => (idx === i ? { ...it, progress: 100, error: err.message } : it)),
         )
-        toast.error(`${file.name}: ${err.message}`)
+        toast.error(`❌ Erro no arquivo ${file.name}: ${err.message}`)
       }
     }
 
     if (added.length) {
       onChange([...items, ...added])
-      toast.success(`${added.length} arquivo(s) enviado(s)!`)
+      toast.success(`✅ ${added.length} foto/vídeo enviado com sucesso!`)
     }
     onUploadingChange?.(false)
     setTimeout(() => setQueue([]), 2500)
   }
 
+  function handleConfirmDelete() {
+    if (indexToDelete !== null) {
+      onChange(items.filter((_, idx) => idx !== indexToDelete))
+      setIndexToDelete(null)
+      toast.success("✅ Item removido com sucesso!")
+    }
+  }
+
   return (
-    <div className="space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="space-y-6">
+      {/* Área de Toque Grande para Upload */}
+      <label className="w-full min-h-[160px] sm:min-h-[190px] border-3 border-dashed border-[#FE8330]/50 hover:border-[#FE8330] rounded-[2rem] bg-orange-50/30 hover:bg-orange-50/60 p-6 flex flex-col items-center justify-center gap-3 text-center cursor-pointer transition-all active:scale-[0.99]">
+        {uploading ? (
+          <Loader2 className="w-12 h-12 text-[#FE8330] animate-spin" />
+        ) : (
+          <div className="w-16 h-16 rounded-full bg-[#FE8330]/10 text-[#FE8330] flex items-center justify-center">
+            <UploadCloud className="w-9 h-9" />
+          </div>
+        )}
+        <div className="space-y-1">
+          <span className="text-lg sm:text-xl font-black text-[#1E2229] block">
+            Toque aqui para escolher fotos ou vídeos
+          </span>
+          <span className="text-sm font-medium text-gray-500 block">
+            Selecione um ou vários arquivos direto da sua galeria ou câmera
+          </span>
+        </div>
+        <input
+          ref={inputRef}
+          type="file"
+          multiple
+          accept="image/*,video/*"
+          className="hidden"
+          onChange={handleFiles}
+        />
+      </label>
+
+      {/* Barra de Progresso do Envio */}
+      {queue.length > 0 && (
+        <div className="space-y-2 bg-gray-50 rounded-2xl p-4 border">
+          <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">
+            Enviando arquivos...
+          </span>
+          {queue.map((q, i) => (
+            <div key={i} className="space-y-1">
+              <div className="flex justify-between gap-3 text-xs font-bold">
+                <span className="truncate min-w-0">{q.name}</span>
+                <span className={q.error ? "text-red-500 shrink-0" : "text-[#FE8330] shrink-0"}>
+                  {q.error ? "Erro" : `${q.progress}%`}
+                </span>
+              </div>
+              <div className="h-2.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all ${q.error ? "bg-red-400" : "bg-[#FE8330]"}`}
+                  style={{ width: `${q.progress}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Grade de Miniaturas das Fotos e Vídeos */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {items.map((item, i) => (
-          <div key={`${item.url}-${i}`} className="w-full rounded-2xl border bg-gray-50 overflow-hidden">
-            <div className="relative w-full">
+          <div key={`${item.url}-${i}`} className="w-full rounded-[1.5rem] border-2 border-gray-100 bg-white overflow-hidden shadow-xs space-y-3 p-3">
+            <div className="relative w-full rounded-xl overflow-hidden bg-black">
               {item.tipo === "video" ? (
                 <video
                   src={item.url}
                   controls
                   muted
                   preload="metadata"
-                  className="w-full h-[180px] object-cover bg-black"
+                  className="w-full h-[200px] object-cover"
                 />
               ) : (
-                <img src={item.url} className="w-full h-[180px] object-cover" alt={`Mídia ${i + 1}`} />
+                <img src={item.url} className="w-full h-[200px] object-cover" alt={`Mídia ${i + 1}`} />
               )}
-              <span className="absolute top-2 left-2 text-xs bg-black/60 text-white rounded-full px-2 py-1">
-                {item.tipo === "video" ? "🎬" : "🖼️"}
+              
+              <span className="absolute top-2.5 left-2.5 text-xs font-black bg-black/70 text-white rounded-full px-3 py-1 flex items-center gap-1 backdrop-blur-xs">
+                {item.tipo === "video" ? "🎬 Vídeo" : "🖼️ Foto"}
               </span>
+
+              {/* Botão de Excluir */}
               <button
                 type="button"
-                onClick={() => onChange(items.filter((_, idx) => idx !== i))}
-                className="absolute top-2 right-2 w-9 h-9 bg-red-500 text-white flex items-center justify-center rounded-full shadow-md"
-                aria-label="Excluir mídia"
+                onClick={() => setIndexToDelete(i)}
+                className="absolute top-2.5 right-2.5 min-h-[44px] min-w-[44px] bg-red-600 hover:bg-red-700 text-white flex items-center justify-center rounded-full shadow-md transition-transform active:scale-95 cursor-pointer"
+                title="Excluir"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-5 h-5" />
               </button>
             </div>
+
+            {/* Controles de Tag e Ambiente */}
             {showTags && (
-              <div className="p-2 flex flex-col gap-2">
-                <div className="flex flex-row gap-2">
+              <div className="space-y-2 pt-1">
+                <div className="flex gap-1.5">
                   {TAG_OPTIONS.map((opt) => (
                     <button
                       key={opt.value}
@@ -146,19 +213,20 @@ export function MediaManager({
                           ),
                         )
                       }
-                      className={`flex-1 min-w-0 min-h-10 flex items-center justify-center gap-1 text-xs font-bold rounded-lg border transition-all whitespace-nowrap px-1 ${
+                      className={`flex-1 min-h-[44px] flex items-center justify-center text-xs font-black rounded-xl border transition-all ${
                         item.tag === opt.value
                           ? "bg-[#FE8330] text-white border-[#FE8330]"
-                          : "bg-white text-gray-500 hover:border-[#FE8330]/40"
+                          : "bg-gray-50 text-gray-600 hover:bg-gray-100"
                       }`}
                     >
                       {opt.label}
                     </button>
                   ))}
                 </div>
+
                 {showAmbiente && (
                   <select
-                    className="w-full h-10 px-2 text-xs font-bold text-gray-600 bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FE8330]/40"
+                    className="w-full min-h-[44px] px-3 text-xs font-bold text-gray-700 bg-gray-50 border rounded-xl focus:outline-none focus:ring-2 ring-[#FE8330]/30"
                     value={item.ambiente || ""}
                     onChange={(e) =>
                       onChange(
@@ -168,14 +236,15 @@ export function MediaManager({
                       )
                     }
                   >
-                    <option value="">Nenhum ambiente (Geral)</option>
+                    <option value="">Ambiente: Geral</option>
                     {AMBIENTE_OPTIONS.map(opt => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      <option key={opt.value} value={opt.value}>Ambiente: {opt.label}</option>
                     ))}
                   </select>
                 )}
+
                 {item.tipo === 'video' && (
-                  <label className="flex items-center gap-2 mt-2 px-2 py-1 bg-gray-50 border rounded-lg cursor-pointer">
+                  <label className="flex items-center gap-2.5 p-2 bg-orange-50/60 border border-orange-200/60 rounded-xl cursor-pointer">
                     <input 
                       type="checkbox" 
                       checked={!!item.is_tour}
@@ -183,60 +252,51 @@ export function MediaManager({
                         const isChecked = e.target.checked;
                         onChange(items.map((p, idx) => {
                           if (idx === i) return { ...p, is_tour: isChecked };
-                          // se marcou este, desmarca todos os outros (tour único)
                           if (isChecked && p.tipo === 'video') return { ...p, is_tour: false };
                           return p;
                         }))
                       }}
-                      className="accent-[#FE8330] w-4 h-4"
+                      className="accent-[#FE8330] w-5 h-5 cursor-pointer"
                     />
-                    <span className="text-xs font-bold text-gray-600">Usar como Tour Virtual</span>
+                    <span className="text-xs font-bold text-gray-800">Usar como Tour Virtual no Início</span>
                   </label>
                 )}
               </div>
             )}
           </div>
         ))}
-
-        <label className="w-full min-h-[180px] border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2 text-center px-3 cursor-pointer hover:border-[#FE8330] transition-all">
-          {uploading ? (
-            <Loader2 className="w-8 h-8 text-[#FE8330] animate-spin" />
-          ) : (
-            <Plus className="w-8 h-8 text-gray-300" />
-          )}
-          <span className="text-xs font-bold uppercase tracking-wide text-gray-400">
-            Enviar fotos ou vídeos
-          </span>
-          <span className="text-[10px] text-gray-400">Você pode selecionar vários arquivos</span>
-          <input
-            ref={inputRef}
-            type="file"
-            multiple
-            accept="image/*,video/*"
-            className="hidden"
-            onChange={handleFiles}
-          />
-        </label>
       </div>
 
-      {queue.length > 0 && (
-        <div className="space-y-2 bg-gray-50 rounded-2xl p-4 border">
-          {queue.map((q, i) => (
-            <div key={i} className="space-y-1">
-              <div className="flex justify-between gap-3 text-xs font-bold">
-                <span className="truncate min-w-0">{q.name}</span>
-                <span className={q.error ? "text-red-500 shrink-0" : "text-[#FE8330] shrink-0"}>
-                  {q.error ? "Erro" : `${q.progress}%`}
-                </span>
-              </div>
-              <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all ${q.error ? "bg-red-400" : "bg-[#FE8330]"}`}
-                  style={{ width: `${q.progress}%` }}
-                />
-              </div>
+      {/* Modal Simples de Confirmação de Exclusão */}
+      {indexToDelete !== null && (
+        <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+          <div className="bg-white rounded-[2rem] p-6 sm:p-8 max-w-sm w-full space-y-6 shadow-2xl text-center">
+            <div className="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
+              <Trash2 className="w-7 h-7" />
             </div>
-          ))}
+            <div>
+              <h4 className="text-xl font-black text-[#1E2229]">Tem certeza?</h4>
+              <p className="text-sm text-gray-500 mt-1">
+                Esta ação não pode ser desfeita e removerá este item da galeria.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setIndexToDelete(null)}
+                className="min-h-[52px] rounded-xl border border-gray-300 font-bold text-base hover:bg-gray-50 cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                className="min-h-[52px] rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-base cursor-pointer"
+              >
+                Sim, excluir
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

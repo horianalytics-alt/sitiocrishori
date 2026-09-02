@@ -109,9 +109,9 @@ function AdminDashboard() {
     mutationFn: (data: { section: string; content: any }) => updateSiteContent({ data }),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['site-content', variables.section] })
-      toast.success(`Conteúdo de ${variables.section} atualizado!`)
+      toast.success("✅ Salvo com sucesso!")
     },
-    onError: (error: any) => toast.error('Erro: ' + error.message),
+    onError: () => toast.error("❌ Erro ao salvar, tente novamente"),
   })
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'infra' | 'hero' | 'gallery' | 'testimonial', index?: number) => {
@@ -198,7 +198,7 @@ function AdminDashboard() {
               { id: "dep", icon: Star, label: "Depoimentos" },
               { id: "faq", icon: MessageCircle, label: "FAQ" },
               { id: "regras", icon: FileText, label: "Regras" },
-              { id: "leads", icon: Phone, label: "Leads" },
+              { id: "leads", icon: Phone, label: "Contatos Interessados" },
               { id: "config", icon: Settings, label: "Configurações" },
             ].map(tab => {
               const isActive = activeTab === tab.id
@@ -224,50 +224,99 @@ function AdminDashboard() {
 
         <TabsContent value="hero" activeValue={activeTab}>
           <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
-            <h2 className="text-2xl font-bold">Conteúdo Principal</h2>
-            <div className="grid gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Título (Headline)</label>
-                <textarea className="w-full p-4 rounded-2xl border focus:ring-2 ring-[#FE8330]/20 min-h-[100px]" value={heroForm?.headline || ""} onChange={e => setHeroForm({...heroForm, headline: e.target.value})} />
+            <div>
+              <h2 className="text-2xl md:text-3xl font-black text-[#1E2229]">
+                Página Inicial (Hero)
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Altere os textos principais, badges e a imagem de destaque do topo do site.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-gray-700">Título Principal (Headline)</label>
+                <textarea
+                  className="w-full p-4 rounded-2xl border bg-gray-50 text-base font-medium focus:outline-none focus:ring-2 ring-[#FE8330]/20 min-h-[90px]"
+                  placeholder="Ex: O Refúgio Perfeito Para Seus Melhores Momentos"
+                  value={heroForm?.headline || ""}
+                  onChange={e => setHeroForm({...heroForm, headline: e.target.value})}
+                />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Subtítulo</label>
-                <textarea className="w-full p-4 rounded-2xl border focus:ring-2 ring-[#FE8330]/20 min-h-[80px]" value={heroForm?.subheadline || ""} onChange={e => setHeroForm({...heroForm, subheadline: e.target.value})} />
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-gray-700">Subtítulo Explicativo</label>
+                <textarea
+                  className="w-full p-4 rounded-2xl border bg-gray-50 text-base font-medium focus:outline-none focus:ring-2 ring-[#FE8330]/20 min-h-[80px]"
+                  placeholder="Ex: Natureza exuberante, piscina, churrasqueira e estrutura completa a 40 min de SP"
+                  value={heroForm?.subheadline || ""}
+                  onChange={e => setHeroForm({...heroForm, subheadline: e.target.value})}
+                />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Número WhatsApp</label>
-                  <input className="w-full p-4 rounded-2xl border" value={heroForm?.whatsapp_number || ""} onChange={e => setHeroForm({...heroForm, whatsapp_number: e.target.value})} />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Texto do Botão (CTA)</label>
-                  <input className="w-full p-4 rounded-2xl border" value={heroForm?.cta_text || ""} onChange={e => setHeroForm({...heroForm, cta_text: e.target.value})} />
-                </div>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-gray-700">Número de WhatsApp (Recebimento de Mensagens)</label>
+                <input
+                  className="w-full min-h-[52px] px-4 py-3.5 rounded-2xl border bg-gray-50 text-base font-medium"
+                  placeholder="Ex: 11999999999"
+                  value={heroForm?.whatsapp_number || ""}
+                  onChange={e => setHeroForm({...heroForm, whatsapp_number: e.target.value})}
+                />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Badges (Separados por vírgula)</label>
-                <input className="w-full p-4 rounded-2xl border" value={heroForm?.badges?.join(", ") || ""} onChange={e => setHeroForm({...heroForm, badges: e.target.value.split(",").map(s => s.trim())})} />
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-gray-700">Texto do Botão Principal (CTA)</label>
+                <input
+                  className="w-full min-h-[52px] px-4 py-3.5 rounded-2xl border bg-gray-50 text-base font-medium"
+                  placeholder="Ex: Consultar Disponibilidade"
+                  value={heroForm?.cta_text || ""}
+                  onChange={e => setHeroForm({...heroForm, cta_text: e.target.value})}
+                />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Imagem de Fundo (Hero)</label>
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center">
-                  <input className="w-full sm:flex-1 p-4 rounded-2xl border" value={heroForm?.hero_image || ""} onChange={e => setHeroForm({...heroForm, hero_image: e.target.value})} placeholder="URL da imagem ou faça upload..." />
-                  <label className="cursor-pointer bg-[#FE8330]/10 text-[#FE8330] p-4 min-h-12 rounded-2xl hover:bg-[#FE8330]/20 transition-colors flex items-center justify-center gap-2">
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-gray-700">Badges em Destaque (Separados por vírgula)</label>
+                <input
+                  className="w-full min-h-[52px] px-4 py-3.5 rounded-2xl border bg-gray-50 text-base font-medium"
+                  placeholder="Ex: Piscina Aquecida, Churrasqueira, Wi-Fi 500MB, Estacionamento"
+                  value={heroForm?.badges?.join(", ") || ""}
+                  onChange={e => setHeroForm({...heroForm, badges: e.target.value.split(",").map(s => s.trim())})}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-gray-700">Foto de Fundo Principal (Hero)</label>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    className="flex-1 min-h-[52px] px-4 py-3.5 rounded-2xl border bg-gray-50 text-base font-medium"
+                    value={heroForm?.hero_image || ""}
+                    onChange={e => setHeroForm({...heroForm, hero_image: e.target.value})}
+                    placeholder="URL da imagem ou clique em upload..."
+                  />
+                  <label className="cursor-pointer bg-[#FE8330]/10 text-[#FE8330] px-6 min-h-[52px] rounded-2xl hover:bg-[#FE8330]/20 transition-colors flex items-center justify-center gap-2 shrink-0">
                     {isUploading === 'hero' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
-                    <span className="font-bold text-sm uppercase">Upload</span>
+                    <span className="font-bold text-sm uppercase">Escolher Foto</span>
                     <input type="file" className="hidden" accept="image/*" onChange={e => handleFileUpload(e, 'hero')} />
                   </label>
                 </div>
                 {heroForm?.hero_image && (
-                  <div className="mt-4 rounded-2xl overflow-hidden border w-full max-w-md aspect-video bg-gray-50">
+                  <div className="mt-3 rounded-2xl overflow-hidden border w-full max-w-md aspect-video bg-gray-50">
                     <img src={heroForm.hero_image} className="w-full h-full object-cover" alt="Preview Hero" />
                   </div>
                 )}
               </div>
             </div>
-            <button onClick={() => updateContentMutation.mutate({ section: 'hero', content: heroForm })} className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl hover:bg-[#E06B1B] transition-colors flex items-center justify-center gap-2">
-              <Save className="w-5 h-5" /> SALVAR HERO
-            </button>
+
+            {/* Botão de salvar sempre visível no rodapé */}
+            <div className="sticky bottom-4 z-20 pt-4">
+              <button
+                type="button"
+                onClick={() => updateContentMutation.mutate({ section: 'hero', content: heroForm })}
+                className="w-full min-h-[52px] py-4 bg-[#FE8330] text-white font-black text-base rounded-2xl hover:bg-[#E06B1B] shadow-lg shadow-[#FE8330]/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Save className="w-5 h-5" /> SALVAR PÁGINA INICIAL
+              </button>
+            </div>
           </div>
         </TabsContent>
 
@@ -280,38 +329,101 @@ function AdminDashboard() {
         </TabsContent>
 
         <TabsContent value="infra" activeValue={activeTab}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            {infraForm?.map((item, idx) => (
-              <div key={idx} className="bg-white p-6 rounded-[2rem] border shadow-sm space-y-4">
-                <input className="w-full text-xl font-bold bg-transparent" value={item.title || ""} onChange={e => { const f = [...(infraForm || [])]; if (f[idx]) f[idx].title = e.target.value; setInfraForm(f) }} />
-                <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.description || ""} onChange={e => { const f = [...(infraForm || [])]; if (f[idx]) f[idx].description = e.target.value; setInfraForm(f) }} />
-                <div className="space-y-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Fotos do card (passam em loop no site)</span>
-                  <MediaManager
-                    items={(item.images && item.images.length ? item.images : [item.image].filter(Boolean)).map(u => ({ url: u, tag: "ambos" as const, tipo: "foto" as const }))}
-                    onChange={(list) => {
-                      const urls = list.map(m => m.url)
-                      const f = [...(infraForm || [])]
-                      if (f[idx]) f[idx] = { ...f[idx]!, images: urls, image: urls[0] || "" }
-                      setInfraForm(f)
-                    }}
-                    folder="estrutura"
-                    showTags={false}
-                    onUploadingChange={setMediaUploading}
-                  />
+          <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-black text-[#1E2229]">
+                Estrutura do Sítio
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Apresente os diferenciais, ambientes e comodidades do espaço para os visitantes.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {infraForm?.map((item, idx) => (
+                <div key={idx} className="bg-gray-50/70 p-6 rounded-[2rem] border shadow-xs space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-500 uppercase">Título da Atração</label>
+                    <input
+                      className="w-full text-lg font-bold bg-white p-3 rounded-xl border"
+                      placeholder="Ex: Área Gourmet com Churrasqueira"
+                      value={item.title || ""}
+                      onChange={e => { const f = [...(infraForm || [])]; if (f[idx]) f[idx].title = e.target.value; setInfraForm(f) }}
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-500 uppercase">Descrição</label>
+                    <textarea
+                      className="w-full text-sm bg-white p-3 rounded-xl border min-h-[70px]"
+                      placeholder="Ex: Espaço coberto equipado com forno a lenha, grelhas e mesas amplas."
+                      value={item.description || ""}
+                      onChange={e => { const f = [...(infraForm || [])]; if (f[idx]) f[idx].description = e.target.value; setInfraForm(f) }}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-gray-400 block">
+                      Fotos do Card (passam em carrossel no site)
+                    </span>
+                    <MediaManager
+                      items={(item.images && item.images.length ? item.images : [item.image].filter(Boolean)).map(u => ({ url: u, tag: "ambos" as const, tipo: "foto" as const }))}
+                      onChange={(list) => {
+                        const urls = list.map(m => m.url)
+                        const f = [...(infraForm || [])]
+                        if (f[idx]) f[idx] = { ...f[idx]!, images: urls, image: urls[0] || "" }
+                        setInfraForm(f)
+                      }}
+                      folder="estrutura"
+                      showTags={false}
+                      onUploadingChange={setMediaUploading}
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setInfraForm((infraForm || []).filter((_, i) => i !== idx))}
+                    className="text-red-500 hover:text-red-700 text-xs font-bold uppercase tracking-widest py-3 min-h-[44px] flex items-center gap-1 cursor-pointer"
+                  >
+                    <Trash2 className="w-4 h-4" /> Excluir Card de Estrutura
+                  </button>
                 </div>
-                <button onClick={() => setInfraForm((infraForm || []).filter((_, i) => i !== idx))} className="text-red-500 text-xs font-bold uppercase tracking-widest py-3 min-h-11">Excluir Card</button>
-              </div>
-            ))}
-            <button onClick={() => setInfraForm([...(infraForm || []), { title: "Novo Item", description: "", image: "" }])} className="border-2 border-dashed rounded-[2rem] p-10 flex flex-col items-center justify-center text-gray-300 hover:border-[#FE8330] hover:text-[#FE8330] transition-all">
-              <Plus className="w-10 h-10 mb-2" /> <span>ADICIONAR ITEM</span>
-            </button>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => setInfraForm([...(infraForm || []), { title: "Novo Item", description: "", image: "" }])}
+                className="border-2 border-dashed rounded-[2rem] p-10 min-h-[200px] flex flex-col items-center justify-center text-gray-400 hover:border-[#FE8330] hover:text-[#FE8330] transition-all cursor-pointer"
+              >
+                <Plus className="w-10 h-10 mb-2" />
+                <span className="font-bold text-base">+ ADICIONAR NOVO AMBIENTE</span>
+              </button>
+            </div>
+
+            {/* Botão de salvar sempre visível no rodapé */}
+            <div className="sticky bottom-4 z-20 pt-4">
+              <button
+                type="button"
+                onClick={() => updateContentMutation.mutate({ section: 'infrastructure', content: infraForm })}
+                className="w-full min-h-[52px] py-4 bg-[#FE8330] text-white font-black text-base rounded-2xl hover:bg-[#E06B1B] shadow-lg shadow-[#FE8330]/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Save className="w-5 h-5" /> SALVAR ESTRUTURA
+              </button>
+            </div>
           </div>
-          <button onClick={() => updateContentMutation.mutate({ section: 'infrastructure', content: infraForm })} className="mt-6 md:mt-8 w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR ESTRUTURA</button>
         </TabsContent>
 
         <TabsContent value="gallery" activeValue={activeTab}>
-          <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6 md:space-y-8">
+          <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-black text-[#1E2229]">
+                Galeria de Fotos
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Adicione as fotos que vão aparecer no site para os visitantes.
+              </p>
+            </div>
+
             <MediaManager
               items={galleryForm}
               onChange={setGalleryForm}
@@ -319,13 +431,22 @@ function AdminDashboard() {
               showAmbiente={true}
               onUploadingChange={setMediaUploading}
             />
-            <button
-              disabled={mediaUploading}
-              onClick={() => updateContentMutation.mutate({ section: 'gallery', content: galleryForm })}
-              className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl disabled:opacity-50"
-            >
-              {mediaUploading ? 'ENVIANDO ARQUIVOS...' : 'SALVAR GALERIA'}
-            </button>
+
+            {/* Botão de salvar sempre visível no rodapé */}
+            <div className="sticky bottom-4 z-20 pt-4">
+              <button
+                type="button"
+                disabled={mediaUploading}
+                onClick={() => updateContentMutation.mutate({ section: 'gallery', content: galleryForm })}
+                className="w-full min-h-[52px] py-4 bg-[#FE8330] text-white font-black text-base rounded-2xl hover:bg-[#E06B1B] shadow-lg shadow-[#FE8330]/30 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              >
+                {mediaUploading ? (
+                  <><Loader2 className="w-5 h-5 animate-spin" /> ENVIANDO ARQUIVOS...</>
+                ) : (
+                  <><Save className="w-5 h-5" /> SALVAR GALERIA</>
+                )}
+              </button>
+            </div>
           </div>
         </TabsContent>
 
@@ -339,15 +460,66 @@ function AdminDashboard() {
 
         <TabsContent value="faq" activeValue={activeTab}>
           <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
-            {faqForm?.map((item, idx) => (
-              <div key={idx} className="p-6 bg-gray-50 rounded-3xl space-y-3 relative">
-                <input className="w-full font-bold bg-transparent pr-10" value={item.question || ""} onChange={e => { const f = [...(faqForm || [])]; if(f[idx]) f[idx].question = e.target.value; setFaqForm(f) }} />
-                <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.answer || ""} onChange={e => { const f = [...(faqForm || [])]; if(f[idx]) f[idx].answer = e.target.value; setFaqForm(f) }} />
-                <button onClick={() => setFaqForm(faqForm.filter((_, i) => i !== idx))} className="absolute top-4 right-4 p-2 min-h-11 min-w-11 flex items-center justify-center text-red-400" aria-label="Excluir pergunta"><Trash2 className="w-4 h-4" /></button>
-              </div>
-            ))}
-            <button onClick={() => setFaqForm([...(faqForm || []), { question: "Nova Pergunta", answer: "" }])} className="w-full py-4 border-2 border-dashed rounded-3xl text-gray-400 font-bold hover:border-[#FE8330] hover:text-[#FE8330] transition-all">+ ADICIONAR PERGUNTA</button>
-            <button onClick={() => updateContentMutation.mutate({ section: 'faq', content: faqForm })} className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR FAQ</button>
+            <div>
+              <h2 className="text-2xl md:text-3xl font-black text-[#1E2229]">
+                Perguntas Frequentes (FAQ)
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Esclareça as dúvidas mais comuns dos visitantes antes de reservarem.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              {faqForm?.map((item, idx) => (
+                <div key={idx} className="p-6 bg-gray-50 rounded-3xl space-y-3 relative border">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-500 uppercase">Pergunta</label>
+                    <input
+                      className="w-full font-bold bg-white p-3 rounded-xl border pr-10 text-base"
+                      placeholder="Ex: É permitido levar animais de estimação?"
+                      value={item.question || ""}
+                      onChange={e => { const f = [...(faqForm || [])]; if(f[idx]) f[idx].question = e.target.value; setFaqForm(f) }}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-500 uppercase">Resposta</label>
+                    <textarea
+                      className="w-full text-base text-gray-700 bg-white p-3 rounded-xl border min-h-[80px]"
+                      placeholder="Ex: Sim! Somos pet friendly para animais de pequeno e médio porte."
+                      value={item.answer || ""}
+                      onChange={e => { const f = [...(faqForm || [])]; if(f[idx]) f[idx].answer = e.target.value; setFaqForm(f) }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setFaqForm(faqForm.filter((_, i) => i !== idx))}
+                    className="absolute top-5 right-5 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-red-500 hover:bg-red-50 rounded-full cursor-pointer"
+                    aria-label="Excluir pergunta"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => setFaqForm([...(faqForm || []), { question: "", answer: "" }])}
+                className="w-full min-h-[52px] py-4 border-2 border-dashed rounded-2xl text-gray-500 font-bold hover:border-[#FE8330] hover:text-[#FE8330] transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Plus className="w-5 h-5" /> ADICIONAR PERGUNTA
+              </button>
+            </div>
+
+            {/* Botão de salvar sempre visível no rodapé */}
+            <div className="sticky bottom-4 z-20 pt-4">
+              <button
+                type="button"
+                onClick={() => updateContentMutation.mutate({ section: 'faq', content: faqForm })}
+                className="w-full min-h-[52px] py-4 bg-[#FE8330] text-white font-black text-base rounded-2xl hover:bg-[#E06B1B] shadow-lg shadow-[#FE8330]/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Save className="w-5 h-5" /> SALVAR PERGUNTAS FREQUENTES
+              </button>
+            </div>
           </div>
         </TabsContent>
 

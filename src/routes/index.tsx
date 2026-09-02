@@ -29,6 +29,7 @@ import { normalizeGallery, filterByMode, AMBIENTE_OPTIONS, type AmbienteTag } fr
 import { SimuladorOrcamento } from "@/components/SimuladorOrcamento";
 import { LeadCapturePopup } from "@/components/LeadCapturePopup";
 import { InstagramGrid } from "@/components/InstagramGrid";
+import { ReservaFormModal } from "@/components/ReservaFormModal";
 
 const SITE_URL = "https://sitiocrishori.lovable.app";
 const HERO_IMAGE = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000";
@@ -71,6 +72,7 @@ function Index() {
   const [activeTab, setActiveTab] = useState("finais-de-semana");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [ambienteFilter, setAmbienteFilter] = useState<string>("todos");
+  const [showReservaModal, setShowReservaModal] = useState(false);
   
   const [effectsEnabled, setEffectsEnabled] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(() => {
@@ -242,6 +244,19 @@ function Index() {
                 ⏰ {config.countdown_mensagem}
               </div>
             )}
+
+            <div className="text-center pt-2">
+              <button
+                type="button"
+                onClick={() => setShowReservaModal(true)}
+                className="min-h-[52px] py-4 px-8 rounded-2xl bg-[#FE8330] hover:bg-[#E06B1B] text-white font-black text-base shadow-xl shadow-[#FE8330]/20 transition-all active:scale-98 inline-flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <CalendarIcon className="w-5 h-5" />
+                {selectedRange?.from 
+                  ? `Solicitar Reserva para ${format(selectedRange.from, "dd/MM/yyyy")}` 
+                  : "Solicitar Pré-Reserva Agora"}
+              </button>
+            </div>
           </div>
         </section>
 
@@ -478,7 +493,24 @@ function Index() {
         </div>
       )}
 
-      <WhatsAppButton phoneNumber={hero?.whatsapp_number || ""} floating message={hero?.whatsapp_message} label="Falar com a Administração" />
+      <WhatsAppButton 
+        phoneNumber={hero?.whatsapp_number || config?.whatsapp_contato || ""} 
+        floating 
+        message={hero?.whatsapp_message} 
+        label="Falar no WhatsApp" 
+      />
+
+      {showReservaModal && (
+        <ReservaFormModal
+          onClose={() => setShowReservaModal(false)}
+          initialData={{
+            tipo_evento: 'festa',
+            num_convidados: 30,
+            data_evento: selectedRange?.from || null,
+          }}
+          adminPhone={hero?.whatsapp_number || config?.whatsapp_contato || "11999999999"}
+        />
+      )}
 
       <footer className="py-16 md:py-32 bg-[#1E2229] text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-white/10 to-transparent" />

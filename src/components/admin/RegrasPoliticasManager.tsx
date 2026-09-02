@@ -38,18 +38,18 @@ export function RegrasPoliticasManager() {
     mutationFn: (data: any) => upsertRegraPolitica({ data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["regras_politicas"] })
-      toast.success("Regra salva!")
+      toast.success("✅ Salvo com sucesso!")
     },
-    onError: (err: any) => toast.error("Erro: " + err.message),
+    onError: () => toast.error("❌ Erro ao salvar, tente novamente"),
   })
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteRegraPolitica({ data: id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["regras_politicas"] })
-      toast.success("Regra excluída!")
+      toast.success("✅ Excluído com sucesso!")
     },
-    onError: (err: any) => toast.error("Erro: " + err.message),
+    onError: () => toast.error("❌ Erro ao salvar, tente novamente"),
   })
 
   const reorderMutation = useMutation({
