@@ -137,6 +137,39 @@ export type Database = {
         }
         Relationships: []
       }
+      eventos_sazonais: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          data_fim: string | null
+          data_inicio: string | null
+          emoji: string
+          id: string
+          is_system: boolean
+          nome: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          emoji: string
+          id?: string
+          is_system?: boolean
+          nome: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          emoji?: string
+          id?: string
+          is_system?: boolean
+          nome?: string
+        }
+        Relationships: []
+      }
       galeria: {
         Row: {
           categoria: string | null

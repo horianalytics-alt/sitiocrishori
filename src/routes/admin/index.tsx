@@ -23,6 +23,7 @@ import { DepoimentosManager } from '@/components/admin/DepoimentosManager'
 import { RegrasPoliticasManager } from '@/components/admin/RegrasPoliticasManager'
 import { LeadsManager } from '@/components/admin/LeadsManager'
 import { ConfigSiteManager } from '@/components/admin/ConfigSiteManager'
+import { EventosSazonaisManager } from '@/components/admin/EventosSazonaisManager'
 
 export const Route = createFileRoute('/admin/')({
   loader: async ({ context }) => {
@@ -329,40 +330,7 @@ function AdminDashboard() {
         </TabsContent>
 
         <TabsContent value="sazonais" activeValue={activeTab}>
-          <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold">Eventos Sazonais</h2>
-              <p className="text-sm text-muted-foreground">Fotos e vídeos exclusivos de cada tema. Aparecem em destaque quando o tema está ativo no site.</p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-2">
-              {SEASONAL_SECTIONS.map(s => (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => setSeasonTab(s.id)}
-                  className={`flex-1 min-h-[52px] rounded-xl font-bold border transition-all ${seasonTab === s.id ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-white text-gray-600'}`}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-
-            <MediaManager
-              items={seasonalForms[seasonTab] || []}
-              onChange={(items) => setSeasonalForms(prev => ({ ...prev, [seasonTab]: items }))}
-              folder={seasonTab}
-              showTags={false}
-              onUploadingChange={setMediaUploading}
-            />
-
-            <button
-              disabled={mediaUploading}
-              onClick={() => updateContentMutation.mutate({ section: seasonTab, content: seasonalForms[seasonTab] || [] })}
-              className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl disabled:opacity-50"
-            >
-              {mediaUploading ? 'ENVIANDO ARQUIVOS...' : 'SALVAR MÍDIAS DO EVENTO'}
-            </button>
-          </div>
+          <EventosSazonaisManager />
         </TabsContent>
 
         <TabsContent value="dep" activeValue={activeTab}>

@@ -1,6 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery } from "@tanstack/react-query";
-import { getSiteContent, getDepoimentos, getConfigSitePublica, getDisponibilidadePublica, type HeroContent, type InfrastructureItem, type FAQItem } from "@/lib/site-content.functions";
+import { 
+  getSiteContent, 
+  getDepoimentos, 
+  getConfigSitePublica, 
+  getDisponibilidadePublica,
+  getEventoSazonalAtivoPublica,
+  type HeroContent, 
+  type InfrastructureItem, 
+  type FAQItem 
+} from "@/lib/site-content.functions";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
@@ -21,7 +30,6 @@ import { SimuladorOrcamento } from "@/components/SimuladorOrcamento";
 import { LeadCapturePopup } from "@/components/LeadCapturePopup";
 import { InstagramGrid } from "@/components/InstagramGrid";
 
-const SEASON_SECTION: Record<string, string> = { natal: "gallery_natal", pascoa: "gallery_pascoa", "ano-novo": "gallery_ano_novo" };
 const SITE_URL = "https://sitiocrishori.lovable.app";
 const HERO_IMAGE = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000";
 
@@ -43,6 +51,7 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData({ queryKey: ['depoimentos'], queryFn: () => getDepoimentos() }),
       context.queryClient.ensureQueryData({ queryKey: ['config_site'], queryFn: () => getConfigSitePublica() }),
       context.queryClient.ensureQueryData({ queryKey: ['disponibilidade_publica'], queryFn: () => getDisponibilidadePublica() }),
+      context.queryClient.ensureQueryData({ queryKey: ['evento_sazonal_ativo'], queryFn: () => getEventoSazonalAtivoPublica() }),
     ]);
   },
   component: Index,
@@ -56,11 +65,11 @@ function Index() {
   const { data: depoimentos } = useSuspenseQuery({ queryKey: ['depoimentos'], queryFn: () => getDepoimentos() }) as { data: any[] };
   const { data: config } = useSuspenseQuery({ queryKey: ['config_site'], queryFn: () => getConfigSitePublica() }) as { data: any };
   const { data: disponibilidade = [] } = useSuspenseQuery({ queryKey: ['disponibilidade_publica'], queryFn: () => getDisponibilidadePublica() }) as { data: any[] };
+  const { data: eventoSazonalAtivo } = useSuspenseQuery({ queryKey: ['evento_sazonal_ativo'], queryFn: () => getEventoSazonalAtivoPublica() }) as { data: any };
 
   const [selectedRange, setSelectedRange] = useState<DateRange | undefined>();
   const [activeTab, setActiveTab] = useState("finais-de-semana");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [activeSeason, setActiveSeason] = useState<Season>("none");
   const [ambienteFilter, setAmbienteFilter] = useState<string>("todos");
   
   const [effectsEnabled, setEffectsEnabled] = useState(true);
@@ -72,6 +81,15 @@ function Index() {
     return true;
   });
   const seasonalEffectsRef = useRef<SeasonalEffectsHandle>(null);
+
+  const activeSeason: Season = useMemo(() => {
+    if (!eventoSazonalAtivo) return "none";
+    const n = (eventoSazonalAtivo.nome || "").toLowerCase();
+    if (n.includes("natal")) return "natal";
+    if (n.includes("ano novo") || n.includes("reveillon")) return "ano-novo";
+    if (n.includes("pascoa") || n.includes("páscoa")) return "pascoa";
+    return "none";
+  }, [eventoSazonalAtivo]);
 
   useEffect(() => {
     localStorage.setItem('soundEnabled', JSON.stringify(soundEnabled));
@@ -90,13 +108,13 @@ function Index() {
     return allPhotos.filter(p => p.ambiente === ambienteFilter);
   }, [allPhotos, ambienteFilter]);
 
-  const seasonSection = SEASON_SECTION[activeSeason] ?? null;
+  const seasonalSectionKey = eventoSazonalAtivo ? `gallery_sazonal_${eventoSazonalAtivo.id}` : null;
   const { data: seasonalData } = useQuery({
-    queryKey: ['site-content', seasonSection],
-    queryFn: () => getSiteContent({ data: seasonSection as string }),
-    enabled: !!seasonSection,
+    queryKey: ['site-content', seasonalSectionKey],
+    queryFn: () => getSiteContent({ data: seasonalSectionKey! }),
+    enabled: !!seasonalSectionKey,
   });
-  const seasonalPhotos = seasonSection ? normalizeGallery(seasonalData) : [];
+  const seasonalPhotos = seasonalSectionKey ? normalizeGallery(seasonalData) : [];
 
   // Mapear dias do calendário baseados na tabela de disponibilidade
   const dayModifiers = {
@@ -123,6 +141,16 @@ function Index() {
       <DayNightToggle mode={mode} onToggle={toggleMode} />
       <SeasonalEffects ref={seasonalEffectsRef} season={activeSeason} isEnabled={effectsEnabled} isSoundEnabled={soundEnabled} />
       <LeadCapturePopup />
+
+      {/* Banner de Evento Sazonal Ativo */}
+      {eventoSazonalAtivo && (
+        <div className="bg-[#1E2229] border-b border-white/10 text-white py-3 px-4 text-center text-xs sm:text-sm font-bold flex items-center justify-center gap-2 relative z-30 shadow-md">
+          <span className="text-base select-none">{eventoSazonalAtivo.emoji}</span>
+          <span>
+            Tema especial de <strong className="text-[#FE8330]">{eventoSazonalAtivo.nome}</strong> ativo no Sítio Cris Hori!
+          </span>
+        </div>
+      )}
 
       <main>
         {/* Hero Section */}

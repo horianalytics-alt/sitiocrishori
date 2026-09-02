@@ -594,3 +594,118 @@ export const getConfigSitePublica = createServerFn({ method: "GET" }).handler(as
   if (error) throw error;
   return data;
 });
+
+// ─────────────────────────────────────────────
+// EVENTOS SAZONAIS DINÂMICOS
+// ─────────────────────────────────────────────
+
+export const getEventosSazonais = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await verifyAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await (supabaseAdmin as any)
+      .from("eventos_sazonais")
+      .select("*")
+      .order("created_at", { ascending: true });
+    if (error) throw error;
+    return (data as any[]) || [];
+  });
+
+export const getEventoSazonalAtivoPublica = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await (supabaseAdmin as any)
+      .from("eventos_sazonais")
+      .select("*")
+      .eq("ativo", true)
+      .maybeSingle();
+    if (error) return null;
+    return data;
+  });
+
+export const toggleEventoSazonalAtivo = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: { id: string; ativo: boolean }) => data)
+  .handler(async ({ data, context }) => {
+    await verifyAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Apenas um evento pode estar ativo por vez — ao ativar um, desativa os outros automaticamente
+    if (data.ativo) {
+      await (supabaseAdmin as any)
+        .from("eventos_sazonais")
+        .update({ ativo: false })
+        .neq("id", data.id);
+
+      const { error } = await (supabaseAdmin as any)
+        .from("eventos_sazonais")
+        .update({ ativo: true })
+        .eq("id", data.id);
+      if (error) throw error;
+    } else {
+      const { error } = await (supabaseAdmin as any)
+        .from("eventos_sazonais")
+        .update({ ativo: false })
+        .eq("id", data.id);
+      if (error) throw error;
+    }
+
+    return { success: true };
+  });
+
+export const criarEventoSazonal = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: {
+    nome: string;
+    emoji: string;
+    data_inicio?: string | null;
+    data_fim?: string | null;
+  }) => data)
+  .handler(async ({ data, context }) => {
+    await verifyAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: created, error } = await (supabaseAdmin as any)
+      .from("eventos_sazonais")
+      .insert({
+        nome: data.nome.trim(),
+        emoji: data.emoji.trim() || "🎉",
+        data_inicio: data.data_inicio || null,
+        data_fim: data.data_fim || null,
+        ativo: false,
+        is_system: false,
+      })
+      .select("*")
+      .single();
+    if (error) throw error;
+    return created;
+  });
+
+export const excluirEventoSazonal = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: { id: string }) => data)
+  .handler(async ({ data, context }) => {
+    await verifyAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    
+    // Confirma que não é um evento pré-criado do sistema
+    const { data: evento, error: findError } = await (supabaseAdmin as any)
+      .from("eventos_sazonais")
+      .select("is_system, nome")
+      .eq("id", data.id)
+      .single();
+    if (findError) throw findError;
+
+    if (evento?.is_system) {
+      throw new Error("Eventos pré-criados do sistema não podem ser excluídos.");
+    }
+
+    const { error } = await (supabaseAdmin as any)
+      .from("eventos_sazonais")
+      .delete()
+      .eq("id", data.id);
+    if (error) throw error;
+
+    return { success: true };
+  });
+
