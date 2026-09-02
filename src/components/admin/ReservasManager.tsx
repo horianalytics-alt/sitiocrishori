@@ -34,8 +34,8 @@ export function ReservasManager() {
     queryFn: () =>
       getReservasAdmin({
         data: {
-          status: statusFilter !== "todos" ? statusFilter : undefined,
-          mes: mesFilter || undefined,
+          ...(statusFilter !== "todos" ? { status: statusFilter } : {}),
+          ...(mesFilter ? { mes: mesFilter } : {}),
         },
       }),
   })

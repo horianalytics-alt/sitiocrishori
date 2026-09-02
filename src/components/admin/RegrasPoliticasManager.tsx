@@ -67,7 +67,7 @@ export function RegrasPoliticasManager() {
   function setField(id: string, field: keyof Regra, value: string) {
     setEditMap(prev => ({
       ...prev,
-      [id]: { ...prev[id], [field]: value },
+      [id]: { ...(prev[id] as Regra), [field]: value } as Regra,
     }))
   }
 
