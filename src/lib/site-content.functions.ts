@@ -17,6 +17,7 @@ export type InfrastructureItem = {
   title: string;
   description: string;
   image: string;
+  images?: string[];
 };
 
 export type FAQItem = {
@@ -94,6 +95,7 @@ const infrastructureSchema = z.array(
     title: z.string().max(200),
     description: z.string().max(1000),
     image: z.string().max(2000),
+    images: z.array(z.string().max(2000)).max(30).optional(),
   }),
 ).max(50);
 
