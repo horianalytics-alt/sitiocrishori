@@ -28,7 +28,7 @@ import { useDayNight } from "@/hooks/useDayNight";
 import { DayNightToggle } from "@/components/DayNightToggle";
 import { InfraImageLoop } from "@/components/InfraImageLoop";
 import { GalleryPhotoCard } from "@/components/GalleryPhotoCard";
-import { normalizeGallery, filterByMode, AMBIENTE_OPTIONS, type AmbienteTag } from "@/lib/gallery";
+import { normalizeGallery, filterByMode, AMBIENTE_OPTIONS, DEFAULT_SEASONAL_PHOTOS, type AmbienteTag } from "@/lib/gallery";
 import { NossosPacotes, type PacotePublico } from "@/components/NossosPacotes";
 import { LeadCapturePopup } from "@/components/LeadCapturePopup";
 import { InstagramGrid } from "@/components/InstagramGrid";
@@ -105,16 +105,23 @@ function Index() {
   });
   const seasonalEffectsRef = useRef<SeasonalEffectsHandle>(null);
 
-  // Efeito global (admin) tem precedência contínua; senão, usa o modo automático do visitante ao rolar na galeria
-  const globalSeason: Season = useMemo(() => {
-    if (!efeitoGlobalAtivo) return "none";
-    return getSeasonTypeFromName(efeitoGlobalAtivo.nome);
-  }, [efeitoGlobalAtivo]);
+  // Efeito global (admin) ou Tema Ativo (admin)
+  const adminActiveSeason: Season = useMemo(() => {
+    if (efeitoGlobalAtivo && efeitoGlobalAtivo.efeito_global_ativo) {
+      return getSeasonTypeFromName(efeitoGlobalAtivo.nome);
+    }
+    if (eventoSazonalAtivo && eventoSazonalAtivo.ativo) {
+      return getSeasonTypeFromName(eventoSazonalAtivo.nome);
+    }
+    return "none";
+  }, [efeitoGlobalAtivo, eventoSazonalAtivo]);
 
+  // Se o admin tiver algum tema/efeito ativo, ele roda no site
+  // Caso contrário, usa o modo automático do visitante ao selecionar ou rolar na galeria
   const activeSeason: Season = useMemo(() => {
-    if (globalSeason !== "none") return globalSeason;
+    if (adminActiveSeason !== "none") return adminActiveSeason;
     return inViewSeason;
-  }, [globalSeason, inViewSeason]);
+  }, [adminActiveSeason, inViewSeason]);
 
   useEffect(() => {
     localStorage.setItem('soundEnabled', JSON.stringify(soundEnabled));
@@ -130,8 +137,16 @@ function Index() {
   
   const photos = useMemo(() => {
     if (ambienteFilter === "todos") return allPhotos;
+    if (ambienteFilter.startsWith("sazonal_")) {
+      const evId = ambienteFilter.replace("sazonal_", "");
+      const ev = todosEventosSazonais.find((e: any) => e.id === evId);
+      if (ev) {
+        const s = getSeasonTypeFromName(ev.nome);
+        return DEFAULT_SEASONAL_PHOTOS[s] || allPhotos;
+      }
+    }
     return allPhotos.filter(p => p.ambiente === ambienteFilter);
-  }, [allPhotos, ambienteFilter]);
+  }, [allPhotos, ambienteFilter, todosEventosSazonais]);
 
   const seasonalSectionKey = eventoSazonalAtivo ? `gallery_sazonal_${eventoSazonalAtivo.id}` : null;
   const { data: seasonalData } = useQuery({
@@ -168,11 +183,17 @@ function Index() {
       <LeadCapturePopup />
 
       {/* Banner de Evento Sazonal Ativo */}
-      {eventoSazonalAtivo && (
+      {(efeitoGlobalAtivo?.efeito_global_ativo || eventoSazonalAtivo?.ativo) && (
         <div className="bg-[#1E2229] border-b border-white/10 text-white py-3 px-4 text-center text-xs sm:text-sm font-bold flex items-center justify-center gap-2 relative z-30 shadow-md">
-          <span className="text-base select-none">{eventoSazonalAtivo.emoji}</span>
+          <span className="text-base select-none">
+            {efeitoGlobalAtivo?.efeito_global_ativo ? efeitoGlobalAtivo.emoji : eventoSazonalAtivo?.emoji}
+          </span>
           <span>
-            Tema especial de <strong className="text-[#FE8330]">{eventoSazonalAtivo.nome}</strong> ativo no Sítio Cris Hori!
+            Tema especial de{" "}
+            <strong className="text-[#FE8330]">
+              {efeitoGlobalAtivo?.efeito_global_ativo ? efeitoGlobalAtivo.nome : eventoSazonalAtivo?.nome}
+            </strong>{" "}
+            ativo no Sítio Cris Hori!
           </span>
         </div>
       )}
@@ -376,23 +397,57 @@ function Index() {
               </div>
             </div>
 
-            {/* Filtros de Ambiente */}
-            <div className="flex flex-wrap justify-center gap-2 md:gap-4" data-aos="fade-up">
+            {/* Filtros de Ambiente e Especiais de Época */}
+            <div className="flex flex-wrap justify-center items-center gap-2 md:gap-3" data-aos="fade-up">
               <button
-                onClick={() => setAmbienteFilter("todos")}
-                className={`px-6 py-2.5 rounded-full text-sm font-bold border transition-all ${ambienteFilter === "todos" ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-gray-50 text-gray-500 hover:border-[#FE8330]/40'}`}
+                onClick={() => {
+                  setAmbienteFilter("todos");
+                  setInViewSeason("none");
+                }}
+                className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold border transition-all ${ambienteFilter === "todos" ? 'bg-[#FE8330] text-white border-[#FE8330] shadow-md shadow-[#FE8330]/20' : 'bg-gray-50 text-gray-600 hover:border-[#FE8330]/40'}`}
               >
                 Todos
               </button>
               {AMBIENTE_OPTIONS.map(opt => (
                 <button
                   key={opt.value}
-                  onClick={() => setAmbienteFilter(opt.value)}
-                  className={`px-6 py-2.5 rounded-full text-sm font-bold border transition-all ${ambienteFilter === opt.value ? 'bg-[#FE8330] text-white border-[#FE8330]' : 'bg-gray-50 text-gray-500 hover:border-[#FE8330]/40'}`}
+                  onClick={() => {
+                    setAmbienteFilter(opt.value);
+                    setInViewSeason("none");
+                  }}
+                  className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold border transition-all ${ambienteFilter === opt.value ? 'bg-[#FE8330] text-white border-[#FE8330] shadow-md shadow-[#FE8330]/20' : 'bg-gray-50 text-gray-600 hover:border-[#FE8330]/40'}`}
                 >
                   {opt.label}
                 </button>
               ))}
+
+              {/* Filtros Rápidos de Época (Natal, Halloween, etc.) */}
+              {todosEventosSazonais.map((evento: any) => {
+                const evSeason = getSeasonTypeFromName(evento.nome);
+                const isSelected = ambienteFilter === `sazonal_${evento.id}`;
+                return (
+                  <button
+                    key={evento.id}
+                    onClick={() => {
+                      if (isSelected) {
+                        setAmbienteFilter("todos");
+                        setInViewSeason("none");
+                      } else {
+                        setAmbienteFilter(`sazonal_${evento.id}`);
+                        setInViewSeason(evSeason);
+                      }
+                    }}
+                    className={`px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-black border transition-all flex items-center gap-1.5 cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#FE8330] text-white border-[#FE8330] shadow-md shadow-[#FE8330]/25 scale-105'
+                        : 'bg-orange-50/70 text-gray-800 border-orange-200 hover:border-[#FE8330] hover:bg-orange-100/70'
+                    }`}
+                  >
+                    <span>{evento.emoji}</span>
+                    <span>{evento.nome}</span>
+                  </button>
+                );
+              })}
             </div>
 
             <div className="relative min-h-[400px]">

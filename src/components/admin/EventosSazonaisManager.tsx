@@ -11,7 +11,7 @@ import {
   getSiteContent,
   updateSiteContent
 } from "@/lib/site-content.functions"
-import { normalizeGallery, type GalleryPhoto } from "@/lib/gallery"
+import { normalizeGallery, getSectionKeyForEvento, type GalleryPhoto } from "@/lib/gallery"
 import { MediaManager } from "@/components/admin/MediaManager"
 
 type EventoSazonal = {
@@ -57,7 +57,7 @@ export function EventosSazonaisManager() {
   const selectedEvento = eventos.find((e: EventoSazonal) => e.id === selectedEventoId)
 
   // Query da galeria do evento selecionado
-  const sectionKey = selectedEvento ? `gallery_sazonal_${selectedEvento.id}` : null
+  const sectionKey = selectedEvento ? getSectionKeyForEvento(selectedEvento) : null
   const { data: sectionData, isLoading: isLoadingGallery } = useQuery({
     queryKey: ["site-content", sectionKey],
     queryFn: () => getSiteContent({ data: sectionKey! }),

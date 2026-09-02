@@ -133,6 +133,9 @@ const sectionSchemas = {
   gallery_natal: gallerySchema,
   gallery_pascoa: gallerySchema,
   gallery_ano_novo: gallerySchema,
+  gallery_halloween: gallerySchema,
+  gallery_carnaval: gallerySchema,
+  gallery_festa_junina: gallerySchema,
 } as const;
 
 export const updateSiteContent = createServerFn({ method: "POST" })
@@ -149,8 +152,7 @@ export const updateSiteContent = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await (supabaseAdmin as any)
       .from("site_content")
-      .update({ content: data.content as any })
-      .eq("section", data.section);
+      .upsert({ section: data.section, content: data.content as any }, { onConflict: "section" });
     if (error) throw error;
     return { success: true };
   });
@@ -664,8 +666,17 @@ export const getEventosSazonaisPublica = createServerFn({ method: "GET" })
       .from("eventos_sazonais")
       .select("*")
       .order("created_at", { ascending: true });
-    if (error) return [];
-    return (data as any[]) || [];
+    if (!error && Array.isArray(data) && data.length > 0) {
+      return data;
+    }
+    return [
+      { id: "natal", nome: "Natal", emoji: "🎄", ativo: true, efeito_global_ativo: false },
+      { id: "ano-novo", nome: "Ano Novo", emoji: "🎆", ativo: false, efeito_global_ativo: false },
+      { id: "pascoa", nome: "Páscoa", emoji: "🥚", ativo: false, efeito_global_ativo: false },
+      { id: "halloween", nome: "Halloween", emoji: "🎃", ativo: false, efeito_global_ativo: false },
+      { id: "carnaval", nome: "Carnaval", emoji: "🎭", ativo: false, efeito_global_ativo: false },
+      { id: "festa-junina", nome: "Festa Junina", emoji: "🎪", ativo: false, efeito_global_ativo: false },
+    ];
   });
 
 export const getEventoSazonalAtivoPublica = createServerFn({ method: "GET" })

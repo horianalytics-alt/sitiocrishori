@@ -14,8 +14,8 @@ import 'aos/dist/aos.css';
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { useQuery } from "@tanstack/react-query";
+import { getEfeitoGlobalAtivoPublica, getEventoSazonalAtivoPublica } from "@/lib/site-content.functions";
 import { SeasonalEffects, getSeasonTypeFromName } from "@/components/SeasonalEffects";
-import { getEfeitoGlobalAtivoPublica } from "@/lib/site-content.functions";
 
 function NotFoundComponent() {
   return (
@@ -131,9 +131,15 @@ function GlobalSeasonalLayer() {
     queryFn: () => getEfeitoGlobalAtivoPublica(),
   }) as { data: any };
 
-  if (!efeitoGlobal || !efeitoGlobal.efeito_global_ativo) return null;
+  const { data: eventoAtivo } = useQuery({
+    queryKey: ['evento_sazonal_ativo'],
+    queryFn: () => getEventoSazonalAtivoPublica(),
+  }) as { data: any };
 
-  const season = getSeasonTypeFromName(efeitoGlobal.nome);
+  const active = (efeitoGlobal && efeitoGlobal.efeito_global_ativo) ? efeitoGlobal : (eventoAtivo && eventoAtivo.ativo) ? eventoAtivo : null;
+  if (!active) return null;
+
+  const season = getSeasonTypeFromName(active.nome);
   if (season === 'none') return null;
 
   return <SeasonalEffects season={season} isEnabled={true} />;

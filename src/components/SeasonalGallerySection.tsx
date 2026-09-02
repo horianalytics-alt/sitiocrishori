@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getSiteContent } from '@/lib/site-content.functions'
-import { normalizeGallery, type GalleryPhoto } from '@/lib/gallery'
+import { normalizeGallery, getSectionKeyForEvento, DEFAULT_SEASONAL_PHOTOS, type GalleryPhoto } from '@/lib/gallery'
 import { GalleryPhotoCard } from '@/components/GalleryPhotoCard'
 import { getSeasonTypeFromName, type Season } from '@/components/SeasonalEffects'
 
@@ -31,13 +31,15 @@ export function SeasonalGallerySection({
   const containerRef = useRef<HTMLDivElement>(null)
   const season = getSeasonTypeFromName(evento.nome)
 
-  const sectionKey = `gallery_sazonal_${evento.id}`
+  const sectionKey = getSectionKeyForEvento(evento)
   const { data: sectionData } = useQuery({
     queryKey: ['site-content', sectionKey],
     queryFn: () => getSiteContent({ data: sectionKey }),
   })
 
-  const photos: GalleryPhoto[] = sectionData ? normalizeGallery(sectionData) : []
+  const uploadedPhotos: GalleryPhoto[] = sectionData ? normalizeGallery(sectionData) : []
+  const defaultPhotos = season !== 'none' ? DEFAULT_SEASONAL_PHOTOS[season] || [] : []
+  const photos = uploadedPhotos.length > 0 ? uploadedPhotos : defaultPhotos
 
   useEffect(() => {
     const el = containerRef.current
