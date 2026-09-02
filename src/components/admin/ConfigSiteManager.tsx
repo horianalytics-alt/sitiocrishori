@@ -10,6 +10,10 @@ type ConfigForm = {
   datas_quase_lotadas: string
   instagram_usuario: string
   whatsapp_contato: string
+  preco_base_festa: number
+  preco_base_fim_semana: number
+  mapa_embed_url: string
+  mapa_texto: string
 }
 
 const EMPTY_FORM: ConfigForm = {
@@ -17,6 +21,10 @@ const EMPTY_FORM: ConfigForm = {
   datas_quase_lotadas: "",
   instagram_usuario: "",
   whatsapp_contato: "",
+  preco_base_festa: 0,
+  preco_base_fim_semana: 0,
+  mapa_embed_url: "",
+  mapa_texto: "",
 }
 
 export function ConfigSiteManager() {
@@ -36,6 +44,10 @@ export function ConfigSiteManager() {
         datas_quase_lotadas: (config as any).datas_quase_lotadas ?? "",
         instagram_usuario: (config as any).instagram_usuario ?? "",
         whatsapp_contato: (config as any).whatsapp_contato ?? "",
+        preco_base_festa: (config as any).preco_base_festa ?? 0,
+        preco_base_fim_semana: (config as any).preco_base_fim_semana ?? 0,
+        mapa_embed_url: (config as any).mapa_embed_url ?? "",
+        mapa_texto: (config as any).mapa_texto ?? "",
       })
     }
   }, [config])
@@ -62,7 +74,6 @@ export function ConfigSiteManager() {
       <h2 className="text-2xl font-bold">Configurações Gerais</h2>
 
       <div className="grid gap-6">
-        {/* Countdown message */}
         <div className="space-y-2">
           <label className="text-sm font-bold uppercase tracking-wider text-gray-400">
             Mensagem de Urgência / Contador
@@ -73,33 +84,23 @@ export function ConfigSiteManager() {
             value={form.countdown_mensagem}
             onChange={e => setForm(f => ({ ...f, countdown_mensagem: e.target.value }))}
           />
-          <p className="text-xs text-gray-400">
-            Esta mensagem aparece no banner de urgência do site.
-          </p>
         </div>
 
-        {/* Datas quase lotadas */}
         <div className="space-y-2">
           <label className="text-sm font-bold uppercase tracking-wider text-gray-400">
             Datas Quase Lotadas
           </label>
           <textarea
             className="w-full p-4 rounded-2xl border focus:outline-none focus:ring-2 ring-[#FE8330]/20 min-h-[80px]"
-            placeholder="Ex: 2026-12-20, 2026-12-21, 2026-12-27"
+            placeholder="Ex: 2026-12-20, 2026-12-21"
             value={form.datas_quase_lotadas}
             onChange={e => setForm(f => ({ ...f, datas_quase_lotadas: e.target.value }))}
           />
-          <p className="text-xs text-gray-400">
-            Datas separadas por vírgula no formato AAAA-MM-DD.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Instagram */}
           <div className="space-y-2">
-            <label className="text-sm font-bold uppercase tracking-wider text-gray-400">
-              Usuário do Instagram
-            </label>
+            <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Usuário do Instagram</label>
             <div className="flex items-center border rounded-2xl overflow-hidden focus-within:ring-2 ring-[#FE8330]/20">
               <span className="px-4 py-4 bg-gray-50 text-gray-400 text-sm border-r select-none">@</span>
               <input
@@ -110,12 +111,8 @@ export function ConfigSiteManager() {
               />
             </div>
           </div>
-
-          {/* WhatsApp */}
           <div className="space-y-2">
-            <label className="text-sm font-bold uppercase tracking-wider text-gray-400">
-              WhatsApp Principal do Sítio
-            </label>
+            <label className="text-sm font-bold uppercase tracking-wider text-gray-400">WhatsApp Principal</label>
             <div className="flex items-center border rounded-2xl overflow-hidden focus-within:ring-2 ring-[#FE8330]/20">
               <span className="px-4 py-4 bg-gray-50 text-gray-400 text-sm border-r select-none">+55</span>
               <input
@@ -126,6 +123,47 @@ export function ConfigSiteManager() {
               />
             </div>
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Preço Base - Festa (R$)</label>
+            <input
+              type="number"
+              className="w-full p-4 rounded-2xl border focus:outline-none focus:ring-2 ring-[#FE8330]/20"
+              value={form.preco_base_festa || ""}
+              onChange={e => setForm(f => ({ ...f, preco_base_festa: Number(e.target.value) }))}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Preço Base - Fim de Semana (R$)</label>
+            <input
+              type="number"
+              className="w-full p-4 rounded-2xl border focus:outline-none focus:ring-2 ring-[#FE8330]/20"
+              value={form.preco_base_fim_semana || ""}
+              onChange={e => setForm(f => ({ ...f, preco_base_fim_semana: Number(e.target.value) }))}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Google Maps Embed URL</label>
+          <input
+            className="w-full p-4 rounded-2xl border focus:outline-none focus:ring-2 ring-[#FE8330]/20"
+            placeholder="Link do iframe do Google Maps"
+            value={form.mapa_embed_url}
+            onChange={e => setForm(f => ({ ...f, mapa_embed_url: e.target.value }))}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Texto de Localização / Distância</label>
+          <textarea
+            className="w-full p-4 rounded-2xl border focus:outline-none focus:ring-2 ring-[#FE8330]/20 min-h-[80px]"
+            placeholder="Ex: Apenas 40 min de SP..."
+            value={form.mapa_texto}
+            onChange={e => setForm(f => ({ ...f, mapa_texto: e.target.value }))}
+          />
         </div>
       </div>
 

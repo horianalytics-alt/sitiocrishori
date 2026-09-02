@@ -32,6 +32,45 @@ export type Database = {
         }
         Relationships: []
       }
+      config_site: {
+        Row: {
+          id: string
+          countdown_mensagem: string | null
+          datas_quase_lotadas: string | null
+          instagram_usuario: string | null
+          whatsapp_contato: string | null
+          preco_base_festa: number | null
+          preco_base_fim_semana: number | null
+          mapa_embed_url: string | null
+          mapa_texto: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          countdown_mensagem?: string | null
+          datas_quase_lotadas?: string | null
+          instagram_usuario?: string | null
+          whatsapp_contato?: string | null
+          preco_base_festa?: number | null
+          preco_base_fim_semana?: number | null
+          mapa_embed_url?: string | null
+          mapa_texto?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          countdown_mensagem?: string | null
+          datas_quase_lotadas?: string | null
+          instagram_usuario?: string | null
+          whatsapp_contato?: string | null
+          preco_base_festa?: number | null
+          preco_base_fim_semana?: number | null
+          mapa_embed_url?: string | null
+          mapa_texto?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       depoimentos: {
         Row: {
           aprovado: boolean

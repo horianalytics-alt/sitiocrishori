@@ -467,3 +467,33 @@ export const updateConfigSite = createServerFn({ method: "POST" })
     }
     return { success: true };
   });
+// Funções públicas adicionais
+export const getDisponibilidadePublica = createServerFn({ method: "GET" })
+  .validator((data?: { ano: number; mes: number }) => data)
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    let query = (supabaseAdmin as any).from("disponibilidade").select("*");
+    
+    if (data) {
+      const start = `${data.ano}-${String(data.mes).padStart(2, "0")}-01`;
+      const end = `${data.ano}-${String(data.mes).padStart(2, "0")}-31`;
+      query = query.gte("data", start).lte("data", end);
+    }
+    
+    const { data: rows, error } = await query;
+    if (error) throw error;
+    return rows as any[];
+  });
+
+export const criarReservaPublica = createServerFn({ method: "POST" })
+  .validator((data: any) => data)
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: res, error } = await (supabaseAdmin as any)
+      .from("reservas")
+      .insert({ ...data, status_novo: 'pendente' })
+      .select("link_unico")
+      .single();
+    if (error) throw error;
+    return res;
+  });
