@@ -258,7 +258,7 @@ export const getDisponibilidade = createServerFn({ method: "GET" })
 export const setDisponibilidade = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator(
-    (data: { data: string; status: string; observacao?: string }) => data,
+    (data: { data: string; status: string; observacao?: string | undefined }) => data,
   )
   .handler(async ({ data, context }) => {
     await verifyAdmin(context);
