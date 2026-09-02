@@ -1,0 +1,1 @@
+ALTER TABLE public.config_site ADD COLUMN IF NOT EXISTS foto_fallback TEXT;
