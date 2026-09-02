@@ -258,7 +258,7 @@ export const getDisponibilidade = createServerFn({ method: "GET" })
 export const setDisponibilidade = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator(
-    (data: { data: string; status: string; observacao?: string }) => data,
+    (data: { data: string; status: string; observacao?: string | undefined }) => data,
   )
   .handler(async ({ data, context }) => {
     await verifyAdmin(context);
@@ -500,18 +500,49 @@ export const getDisponibilidadePublica = createServerFn({ method: "GET" })
     return rows as any[];
   });
 
+const reservaPublicaSchema = z
+  .object({
+    cliente_nome: z.string().trim().min(2).max(120),
+    whatsapp: z.string().trim().min(8).max(20),
+    data_evento: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
+    num_convidados: z.coerce.number().int().min(1).max(500),
+    tipo_evento: z.enum(["festa", "fim_semana", "day_use"]),
+    mensagem: z.string().trim().max(1000).optional(),
+    email: z.string().trim().email().max(160).optional(),
+  })
+  .strip();
+
 export const criarReservaPublica = createServerFn({ method: "POST" })
-  .validator((data: any) => data)
+  .validator((data: unknown) => reservaPublicaSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // Whitelist explícita: nada vindo do cliente pode definir status/valores.
+    const payload = {
+      cliente_nome: data.cliente_nome,
+      nome: data.cliente_nome,
+      whatsapp: data.whatsapp,
+      cliente_telefone: data.whatsapp,
+      data_evento: data.data_evento,
+      num_convidados: data.num_convidados,
+      tipo_evento: data.tipo_evento,
+      mensagem: data.mensagem ?? null,
+      email: data.email ?? null,
+      status: "pendente",
+      status_novo: "pendente",
+      sinal_pago: false,
+      valor_total: null,
+    };
     const { data: res, error } = await (supabaseAdmin as any)
       .from("reservas")
-      .insert({ ...data, status_novo: 'pendente' })
+      .insert(payload)
       .select("link_unico")
       .single();
     if (error) throw error;
     return res;
   });
+
 // ─────────────────────────────────────────────
 // INSTAGRAM
 // ─────────────────────────────────────────────

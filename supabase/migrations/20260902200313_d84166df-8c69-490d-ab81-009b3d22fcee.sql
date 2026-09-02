@@ -1,0 +1,1 @@
+ALTER TABLE public.config_site ADD COLUMN IF NOT EXISTS fim_semana_tipo_preco text NOT NULL DEFAULT 'fixo';
