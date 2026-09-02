@@ -4,24 +4,25 @@ import { useState, useEffect } from 'react'
 import { 
   getSiteContent, 
   updateSiteContent, 
-  getReservasAdmin, 
-  upsertReserva, 
-  deleteReserva,
-  getDepoimentos,
-  upsertDepoimento,
   type HeroContent, 
   type InfrastructureItem, 
   type FAQItem 
 } from '@/lib/site-content.functions'
 import { toast } from 'sonner'
-import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon, Calendar, Star, Eye, X, Sparkles } from 'lucide-react'
+import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon, Calendar, Star, Eye, Sparkles, Phone, Settings, FileText } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { normalizeGallery, SEASONAL_SECTIONS, type GalleryPhoto } from "@/lib/gallery"
 import { MediaManager } from "@/components/admin/MediaManager"
 import { SitePreviewModal } from "@/components/admin/SitePreviewModal"
 
-
+// Novas abas
+import { DisponibilidadeCalendar } from '@/components/admin/DisponibilidadeCalendar'
+import { ReservasManager } from '@/components/admin/ReservasManager'
+import { DepoimentosManager } from '@/components/admin/DepoimentosManager'
+import { RegrasPoliticasManager } from '@/components/admin/RegrasPoliticasManager'
+import { LeadsManager } from '@/components/admin/LeadsManager'
+import { ConfigSiteManager } from '@/components/admin/ConfigSiteManager'
 
 export const Route = createFileRoute('/admin/')({
   loader: async ({ context }) => {
@@ -42,10 +43,6 @@ export const Route = createFileRoute('/admin/')({
         queryKey: ['site-content', 'gallery'],
         queryFn: () => getSiteContent({ data: 'gallery' }),
       }),
-      context.queryClient.ensureQueryData({
-        queryKey: ['depoimentos'],
-        queryFn: () => getDepoimentos(),
-      })
     ])
   },
   component: AdminDashboard,
@@ -71,21 +68,10 @@ function AdminDashboard() {
     queryFn: () => getSiteContent({ data: 'gallery' }),
   }) as { data: unknown }
 
-
   const { data: faqContent } = useSuspenseQuery({
     queryKey: ['site-content', 'faq'],
     queryFn: () => getSiteContent({ data: 'faq' }),
   }) as { data: FAQItem[] }
-
-  const { data: reservas = [] } = useQuery({
-    queryKey: ['reservas', 'admin'],
-    queryFn: () => getReservasAdmin(),
-  }) as { data: any[] }
-
-  const { data: depoimentos } = useSuspenseQuery({
-    queryKey: ['depoimentos'],
-    queryFn: () => getDepoimentos(),
-  }) as { data: any[] }
 
   // Seasonal galleries
   const seasonalQueries = SEASONAL_SECTIONS.map(s => useQuery({
@@ -117,7 +103,6 @@ function AdminDashboard() {
     })
   }, [seasonalKey])
 
-
   // Mutations
   const updateContentMutation = useMutation({
     mutationFn: (data: { section: string; content: any }) => updateSiteContent({ data }),
@@ -128,35 +113,11 @@ function AdminDashboard() {
     onError: (error: any) => toast.error('Erro: ' + error.message),
   })
 
-  const resMutation = useMutation({
-    mutationFn: (data: any) => upsertReserva({ data }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reservas', 'admin'] })
-      toast.success('Reserva salva!')
-    },
-  })
-
-  const delResMutation = useMutation({
-    mutationFn: (id: string) => deleteReserva({ data: id }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reservas', 'admin'] })
-      toast.success('Reserva excluída!')
-    },
-  })
-
-  const depMutation = useMutation({
-    mutationFn: (data: any) => upsertDepoimento({ data }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['depoimentos'] })
-      toast.success('Depoimento salvo!')
-    },
-  })
-
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'infra' | 'hero' | 'gallery' | 'testimonial', index?: number) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Validação de tipo e tamanho (ex: max 5MB)
+    // Validação de tipo e tamanho
     if (!file.type.startsWith('image/')) {
       toast.error('Por favor, selecione apenas arquivos de imagem.')
       return
@@ -227,12 +188,16 @@ function AdminDashboard() {
         <TabsList className="flex flex-col md:flex-row md:flex-wrap h-auto gap-0 md:gap-2 bg-transparent p-0 mb-6 md:mb-8 border-b md:border-0 border-gray-100">
           {[
             { id: "hero", icon: Home, label: "Hero" },
+            { id: "disponibilidade", icon: Calendar, label: "Disponibilidade" },
             { id: "reservas", icon: Calendar, label: "Reservas" },
             { id: "infra", icon: Grid, label: "Estrutura" },
             { id: "gallery", icon: ImageIcon, label: "Galeria" },
             { id: "sazonais", icon: Sparkles, label: "Sazonais" },
             { id: "dep", icon: Star, label: "Depoimentos" },
             { id: "faq", icon: MessageCircle, label: "FAQ" },
+            { id: "regras", icon: FileText, label: "Regras" },
+            { id: "leads", icon: Phone, label: "Leads" },
+            { id: "config", icon: Settings, label: "Configurações" },
           ].map(tab => (
             <TabsTrigger 
               key={tab.id} 
@@ -292,51 +257,15 @@ function AdminDashboard() {
             <button onClick={() => updateContentMutation.mutate({ section: 'hero', content: heroForm })} className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl hover:bg-[#E06B1B] transition-colors flex items-center justify-center gap-2">
               <Save className="w-5 h-5" /> SALVAR HERO
             </button>
-
           </div>
         </TabsContent>
 
-        <TabsContent value="reservas" activeValue={activeTab}>
-          <div className="space-y-6">
-            <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100">
-              <h2 className="text-2xl font-bold mb-6">Bloquear Agenda / Nova Reserva</h2>
-              <form className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6" onSubmit={e => {
-                e.preventDefault();
-                const form = e.target as HTMLFormElement;
-                const data = {
-                  data_inicio: (form.elements.namedItem('start') as HTMLInputElement).value,
-                  data_fim: (form.elements.namedItem('end') as HTMLInputElement).value,
-                  cliente_nome: (form.elements.namedItem('nome') as HTMLInputElement).value,
-                  cliente_telefone: (form.elements.namedItem('tel') as HTMLInputElement).value,
-                  valor_total: parseFloat((form.elements.namedItem('val') as HTMLInputElement).value || "0"),
-                };
-                resMutation.mutate(data);
-                form.reset();
-              }}>
-                <input name="start" type="date" className="p-4 rounded-2xl border" required />
-                <input name="end" type="date" className="p-4 rounded-2xl border" required />
-                <input name="nome" placeholder="Nome do Cliente" className="p-4 rounded-2xl border" required />
-                <input name="tel" placeholder="WhatsApp do Cliente" className="p-4 rounded-2xl border" />
-                <input name="val" type="number" placeholder="Valor (R$)" className="p-4 rounded-2xl border" />
-                <button type="submit" className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-bold rounded-2xl hover:bg-[#E06B1B]">BLOQUEAR DATA</button>
-              </form>
-            </div>
+        <TabsContent value="disponibilidade" activeValue={activeTab}>
+          <DisponibilidadeCalendar />
+        </TabsContent>
 
-            <div className="grid gap-4">
-              {reservas.map(res => (
-                <div key={res.id} className="bg-white p-5 md:p-6 rounded-3xl border shadow-sm flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                  <div>
-                    <p className="font-black text-lg">{res.cliente_nome}</p>
-                    <p className="text-sm text-muted-foreground">{new Date(res.data_inicio).toLocaleDateString()} até {new Date(res.data_fim).toLocaleDateString()}</p>
-                  </div>
-                  <div className="flex items-center justify-between md:justify-end gap-4">
-                    <span className="font-bold text-[#FE8330]">R$ {res.valor_total}</span>
-                    <button onClick={() => delResMutation.mutate(res.id)} className="p-3 min-h-11 min-w-11 flex items-center justify-center text-red-500 hover:bg-red-50 rounded-xl" aria-label="Excluir reserva"><Trash2 className="w-5 h-5" /></button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        <TabsContent value="reservas" activeValue={activeTab}>
+          <ReservasManager />
         </TabsContent>
 
         <TabsContent value="infra" activeValue={activeTab}>
@@ -360,7 +289,6 @@ function AdminDashboard() {
             </button>
           </div>
           <button onClick={() => updateContentMutation.mutate({ section: 'infrastructure', content: infraForm })} className="mt-6 md:mt-8 w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl">SALVAR ESTRUTURA</button>
-
         </TabsContent>
 
         <TabsContent value="gallery" activeValue={activeTab}>
@@ -369,6 +297,7 @@ function AdminDashboard() {
               items={galleryForm}
               onChange={setGalleryForm}
               folder="galeria"
+              showAmbiente={true}
               onUploadingChange={setMediaUploading}
             />
             <button
@@ -418,52 +347,8 @@ function AdminDashboard() {
           </div>
         </TabsContent>
 
-
         <TabsContent value="dep" activeValue={activeTab}>
-          <div className="space-y-6">
-            <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100">
-              <h2 className="text-2xl font-bold mb-6">Novo Depoimento</h2>
-              <form className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6" onSubmit={e => {
-                e.preventDefault();
-                const form = e.target as HTMLFormElement;
-                const nomeInput = form.elements.namedItem('nome') as HTMLInputElement;
-                const eventoInput = form.elements.namedItem('evento') as HTMLInputElement;
-                const txtInput = form.elements.namedItem('txt') as HTMLTextAreaElement;
-                if (!nomeInput || !txtInput) return;
-                const data = {
-                  nome: nomeInput.value,
-                  evento: eventoInput?.value || "",
-                  depoimento: txtInput.value,
-                  estrelas: 5,
-                };
-                depMutation.mutate(data);
-                form.reset();
-              }}>
-                <input name="nome" placeholder="Nome do Cliente" className="p-4 rounded-2xl border" required />
-                <input name="evento" placeholder="Tipo de Evento" className="p-4 rounded-2xl border" />
-                <textarea name="txt" placeholder="Depoimento..." className="md:col-span-2 p-4 rounded-2xl border min-h-[100px]" required />
-                <button type="submit" className="md:col-span-2 py-4 bg-[#FE8330] text-white font-black rounded-2xl">ADICIONAR DEPOIMENTO</button>
-              </form>
-            </div>
-
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-              {depoimentos.map(dep => (
-                <div key={dep.id} className="bg-white p-6 rounded-[2rem] border shadow-sm">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <p className="font-bold text-lg">{dep.nome}</p>
-                      <p className="text-xs text-muted-foreground uppercase tracking-widest">{dep.evento}</p>
-                    </div>
-                    <div className="flex text-[#FE8330]">
-                      {Array.from({length: dep.estrelas}).map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
-                    </div>
-                  </div>
-                  <p className="text-sm italic text-gray-600">"{dep.depoimento}"</p>
-                </div>
-              ))}
-            </div>
-          </div>
+          <DepoimentosManager />
         </TabsContent>
 
         <TabsContent value="faq" activeValue={activeTab}>
@@ -472,8 +357,6 @@ function AdminDashboard() {
               <div key={idx} className="p-6 bg-gray-50 rounded-3xl space-y-3 relative">
                 <input className="w-full font-bold bg-transparent pr-10" value={item.question || ""} onChange={e => { const f = [...(faqForm || [])]; if(f[idx]) f[idx].question = e.target.value; setFaqForm(f) }} />
                 <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.answer || ""} onChange={e => { const f = [...(faqForm || [])]; if(f[idx]) f[idx].answer = e.target.value; setFaqForm(f) }} />
-
-
                 <button onClick={() => setFaqForm(faqForm.filter((_, i) => i !== idx))} className="absolute top-4 right-4 p-2 min-h-11 min-w-11 flex items-center justify-center text-red-400" aria-label="Excluir pergunta"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
@@ -482,8 +365,18 @@ function AdminDashboard() {
           </div>
         </TabsContent>
 
+        <TabsContent value="regras" activeValue={activeTab}>
+          <RegrasPoliticasManager />
+        </TabsContent>
+
+        <TabsContent value="leads" activeValue={activeTab}>
+          <LeadsManager />
+        </TabsContent>
+
+        <TabsContent value="config" activeValue={activeTab}>
+          <ConfigSiteManager />
+        </TabsContent>
       </Tabs>
     </div>
   )
 }
-

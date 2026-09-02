@@ -2,7 +2,7 @@ import { useRef, useState } from "react"
 import { Trash2, Plus, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
-import { TAG_OPTIONS, type GalleryPhoto, type PhotoTag } from "@/lib/gallery"
+import { TAG_OPTIONS, AMBIENTE_OPTIONS, type GalleryPhoto, type PhotoTag, type AmbienteTag } from "@/lib/gallery"
 
 type QueueItem = { name: string; progress: number; error?: string }
 
@@ -50,12 +50,14 @@ export function MediaManager({
   onChange,
   folder,
   showTags = true,
+  showAmbiente = false,
   onUploadingChange,
 }: {
   items: GalleryPhoto[]
   onChange: (items: GalleryPhoto[]) => void
   folder: string
   showTags?: boolean
+  showAmbiente?: boolean
   onUploadingChange?: (uploading: boolean) => void
 }) {
   const [queue, setQueue] = useState<QueueItem[]>([])
@@ -131,27 +133,47 @@ export function MediaManager({
               </button>
             </div>
             {showTags && (
-              <div className="p-2 flex flex-row gap-2">
-                {TAG_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() =>
+              <div className="p-2 flex flex-col gap-2">
+                <div className="flex flex-row gap-2">
+                  {TAG_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() =>
+                        onChange(
+                          items.map((p, idx) =>
+                            idx === i ? { ...p, tag: opt.value as PhotoTag } : p,
+                          ),
+                        )
+                      }
+                      className={`flex-1 min-w-0 min-h-10 flex items-center justify-center gap-1 text-xs font-bold rounded-lg border transition-all whitespace-nowrap px-1 ${
+                        item.tag === opt.value
+                          ? "bg-[#FE8330] text-white border-[#FE8330]"
+                          : "bg-white text-gray-500 hover:border-[#FE8330]/40"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                {showAmbiente && (
+                  <select
+                    className="w-full h-10 px-2 text-xs font-bold text-gray-600 bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FE8330]/40"
+                    value={item.ambiente || ""}
+                    onChange={(e) =>
                       onChange(
                         items.map((p, idx) =>
-                          idx === i ? { ...p, tag: opt.value as PhotoTag } : p,
+                          idx === i ? { ...p, ambiente: (e.target.value as AmbienteTag) || undefined } : p,
                         ),
                       )
                     }
-                    className={`flex-1 min-w-0 min-h-10 flex items-center justify-center gap-1 text-xs font-bold rounded-lg border transition-all whitespace-nowrap px-1 ${
-                      item.tag === opt.value
-                        ? "bg-[#FE8330] text-white border-[#FE8330]"
-                        : "bg-white text-gray-500 hover:border-[#FE8330]/40"
-                    }`}
                   >
-                    {opt.label}
-                  </button>
-                ))}
+                    <option value="">Nenhum ambiente (Geral)</option>
+                    {AMBIENTE_OPTIONS.map(opt => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                )}
               </div>
             )}
           </div>

@@ -1,10 +1,12 @@
 export type PhotoTag = "dia" | "noite" | "ambos";
 export type MediaKind = "foto" | "video";
+export type AmbienteTag = "piscina" | "area_gourmet" | "suites" | "salao" | "area_externa" | "geral";
 
 export type GalleryPhoto = {
   url: string;
   tag: PhotoTag;
   tipo: MediaKind;
+  ambiente?: AmbienteTag;
 };
 
 const VIDEO_RE = /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i;
@@ -45,6 +47,15 @@ export const TAG_OPTIONS: { value: PhotoTag; label: string }[] = [
   { value: "dia", label: "☀️ Dia" },
   { value: "noite", label: "🌙 Noite" },
   { value: "ambos", label: "📷 Ambos" },
+];
+
+export const AMBIENTE_OPTIONS: { value: AmbienteTag; label: string }[] = [
+  { value: "piscina", label: "🏊 Piscina" },
+  { value: "area_gourmet", label: "🍖 Área Gourmet" },
+  { value: "suites", label: "🛏️ Suítes" },
+  { value: "salao", label: "🎉 Salão" },
+  { value: "area_externa", label: "🌿 Área Externa" },
+  { value: "geral", label: "📍 Geral" },
 ];
 
 export const SEASONAL_SECTIONS = [
