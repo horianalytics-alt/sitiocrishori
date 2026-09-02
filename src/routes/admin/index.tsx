@@ -9,7 +9,7 @@ import {
   type FAQItem 
 } from '@/lib/site-content.functions'
 import { toast } from 'sonner'
-import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon, Calendar, Star, Eye, Sparkles, Phone, Settings, FileText, Package } from 'lucide-react'
+import { Loader2, Save, Plus, Trash2, Home, Grid, MessageCircle, Upload, Image as ImageIcon, Calendar, Star, Eye, Sparkles, Phone, Settings, FileText, Package, Film } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { normalizeGallery, SEASONAL_SECTIONS, type GalleryPhoto } from "@/lib/gallery"
@@ -174,6 +174,43 @@ function AdminDashboard() {
     }
   }
 
+  const handleTourVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('video/')) {
+      toast.error('Por favor, selecione apenas arquivos de vídeo (.mp4, .webm, etc).')
+      return
+    }
+    if (file.size > 100 * 1024 * 1024) {
+      toast.error('O vídeo deve ter no máximo 100MB.')
+      return
+    }
+
+    setIsUploading('tour-video')
+    try {
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'mp4'
+      const fileName = `tour/${crypto.randomUUID()}.${fileExt}`
+
+      const { data, error } = await supabase.storage.from('images').upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false
+      })
+
+      if (error) {
+        throw error
+      }
+
+      const videoUrl = `/api/public/image?path=${encodeURIComponent(data.path)}`
+      setHeroForm((prev: any) => ({ ...prev, tour_video_url: videoUrl }))
+      toast.success('Vídeo do tour enviado com sucesso! Clique no botão abaixo para SALVAR.')
+    } catch (e: any) {
+      toast.error(`Falha no upload do vídeo: ${e.message}`)
+    } finally {
+      setIsUploading(null)
+    }
+  }
+
   return (
     <div className="w-full max-w-6xl mx-auto py-8 md:py-10 px-4 space-y-8 md:space-y-10">
       <header className="space-y-2">
@@ -304,6 +341,53 @@ function AdminDashboard() {
                 {heroForm?.hero_image && (
                   <div className="mt-3 rounded-2xl overflow-hidden border w-full max-w-md aspect-video bg-gray-50">
                     <img src={heroForm.hero_image} className="w-full h-full object-cover" alt="Preview Hero" />
+                  </div>
+                )}
+              </div>
+
+              {/* Vídeo do Tour Virtual (Conheça o Sítio) */}
+              <div className="p-5 sm:p-6 bg-orange-50/50 rounded-3xl border border-orange-200/70 space-y-4">
+                <div>
+                  <label className="text-base font-black text-[#1E2229] flex items-center gap-2">
+                    <Film className="w-5 h-5 text-[#FE8330]" />
+                    Vídeo do Tour Virtual (Conheça o Sítio)
+                  </label>
+                  <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                    Envie ou informe a URL do vídeo do tour. Ele será exibido logo abaixo do topo da homepage. Se deixar vazio, a seção não aparecerá no site.
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    className="flex-1 min-h-[52px] px-4 py-3.5 rounded-2xl border bg-white text-base font-medium focus:outline-none focus:ring-2 ring-[#FE8330]/20"
+                    value={heroForm?.tour_video_url || ""}
+                    onChange={e => setHeroForm({...heroForm, tour_video_url: e.target.value})}
+                    placeholder="URL do vídeo (.mp4) ou envie pelo botão ao lado..."
+                  />
+                  <label className="cursor-pointer bg-[#FE8330] hover:bg-[#E06B1B] text-white px-6 min-h-[52px] rounded-2xl shadow-md shadow-[#FE8330]/20 transition-all flex items-center justify-center gap-2 shrink-0">
+                    {isUploading === 'tour-video' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
+                    <span className="font-bold text-sm uppercase">Escolher Vídeo</span>
+                    <input type="file" className="hidden" accept="video/*" onChange={handleTourVideoUpload} />
+                  </label>
+                </div>
+
+                {heroForm?.tour_video_url && (
+                  <div className="space-y-3 pt-2">
+                    <div className="rounded-2xl overflow-hidden border w-full max-w-lg aspect-video bg-black shadow-md">
+                      <video
+                        src={heroForm.tour_video_url}
+                        className="w-full h-full object-cover"
+                        controls
+                        preload="metadata"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setHeroForm({...heroForm, tour_video_url: ""})}
+                      className="text-xs font-bold text-red-600 hover:text-red-700 underline cursor-pointer"
+                    >
+                      Remover Vídeo do Tour
+                    </button>
                   </div>
                 )}
               </div>

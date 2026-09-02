@@ -126,7 +126,7 @@ function Index() {
 
   const { mode, toggle: toggleMode } = useDayNight();
   const allPhotos = filterByMode(normalizeGallery(galleryData), mode);
-  const tourVideo = allPhotos.find(p => p.tipo === "video" && p.is_tour);
+  const tourVideoUrl = hero?.tour_video_url?.trim() || allPhotos.find(p => p.tipo === "video" && p.is_tour)?.url;
   
   const photos = useMemo(() => {
     if (ambienteFilter === "todos") return allPhotos;
@@ -216,7 +216,7 @@ function Index() {
         </section>
 
         {/* Seção Conheça o Sítio (Tour Virtual na Hero) */}
-        {tourVideo && (
+        {tourVideoUrl && (
           <section id="conheca-o-sitio" className="py-16 md:py-24 bg-[#FAF8F5] border-b border-orange-100/60 overflow-hidden">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-8">
               <div className="text-center space-y-3 max-w-2xl mx-auto" data-aos="fade-up">
@@ -232,7 +232,7 @@ function Index() {
               </div>
 
               <div className="relative rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-2xl bg-black border-4 border-white aspect-video group w-full" data-aos="fade-up" data-aos-delay="100">
-                <TourVideoPlayer videoUrl={tourVideo.url} />
+                <TourVideoPlayer videoUrl={tourVideoUrl} />
               </div>
             </div>
           </section>

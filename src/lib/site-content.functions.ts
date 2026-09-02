@@ -11,6 +11,7 @@ export type HeroContent = {
   whatsapp_message: string;
   hero_image?: string;
   badges?: string[];
+  tour_video_url?: string;
 };
 
 export type InfrastructureItem = {
