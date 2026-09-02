@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { Save, Loader2 } from "lucide-react"
+import { Save, Loader2, Upload, Image as ImageIcon } from "lucide-react"
 import { toast } from "sonner"
+import { supabase } from "@/integrations/supabase/client"
 import { getConfigSite, updateConfigSite } from "@/lib/site-content.functions"
 
 type ConfigForm = {
@@ -16,6 +17,7 @@ type ConfigForm = {
   fim_semana_tipo_preco: "fixo" | "por_pessoa"
   mapa_embed_url: string
   mapa_texto: string
+  foto_fallback: string
 }
 
 const EMPTY_FORM: ConfigForm = {
@@ -29,11 +31,13 @@ const EMPTY_FORM: ConfigForm = {
   fim_semana_tipo_preco: "fixo",
   mapa_embed_url: "",
   mapa_texto: "",
+  foto_fallback: "",
 }
 
 export function ConfigSiteManager() {
   const queryClient = useQueryClient()
   const [form, setForm] = useState<ConfigForm>(EMPTY_FORM)
+  const [isUploadingFallback, setIsUploadingFallback] = useState(false)
 
   const { data: config, isLoading } = useQuery({
     queryKey: ["config_site"],
@@ -54,6 +58,7 @@ export function ConfigSiteManager() {
         fim_semana_tipo_preco: ((config as any).fim_semana_tipo_preco as "fixo" | "por_pessoa") || "fixo",
         mapa_embed_url: (config as any).mapa_embed_url ?? "",
         mapa_texto: (config as any).mapa_texto ?? "",
+        foto_fallback: (config as any).foto_fallback ?? "",
       })
     }
   }, [config])
@@ -66,6 +71,52 @@ export function ConfigSiteManager() {
     },
     onError: () => toast.error("❌ Erro ao salvar, tente novamente"),
   })
+
+  const handleFallbackUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith("image/")) {
+      toast.error("Por favor, selecione apenas arquivos de imagem.")
+      return
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("A imagem deve ter no máximo 10MB.")
+      return
+    }
+
+    setIsUploadingFallback(true)
+    try {
+      const url = import.meta.env['VITE_SUPABASE_URL']
+      const key = import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY']
+      const { data: sessionData } = await supabase.auth.getSession()
+      const token = sessionData.session?.access_token
+      if (!token) throw new Error("Sessão expirada. Entre novamente no painel.")
+
+      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg"
+      const path = `fallback/${crypto.randomUUID()}.${ext}`
+
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open("POST", `${url}/storage/v1/object/midia-sitio/${path}`)
+        xhr.setRequestHeader("authorization", `Bearer ${token}`)
+        xhr.setRequestHeader("apikey", key)
+        xhr.setRequestHeader("x-upsert", "false")
+        xhr.onload = () => (xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error("Falha no upload")))
+        xhr.onerror = () => reject(new Error("Falha de rede"))
+        const formData = new FormData()
+        formData.append("file", file)
+        xhr.send(formData)
+      })
+
+      const publicUrl = `/api/public/media?path=${encodeURIComponent(path)}`
+      setForm(f => ({ ...f, foto_fallback: publicUrl }))
+      toast.success("✅ Foto de reserva enviada com sucesso!")
+    } catch (err: any) {
+      toast.error("❌ Erro ao enviar foto de reserva: " + err.message)
+    } finally {
+      setIsUploadingFallback(false)
+    }
+  }
 
   if (isLoading) {
     return (
@@ -233,6 +284,43 @@ export function ConfigSiteManager() {
             value={form.mapa_texto}
             onChange={e => setForm(f => ({ ...f, mapa_texto: e.target.value }))}
           />
+        </div>
+
+        {/* Foto de Reserva (Fallback) */}
+        <div className="p-6 bg-orange-50/50 rounded-3xl border border-orange-200/80 space-y-3">
+          <div>
+            <label className="text-base font-black text-[#1E2229] flex items-center gap-2">
+              <ImageIcon className="w-5 h-5 text-[#FE8330]" />
+              Foto de Reserva (fallback)
+            </label>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">
+              Esta foto será exibida no site caso qualquer imagem da galeria falhe ao carregar.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              type="text"
+              placeholder="URL da imagem ou envie pelo botão ao lado..."
+              value={form.foto_fallback}
+              onChange={e => setForm(f => ({ ...f, foto_fallback: e.target.value }))}
+              className="flex-1 min-h-[52px] px-4 py-3 rounded-2xl border bg-white text-base focus:outline-none focus:ring-2 ring-[#FE8330]/30 font-medium"
+            />
+            <label className="min-h-[52px] px-6 rounded-2xl bg-[#FE8330] hover:bg-[#E06B1B] text-white font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-[#FE8330]/20 transition-all shrink-0">
+              {isUploadingFallback ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Enviando...</>
+              ) : (
+                <><Upload className="w-4 h-4" /> Escolher Foto</>
+              )}
+              <input type="file" className="hidden" accept="image/*" onChange={handleFallbackUpload} />
+            </label>
+          </div>
+
+          {form.foto_fallback && (
+            <div className="mt-3 rounded-2xl overflow-hidden border w-full max-w-xs aspect-video bg-gray-50 relative">
+              <img src={form.foto_fallback} className="w-full h-full object-cover" alt="" />
+            </div>
+          )}
         </div>
       </div>
 

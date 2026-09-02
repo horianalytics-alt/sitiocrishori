@@ -387,6 +387,7 @@ function Index() {
                       key={`${photo.url}-${i}`}
                       photo={photo}
                       index={i}
+                      fallbackUrl={config?.foto_fallback}
                       onClick={() => photo.tipo === "foto" && setSelectedImage(photo.url)}
                     />
                   ))}

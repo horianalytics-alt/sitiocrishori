@@ -449,6 +449,7 @@ export const updateConfigSite = createServerFn({ method: "POST" })
       fim_semana_tipo_preco?: "fixo" | "por_pessoa";
       mapa_embed_url?: string;
       mapa_texto?: string;
+      foto_fallback?: string | null;
     }) => data,
   )
   .handler(async ({ data, context }) => {
@@ -465,6 +466,7 @@ export const updateConfigSite = createServerFn({ method: "POST" })
       fim_semana_tipo_preco: data.fim_semana_tipo_preco ?? "fixo",
       mapa_embed_url: data.mapa_embed_url ?? null,
       mapa_texto: data.mapa_texto ?? null,
+      foto_fallback: data.foto_fallback ?? null,
       updated_at: new Date().toISOString(),
     };
 
@@ -619,7 +621,7 @@ export const getConfigSitePublica = createServerFn({ method: "GET" }).handler(as
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await (supabaseAdmin as any)
     .from("config_site")
-    .select("id, countdown_mensagem, datas_quase_lotadas, instagram_usuario, whatsapp_contato, preco_base_festa, preco_base_fim_semana, fim_semana_tipo_preco, mapa_embed_url, mapa_texto")
+    .select("id, countdown_mensagem, datas_quase_lotadas, instagram_usuario, whatsapp_contato, preco_base_festa, preco_base_fim_semana, fim_semana_tipo_preco, mapa_embed_url, mapa_texto, foto_fallback")
     .limit(1)
     .maybeSingle();
   if (error) throw error;

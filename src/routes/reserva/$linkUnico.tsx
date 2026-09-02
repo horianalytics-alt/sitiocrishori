@@ -71,7 +71,7 @@ function ClientArea() {
 
   if (isLoadingReserva) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5]">
+      <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5] pt-24">
         <Loader2 className="w-10 h-10 text-[#FE8330] animate-spin" />
       </div>
     )
@@ -79,7 +79,7 @@ function ClientArea() {
 
   if (!reserva) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5] p-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5] p-4 pt-28">
         <div className="bg-white p-8 sm:p-12 rounded-[2.5rem] text-center max-w-md shadow-xl border space-y-4">
           <div className="w-16 h-16 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center mx-auto">
             <AlertTriangle className="w-8 h-8" />
@@ -114,16 +114,24 @@ function ClientArea() {
   )}`
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] pb-20 selection:bg-[#FE8330] selection:text-white">
+    <div className="min-h-screen bg-[#FAF8F5] pt-24 sm:pt-28 md:pt-32 pb-20 selection:bg-[#FE8330] selection:text-white">
       
-      {/* Topo do Cartão Digital */}
-      <header className="bg-[#1E2229] text-white pt-10 pb-20 px-4 rounded-b-[2.5rem] sm:rounded-b-[3.5rem] shadow-xl relative overflow-hidden">
-        <div className="max-w-xl mx-auto text-center space-y-3 relative z-10">
+      <main className="max-w-xl mx-auto px-4 space-y-6">
+        
+        {/* CORREÇÃO 1: Badge de Status é a primeira coisa visível após o header, sem ser encoberto */}
+        <div className="text-center">
+          <span className={`inline-flex items-center gap-2 px-6 py-3 rounded-full text-base sm:text-lg font-black border-2 ${statusCfg.color} shadow-md transition-transform hover:scale-[1.02]`}>
+            {statusCfg.badge}
+          </span>
+        </div>
+
+        {/* Topo do Cartão Digital */}
+        <div className="bg-[#1E2229] text-white p-6 sm:p-8 rounded-[2.5rem] shadow-xl text-center space-y-3 relative overflow-hidden">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-white/10 text-orange-300 border border-white/10">
             <Sparkles className="w-3.5 h-3.5" /> Cartão Digital do Convidado
           </span>
           
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight pt-1">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight">
             Olá, {reserva.cliente_nome ? reserva.cliente_nome.split(' ')[0] : 'Visitante'}!
           </h1>
           
@@ -131,21 +139,10 @@ function ClientArea() {
             Seja bem-vindo à sua área exclusiva de acompanhamento do Sítio Cris Hori.
           </p>
         </div>
-      </header>
 
-      {/* Cartão Centralizado */}
-      <main className="max-w-xl mx-auto px-4 -mt-12 space-y-6">
-        
-        {/* Bloco 1: Status e Data em Destaque */}
+        {/* Bloco 1: Countdown e Data em Destaque */}
         <div className="bg-white p-6 sm:p-8 rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">
           
-          {/* Badge de Status */}
-          <div className="text-center">
-            <span className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-black border ${statusCfg.color} shadow-xs`}>
-              {statusCfg.badge}
-            </span>
-          </div>
-
           {/* Countdown Grande */}
           {daysLeft !== null && daysLeft > 0 && (
             <div className="p-6 bg-orange-50/80 rounded-[2rem] border-2 border-orange-200/80 text-center space-y-1">
