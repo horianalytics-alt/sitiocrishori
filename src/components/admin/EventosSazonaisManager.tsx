@@ -5,6 +5,7 @@ import { toast } from "sonner"
 import { 
   getEventosSazonais, 
   toggleEventoSazonalAtivo, 
+  toggleEfeitoGlobalSazonal,
   criarEventoSazonal, 
   excluirEventoSazonal,
   getSiteContent,
@@ -18,6 +19,7 @@ type EventoSazonal = {
   nome: string
   emoji: string
   ativo: boolean
+  efeito_global_ativo: boolean
   data_inicio: string | null
   data_fim: string | null
   is_system: boolean
@@ -80,6 +82,18 @@ export function EventosSazonaisManager() {
       toast.success("Status do tema atualizado!")
     },
     onError: (err: any) => toast.error("Erro ao alterar status: " + err.message),
+  })
+
+  // Mutation: Toggle Efeito Global no Site Todo
+  const toggleGlobalEfeitoMutation = useMutation({
+    mutationFn: ({ id, efeito_global_ativo }: { id: string; efeito_global_ativo: boolean }) =>
+      toggleEfeitoGlobalSazonal({ data: { id, efeito_global_ativo } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["eventos_sazonais"] })
+      queryClient.invalidateQueries({ queryKey: ["efeito_global_ativo"] })
+      toast.success("Efeito global atualizado com sucesso!")
+    },
+    onError: (err: any) => toast.error("Erro ao alterar efeito global: " + err.message),
   })
 
   // Mutation: Criar Evento
@@ -223,14 +237,20 @@ export function EventosSazonaisManager() {
                   </h3>
 
                   {/* Status do Evento */}
-                  <div>
+                  <div className="flex flex-wrap items-center justify-center gap-1.5">
                     {evento.ativo ? (
-                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black bg-green-100 text-green-800 border border-green-200">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-green-100 text-green-800 border border-green-200">
                         ✅ Ativo no site
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-gray-200/70 text-gray-600">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gray-200/70 text-gray-600">
                         ⭕ Inativo
+                      </span>
+                    )}
+
+                    {evento.efeito_global_ativo && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800 border border-amber-300 shadow-xs">
+                        🌟 Efeito global
                       </span>
                     )}
                   </div>
@@ -260,6 +280,31 @@ export function EventosSazonaisManager() {
                       "Desativar Tema"
                     ) : (
                       "Ativar no Site"
+                    )}
+                  </button>
+
+                  {/* Botão de Toggle Efeito em Todo o Site */}
+                  <button
+                    type="button"
+                    disabled={toggleGlobalEfeitoMutation.isPending}
+                    onClick={() =>
+                      toggleGlobalEfeitoMutation.mutate({
+                        id: evento.id,
+                        efeito_global_ativo: !evento.efeito_global_ativo,
+                      })
+                    }
+                    className={`w-full py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                      evento.efeito_global_ativo
+                        ? "bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/20"
+                        : "bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200"
+                    }`}
+                  >
+                    {toggleGlobalEfeitoMutation.isPending ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : evento.efeito_global_ativo ? (
+                      "🌟 Efeito em todo o site: ATIVO"
+                    ) : (
+                      "🌟 Ativar efeito em todo o site"
                     )}
                   </button>
 

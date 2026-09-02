@@ -13,6 +13,9 @@ import 'aos/dist/aos.css';
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { useQuery } from "@tanstack/react-query";
+import { SeasonalEffects, getSeasonTypeFromName } from "@/components/SeasonalEffects";
+import { getEfeitoGlobalAtivoPublica } from "@/lib/site-content.functions";
 
 function NotFoundComponent() {
   return (
@@ -117,11 +120,31 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function GlobalSeasonalLayer() {
+  const router = useRouter();
+  const pathname = router.state.location.pathname;
+  // Na home '/', index.tsx já gerencia tanto o modo global quanto o modo automático por scroll
+  if (pathname === "/") return null;
+
+  const { data: efeitoGlobal } = useQuery({
+    queryKey: ['efeito_global_ativo'],
+    queryFn: () => getEfeitoGlobalAtivoPublica(),
+  }) as { data: any };
+
+  if (!efeitoGlobal || !efeitoGlobal.efeito_global_ativo) return null;
+
+  const season = getSeasonTypeFromName(efeitoGlobal.nome);
+  if (season === 'none') return null;
+
+  return <SeasonalEffects season={season} isEnabled={true} />;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
+      <GlobalSeasonalLayer />
       <Outlet />
       <Toaster position="top-right" richColors />
     </QueryClientProvider>

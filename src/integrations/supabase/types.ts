@@ -146,6 +146,7 @@ export type Database = {
           created_at: string
           data_fim: string | null
           data_inicio: string | null
+          efeito_global_ativo: boolean
           emoji: string
           id: string
           is_system: boolean
@@ -156,6 +157,7 @@ export type Database = {
           created_at?: string
           data_fim?: string | null
           data_inicio?: string | null
+          efeito_global_ativo?: boolean
           emoji: string
           id?: string
           is_system?: boolean
@@ -166,6 +168,7 @@ export type Database = {
           created_at?: string
           data_fim?: string | null
           data_inicio?: string | null
+          efeito_global_ativo?: boolean
           emoji?: string
           id?: string
           is_system?: boolean

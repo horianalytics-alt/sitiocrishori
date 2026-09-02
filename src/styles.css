@@ -445,6 +445,20 @@ img:not([class*="h-full"]):not([class*="h-["]) { height: auto; }
 }
 
 /* Transição de tema sem flash branco */
-.mode-dia, .mode-noite { will-change: background-color; }
-
 .rdp-day_button { min-height: 36px; }
+
+/* Animações Sazonais CSS */
+@keyframes sway {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
+}
+
+@keyframes flutter {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-12px) scale(1.05); }
+}
+
+@keyframes flicker {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.1) translateY(-2px); opacity: 1; }
+}

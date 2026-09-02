@@ -648,6 +648,17 @@ export const getEventosSazonais = createServerFn({ method: "GET" })
     return (data as any[]) || [];
   });
 
+export const getEventosSazonaisPublica = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await (supabaseAdmin as any)
+      .from("eventos_sazonais")
+      .select("*")
+      .order("created_at", { ascending: true });
+    if (error) return [];
+    return (data as any[]) || [];
+  });
+
 export const getEventoSazonalAtivoPublica = createServerFn({ method: "GET" })
   .handler(async () => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -683,6 +694,48 @@ export const toggleEventoSazonalAtivo = createServerFn({ method: "POST" })
       const { error } = await (supabaseAdmin as any)
         .from("eventos_sazonais")
         .update({ ativo: false })
+        .eq("id", data.id);
+      if (error) throw error;
+    }
+
+    return { success: true };
+  });
+
+export const getEfeitoGlobalAtivoPublica = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await (supabaseAdmin as any)
+      .from("eventos_sazonais")
+      .select("*")
+      .eq("efeito_global_ativo", true)
+      .maybeSingle();
+    if (error) return null;
+    return data;
+  });
+
+export const toggleEfeitoGlobalSazonal = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((data: { id: string; efeito_global_ativo: boolean }) => data)
+  .handler(async ({ data, context }) => {
+    await verifyAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Quando ativado, apenas um efeito global roda por vez
+    if (data.efeito_global_ativo) {
+      await (supabaseAdmin as any)
+        .from("eventos_sazonais")
+        .update({ efeito_global_ativo: false })
+        .neq("id", data.id);
+
+      const { error } = await (supabaseAdmin as any)
+        .from("eventos_sazonais")
+        .update({ efeito_global_ativo: true })
+        .eq("id", data.id);
+      if (error) throw error;
+    } else {
+      const { error } = await (supabaseAdmin as any)
+        .from("eventos_sazonais")
+        .update({ efeito_global_ativo: false })
         .eq("id", data.id);
       if (error) throw error;
     }

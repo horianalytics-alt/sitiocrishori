@@ -6,6 +6,8 @@ import {
   getConfigSitePublica, 
   getDisponibilidadePublica,
   getEventoSazonalAtivoPublica,
+  getEventosSazonaisPublica,
+  getEfeitoGlobalAtivoPublica,
   type HeroContent, 
   type InfrastructureItem, 
   type FAQItem 
@@ -13,7 +15,8 @@ import {
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
-import { SeasonalEffects, type Season, type SeasonalEffectsHandle } from "@/components/SeasonalEffects";
+import { SeasonalEffects, getSeasonTypeFromName, type Season, type SeasonalEffectsHandle } from "@/components/SeasonalEffects";
+import { SeasonalGallerySection } from "@/components/SeasonalGallerySection";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Star, Calendar as CalendarIcon, MapPin, CheckCircle, Sparkles, PlayCircle } from "lucide-react";
@@ -67,6 +70,18 @@ function Index() {
   const { data: config } = useSuspenseQuery({ queryKey: ['config_site'], queryFn: () => getConfigSitePublica() }) as { data: any };
   const { data: disponibilidade = [] } = useSuspenseQuery({ queryKey: ['disponibilidade_publica'], queryFn: () => getDisponibilidadePublica() }) as { data: any[] };
   const { data: eventoSazonalAtivo } = useSuspenseQuery({ queryKey: ['evento_sazonal_ativo'], queryFn: () => getEventoSazonalAtivoPublica() }) as { data: any };
+  
+  // Todos os eventos sazonais para a galeria
+  const { data: todosEventosSazonais = [] } = useQuery({
+    queryKey: ['eventos_sazonais_publica'],
+    queryFn: () => getEventosSazonaisPublica(),
+  }) as { data: any[] };
+
+  // Efeito global ativado pelo admin no painel
+  const { data: efeitoGlobalAtivo } = useQuery({
+    queryKey: ['efeito_global_ativo'],
+    queryFn: () => getEfeitoGlobalAtivoPublica(),
+  }) as { data: any };
 
   const [selectedRange, setSelectedRange] = useState<DateRange | undefined>();
   const [activeTab, setActiveTab] = useState("finais-de-semana");
@@ -75,6 +90,9 @@ function Index() {
   const [showReservaModal, setShowReservaModal] = useState(false);
   const [selectedPacote, setSelectedPacote] = useState<PacotePublico | null>(null);
   
+  // Modo automático (visitante navega até a seção na galeria)
+  const [inViewSeason, setInViewSeason] = useState<Season>('none');
+
   const [effectsEnabled, setEffectsEnabled] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -85,14 +103,16 @@ function Index() {
   });
   const seasonalEffectsRef = useRef<SeasonalEffectsHandle>(null);
 
+  // Efeito global (admin) tem precedência contínua; senão, usa o modo automático do visitante ao rolar na galeria
+  const globalSeason: Season = useMemo(() => {
+    if (!efeitoGlobalAtivo) return "none";
+    return getSeasonTypeFromName(efeitoGlobalAtivo.nome);
+  }, [efeitoGlobalAtivo]);
+
   const activeSeason: Season = useMemo(() => {
-    if (!eventoSazonalAtivo) return "none";
-    const n = (eventoSazonalAtivo.nome || "").toLowerCase();
-    if (n.includes("natal")) return "natal";
-    if (n.includes("ano novo") || n.includes("reveillon")) return "ano-novo";
-    if (n.includes("pascoa") || n.includes("páscoa")) return "pascoa";
-    return "none";
-  }, [eventoSazonalAtivo]);
+    if (globalSeason !== "none") return globalSeason;
+    return inViewSeason;
+  }, [globalSeason, inViewSeason]);
 
   useEffect(() => {
     localStorage.setItem('soundEnabled', JSON.stringify(soundEnabled));
@@ -403,6 +423,18 @@ function Index() {
                 </motion.div>
               </AnimatePresence>
             </div>
+
+            {/* Seções de Fotos de Cada Evento Sazonal com detecção de visualização para disparo do efeito */}
+            {todosEventosSazonais.map((evento: any) => (
+              <SeasonalGallerySection
+                key={evento.id}
+                evento={evento}
+                fallbackUrl={config?.foto_fallback}
+                onSelectImage={(url) => setSelectedImage(url)}
+                onEnter={(season) => setInViewSeason(season)}
+                onLeave={(season) => setInViewSeason((current) => (current === season ? 'none' : current))}
+              />
+            ))}
           </div>
         </section>
 
