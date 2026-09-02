@@ -31,7 +31,15 @@ function ClientArea() {
     queryFn: () => getRegrasPoliticas(),
   })
 
+  const { data: configSite } = useQuery({
+    queryKey: ['config_site_publica'],
+    queryFn: () => getConfigSitePublica(),
+  })
+
+  const whatsappContato = configSite?.whatsapp_contato?.replace(/\D/g, '') || '5511973000753'
+
   if (isLoadingReserva) {
+
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5]">
         <Loader2 className="w-8 h-8 text-[#FE8330] animate-spin" />
