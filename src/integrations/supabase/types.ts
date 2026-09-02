@@ -18,8 +18,7 @@ export type Database = {
         Row: {
           countdown_mensagem: string | null
           datas_quase_lotadas: string | null
-          fim_semana_tipo_preco: string | null
-          foto_fallback: string | null
+          fim_semana_tipo_preco: string
           id: string
           instagram_token: string | null
           instagram_usuario: string | null
@@ -33,8 +32,7 @@ export type Database = {
         Insert: {
           countdown_mensagem?: string | null
           datas_quase_lotadas?: string | null
-          fim_semana_tipo_preco?: string | null
-          foto_fallback?: string | null
+          fim_semana_tipo_preco?: string
           id?: string
           instagram_token?: string | null
           instagram_usuario?: string | null
@@ -48,8 +46,7 @@ export type Database = {
         Update: {
           countdown_mensagem?: string | null
           datas_quase_lotadas?: string | null
-          fim_semana_tipo_preco?: string | null
-          foto_fallback?: string | null
+          fim_semana_tipo_preco?: string
           id?: string
           instagram_token?: string | null
           instagram_usuario?: string | null
@@ -265,40 +262,40 @@ export type Database = {
       }
       pacotes: {
         Row: {
-          ativo: boolean
-          created_at: string
-          destaque: boolean
+          ativo: boolean | null
+          created_at: string | null
+          destaque: boolean | null
           id: string
-          itens_incluidos: string[] | any
+          itens_incluidos: Json | null
           nome: string
           num_pessoas: number | null
-          ordem: number
+          ordem: number | null
           preco_por_pessoa: number | null
           preco_total: number | null
           texto_destaque: string | null
         }
         Insert: {
-          ativo?: boolean
-          created_at?: string
-          destaque?: boolean
+          ativo?: boolean | null
+          created_at?: string | null
+          destaque?: boolean | null
           id?: string
-          itens_incluidos?: string[] | any
+          itens_incluidos?: Json | null
           nome: string
           num_pessoas?: number | null
-          ordem?: number
+          ordem?: number | null
           preco_por_pessoa?: number | null
           preco_total?: number | null
           texto_destaque?: string | null
         }
         Update: {
-          ativo?: boolean
-          created_at?: string
-          destaque?: boolean
+          ativo?: boolean | null
+          created_at?: string | null
+          destaque?: boolean | null
           id?: string
-          itens_incluidos?: string[] | any
+          itens_incluidos?: Json | null
           nome?: string
           num_pessoas?: number | null
-          ordem?: number
+          ordem?: number | null
           preco_por_pessoa?: number | null
           preco_total?: number | null
           texto_destaque?: string | null
