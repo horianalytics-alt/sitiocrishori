@@ -162,49 +162,85 @@ function Index() {
           </div>
         </section>
 
-        {/* Reservas & Calendario */}
-        <section id="calendario" className="py-20 md:py-32 px-4 md:px-6 max-w-7xl mx-auto overflow-hidden">
-          <div className="bg-white p-6 md:p-12 lg:p-20 rounded-[2.5rem] md:rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-10 md:gap-20 items-center lg:items-start" data-aos="fade-up">
-            
-            {/* Calendário */}
-            <div className="flex-1 space-y-8 w-full">
-              <div className="space-y-4 text-center lg:text-left">
-                <h2 className="text-2xl md:text-5xl font-black tracking-tight">Verifique as datas livres</h2>
-                <p className="text-base md:text-lg text-muted-foreground">O verde indica que estamos aguardando por você. Em vermelho, datas já fechadas.</p>
-              </div>
-              <div className="flex justify-center p-4 bg-[#FAF8F5] rounded-[2rem] border">
-                <DayPicker
-                  mode="single"
-                  selected={selectedRange?.from}
-                  onSelect={(d) => setSelectedRange(d ? { from: d, to: undefined } : undefined)}
-                  locale={ptBR}
-                  disabled={isDayDisabled}
-                  modifiers={dayModifiers}
-                  modifiersClassNames={{
-                    disponivel: "bg-green-100 text-green-800 font-bold",
-                    ocupado: "bg-red-100 text-red-400 line-through opacity-70",
-                    reservado: "bg-yellow-100 text-yellow-600 opacity-80"
-                  }}
-                  className="mx-auto custom-calendar"
-                />
-              </div>
-              {config?.countdown_mensagem && (
-                <div className="p-4 bg-orange-50 border border-orange-200 rounded-2xl text-center text-orange-800 font-bold animate-pulse">
-                  ⏰ {config.countdown_mensagem}
-                </div>
-              )}
+        {/* Disponibilidade & Calendario */}
+        <section id="calendario" className="py-20 md:py-28 px-4 md:px-6 max-w-6xl mx-auto overflow-hidden">
+          <div className="bg-white p-6 sm:p-10 md:p-14 rounded-[2.5rem] md:rounded-[3.5rem] shadow-xl border border-gray-100 space-y-8" data-aos="fade-up">
+            <div className="space-y-3 text-center max-w-2xl mx-auto">
+              <span className="text-xs font-bold tracking-widest uppercase text-[#FE8330]">
+                Disponibilidade em Tempo Real
+              </span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#1E2229] tracking-tight">
+                Verifique as datas livres
+              </h2>
+              <p className="text-base sm:text-lg text-muted-foreground">
+                O verde indica datas disponíveis para o seu evento. Em vermelho, datas já reservadas.
+              </p>
             </div>
-            
-            {/* Simulador */}
-            <div className="w-full lg:w-[450px]">
+
+            <div className="max-w-xl mx-auto p-4 sm:p-6 bg-[#FAF8F5] rounded-[2rem] border border-gray-100 flex flex-col items-center">
+              <DayPicker
+                mode="single"
+                selected={selectedRange?.from}
+                onSelect={(d) => setSelectedRange(d ? { from: d, to: undefined } : undefined)}
+                locale={ptBR}
+                disabled={isDayDisabled}
+                modifiers={dayModifiers}
+                modifiersClassNames={{
+                  disponivel: "bg-green-100 text-green-800 font-bold",
+                  ocupado: "bg-red-100 text-red-400 line-through opacity-70",
+                  reservado: "bg-yellow-100 text-yellow-600 opacity-80"
+                }}
+                className="mx-auto custom-calendar"
+              />
+
+              <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 pt-4 mt-4 border-t border-gray-200/60 text-xs sm:text-sm font-bold">
+                <div className="flex items-center gap-2">
+                  <span className="w-3.5 h-3.5 rounded-full bg-green-500 inline-block" />
+                  <span className="text-gray-700">Disponível</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-3.5 h-3.5 rounded-full bg-red-400 inline-block" />
+                  <span className="text-gray-700">Ocupado</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-3.5 h-3.5 rounded-full bg-yellow-400 inline-block" />
+                  <span className="text-gray-700">Reservado</span>
+                </div>
+              </div>
+            </div>
+
+            {config?.countdown_mensagem && (
+              <div className="max-w-xl mx-auto p-4 bg-orange-50 border border-orange-200 rounded-2xl text-center text-orange-800 font-bold text-sm sm:text-base animate-pulse">
+                ⏰ {config.countdown_mensagem}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Seção Dedicada: Simule seu Evento */}
+        <section id="simulador" className="py-20 md:py-28 bg-[#FAF8F5] border-y border-orange-100/60 px-4 md:px-6">
+          <div className="max-w-7xl mx-auto space-y-10">
+            <div className="text-center space-y-4 max-w-2xl mx-auto" data-aos="fade-up">
+              <span className="text-xs font-bold tracking-widest uppercase text-[#FE8330]">
+                Orçamento Online
+              </span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#1E2229] tracking-tight">
+                Simule seu Evento
+              </h2>
+              <p className="text-base sm:text-lg text-muted-foreground">
+                Descubra em poucos cliques uma estimativa transparente para celebrar seus melhores momentos conosco.
+              </p>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="100">
               <SimuladorOrcamento
                 precoFesta={config?.preco_base_festa}
                 precoFimSemana={config?.preco_base_fim_semana}
+                fimSemanaTipo={config?.fim_semana_tipo_preco}
                 adminPhone={config?.whatsapp_contato || "11999999999"}
                 selectedDate={selectedRange?.from || null}
               />
             </div>
-
           </div>
         </section>
 

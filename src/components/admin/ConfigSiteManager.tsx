@@ -13,6 +13,7 @@ type ConfigForm = {
   whatsapp_contato: string
   preco_base_festa: number
   preco_base_fim_semana: number
+  fim_semana_tipo_preco: "fixo" | "por_pessoa"
   mapa_embed_url: string
   mapa_texto: string
 }
@@ -25,6 +26,7 @@ const EMPTY_FORM: ConfigForm = {
   whatsapp_contato: "",
   preco_base_festa: 0,
   preco_base_fim_semana: 0,
+  fim_semana_tipo_preco: "fixo",
   mapa_embed_url: "",
   mapa_texto: "",
 }
@@ -49,6 +51,7 @@ export function ConfigSiteManager() {
         whatsapp_contato: (config as any).whatsapp_contato ?? "",
         preco_base_festa: (config as any).preco_base_festa ?? 0,
         preco_base_fim_semana: (config as any).preco_base_fim_semana ?? 0,
+        fim_semana_tipo_preco: ((config as any).fim_semana_tipo_preco as "fixo" | "por_pessoa") || "fixo",
         mapa_embed_url: (config as any).mapa_embed_url ?? "",
         mapa_texto: (config as any).mapa_texto ?? "",
       })
@@ -138,24 +141,77 @@ export function ConfigSiteManager() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Preço Base - Festa (R$)</label>
-            <input
-              type="number"
-              className="w-full p-4 rounded-2xl border focus:outline-none focus:ring-2 ring-[#FE8330]/20"
-              value={form.preco_base_festa || ""}
-              onChange={e => setForm(f => ({ ...f, preco_base_festa: Number(e.target.value) }))}
-            />
+        {/* Seção Simulador de Orçamento */}
+        <div className="pt-6 border-t border-gray-100 space-y-4">
+          <div>
+            <h3 className="text-xl font-black text-[#1E2229]">Simulador de Orçamento</h3>
+            <p className="text-sm text-gray-500">Defina os preços base utilizados para calcular a estimativa exibida aos visitantes no site.</p>
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Preço Base - Fim de Semana (R$)</label>
-            <input
-              type="number"
-              className="w-full p-4 rounded-2xl border focus:outline-none focus:ring-2 ring-[#FE8330]/20"
-              value={form.preco_base_fim_semana || ""}
-              onChange={e => setForm(f => ({ ...f, preco_base_fim_semana: Number(e.target.value) }))}
-            />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-orange-50/50 border border-orange-100 p-6 rounded-2xl">
+            {/* Festa */}
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-gray-700">
+                Valor base Festa (R$ por pessoa)
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400 select-none">R$</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  className="w-full pl-12 pr-4 py-3.5 bg-white rounded-xl border focus:outline-none focus:ring-2 ring-[#FE8330]/30 font-bold"
+                  placeholder="Ex: 80"
+                  value={form.preco_base_festa || ""}
+                  onChange={e => setForm(f => ({ ...f, preco_base_festa: Number(e.target.value) }))}
+                />
+              </div>
+              <p className="text-xs text-gray-400">Multiplicado pelo número de convidados (ex: 50 pessoas × R$ 80 = R$ 4.000).</p>
+            </div>
+
+            {/* Final de Semana */}
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-gray-700">
+                Valor base Final de Semana
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400 select-none">R$</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  className="w-full pl-12 pr-4 py-3.5 bg-white rounded-xl border focus:outline-none focus:ring-2 ring-[#FE8330]/30 font-bold"
+                  placeholder="Ex: 2500"
+                  value={form.preco_base_fim_semana || ""}
+                  onChange={e => setForm(f => ({ ...f, preco_base_fim_semana: Number(e.target.value) }))}
+                />
+              </div>
+
+              <div className="flex flex-wrap gap-4 pt-1">
+                <label className="flex items-center gap-2 text-xs font-bold text-gray-700 cursor-pointer select-none">
+                  <input
+                    type="radio"
+                    name="fim_semana_tipo_preco"
+                    value="fixo"
+                    checked={form.fim_semana_tipo_preco === "fixo"}
+                    onChange={() => setForm(f => ({ ...f, fim_semana_tipo_preco: "fixo" }))}
+                    className="accent-[#FE8330] w-4 h-4 cursor-pointer"
+                  />
+                  <span>R$ Fixo (pacote/diária)</span>
+                </label>
+                <label className="flex items-center gap-2 text-xs font-bold text-gray-700 cursor-pointer select-none">
+                  <input
+                    type="radio"
+                    name="fim_semana_tipo_preco"
+                    value="por_pessoa"
+                    checked={form.fim_semana_tipo_preco === "por_pessoa"}
+                    onChange={() => setForm(f => ({ ...f, fim_semana_tipo_preco: "por_pessoa" }))}
+                    className="accent-[#FE8330] w-4 h-4 cursor-pointer"
+                  />
+                  <span>R$ Por pessoa</span>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -180,17 +236,19 @@ export function ConfigSiteManager() {
         </div>
       </div>
 
-      <button
-        onClick={() => saveMutation.mutate(form)}
-        disabled={saveMutation.isPending}
-        className="w-full py-4 min-h-12 bg-[#FE8330] text-white font-black rounded-2xl hover:bg-[#E06B1B] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-      >
-        {saveMutation.isPending ? (
-          <><Loader2 className="w-5 h-5 animate-spin" /> Salvando...</>
-        ) : (
-          <><Save className="w-5 h-5" /> SALVAR CONFIGURAÇÕES</>
-        )}
-      </button>
+      <div className="pt-4">
+        <button
+          onClick={() => saveMutation.mutate(form)}
+          disabled={saveMutation.isPending}
+          className="w-full py-5 min-h-14 bg-[#FE8330] text-white font-black text-base uppercase tracking-wider rounded-2xl hover:bg-[#E06B1B] shadow-lg shadow-[#FE8330]/25 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+        >
+          {saveMutation.isPending ? (
+            <><Loader2 className="w-5 h-5 animate-spin" /> Salvando...</>
+          ) : (
+            <><Save className="w-5 h-5" /> SALVAR CONFIGURAÇÕES</>
+          )}
+        </button>
+      </div>
     </div>
   )
 }

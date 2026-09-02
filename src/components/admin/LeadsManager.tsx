@@ -23,8 +23,9 @@ export function LeadsManager() {
 
   function exportCSV() {
     const rows = [
-      ["WhatsApp", "Origem", "Data de Captura"],
+      ["Nome", "WhatsApp", "Origem", "Data de Captura"],
       ...(leads as any[]).map(l => [
+        l.nome ?? "",
         l.whatsapp,
         l.origem ?? "",
         new Date(l.created_at).toLocaleDateString("pt-BR"),
@@ -76,6 +77,9 @@ export function LeadsManager() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="text-left px-4 py-3 font-bold text-gray-500 uppercase text-xs tracking-wider">
+                  Nome
+                </th>
+                <th className="text-left px-4 py-3 font-bold text-gray-500 uppercase text-xs tracking-wider">
                   WhatsApp
                 </th>
                 <th className="text-left px-4 py-3 font-bold text-gray-500 uppercase text-xs tracking-wider">
@@ -90,7 +94,8 @@ export function LeadsManager() {
             <tbody className="divide-y divide-gray-100">
               {paginated.map((lead: any) => (
                 <tr key={lead.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 font-medium">{lead.whatsapp}</td>
+                  <td className="px-4 py-3 font-bold text-gray-900">{lead.nome || "—"}</td>
+                  <td className="px-4 py-3 font-medium text-gray-700">{lead.whatsapp}</td>
                   <td className="px-4 py-3 text-gray-500">{lead.origem ?? "—"}</td>
                   <td className="px-4 py-3 text-gray-500">
                     {new Date(lead.created_at).toLocaleDateString("pt-BR")}

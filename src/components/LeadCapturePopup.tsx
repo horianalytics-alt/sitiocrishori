@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 export function LeadCapturePopup() {
   const [isOpen, setIsOpen] = useState(false)
+  const [nome, setNome] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -44,6 +45,10 @@ export function LeadCapturePopup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!nome.trim()) {
+      toast.error('Por favor, informe seu nome')
+      return
+    }
     if (!whatsapp || whatsapp.length < 10) {
       toast.error('Digite um WhatsApp válido')
       return
@@ -52,6 +57,7 @@ export function LeadCapturePopup() {
     setLoading(true)
     try {
       const { error } = await supabase.from('leads_capturados').insert({
+        nome: nome.trim(),
         whatsapp,
         origem: 'popup_exit_intent'
       })
@@ -94,19 +100,40 @@ export function LeadCapturePopup() {
                   <p className="text-gray-500 text-sm">Quer receber em primeira mão as datas disponíveis, cancelamentos de última hora e condições especiais?</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-3">
-                  <input
-                    type="tel"
-                    placeholder="Seu WhatsApp (ex: 11999999999)"
-                    value={whatsapp}
-                    onChange={e => setWhatsapp(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ring-[#FE8330]/30 text-center font-medium"
-                    required
-                  />
+                <form onSubmit={handleSubmit} className="space-y-3.5 text-left">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold uppercase tracking-wider text-gray-400 pl-1">
+                      Seu nome
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Como podemos te chamar?"
+                      maxLength={60}
+                      value={nome}
+                      onChange={e => setNome(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ring-[#FE8330]/30 font-medium"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold uppercase tracking-wider text-gray-400 pl-1">
+                      Seu WhatsApp
+                    </label>
+                    <input
+                      type="tel"
+                      placeholder="(11) 99999-9999"
+                      value={whatsapp}
+                      onChange={e => setWhatsapp(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ring-[#FE8330]/30 font-medium"
+                      required
+                    />
+                  </div>
+
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 rounded-xl bg-[#FE8330] text-white font-bold hover:bg-[#E06B1B] transition-colors flex items-center justify-center gap-2"
+                    className="w-full py-3.5 mt-2 rounded-xl bg-[#FE8330] text-white font-bold hover:bg-[#E06B1B] transition-colors flex items-center justify-center gap-2"
                   >
                     {loading ? 'ENVIANDO...' : (
                       <>QUERO RECEBER NOVIDADES <Send className="w-4 h-4" /></>

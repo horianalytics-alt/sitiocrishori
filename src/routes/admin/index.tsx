@@ -185,31 +185,41 @@ function AdminDashboard() {
       {showPreview && <SitePreviewModal onClose={() => setShowPreview(false)} />}
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="flex flex-col md:flex-row md:flex-wrap h-auto gap-0 md:gap-2 bg-transparent p-0 mb-6 md:mb-8 border-b md:border-0 border-gray-100">
-          {[
-            { id: "hero", icon: Home, label: "Hero" },
-            { id: "disponibilidade", icon: Calendar, label: "Disponibilidade" },
-            { id: "reservas", icon: Calendar, label: "Reservas" },
-            { id: "infra", icon: Grid, label: "Estrutura" },
-            { id: "gallery", icon: ImageIcon, label: "Galeria" },
-            { id: "sazonais", icon: Sparkles, label: "Sazonais" },
-            { id: "dep", icon: Star, label: "Depoimentos" },
-            { id: "faq", icon: MessageCircle, label: "FAQ" },
-            { id: "regras", icon: FileText, label: "Regras" },
-            { id: "leads", icon: Phone, label: "Leads" },
-            { id: "config", icon: Settings, label: "Configurações" },
-          ].map(tab => (
-            <TabsTrigger 
-              key={tab.id} 
-              value={tab.id} 
-              activeValue={activeTab} 
-              onClick={setActiveTab}
-              className="w-full md:flex-1 md:min-w-[120px] min-h-[52px] py-3 px-4 text-sm rounded-none md:rounded-2xl border-0 md:border bg-white/50 md:bg-white data-[state=active]:bg-transparent md:data-[state=active]:bg-[#FE8330] data-[state=active]:text-[#FE8330] md:data-[state=active]:text-white shadow-none md:shadow-sm transition-all border-b border-gray-100 md:border-transparent last:border-b-0"
-            >
-              <tab.icon className="w-5 h-5 mr-3 md:w-4 md:mr-2 shrink-0" /> {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+        <div className="w-full mb-8">
+          <div className="flex flex-row overflow-x-auto scroll-smooth no-scrollbar gap-2 pb-2 md:pb-0 md:grid md:grid-cols-6 md:gap-2.5">
+            {[
+              { id: "hero", icon: Home, label: "Hero" },
+              { id: "disponibilidade", icon: Calendar, label: "Disponibilidade" },
+              { id: "reservas", icon: Calendar, label: "Reservas" },
+              { id: "infra", icon: Grid, label: "Estrutura" },
+              { id: "gallery", icon: ImageIcon, label: "Galeria" },
+              { id: "sazonais", icon: Sparkles, label: "Sazonais" },
+              { id: "dep", icon: Star, label: "Depoimentos" },
+              { id: "faq", icon: MessageCircle, label: "FAQ" },
+              { id: "regras", icon: FileText, label: "Regras" },
+              { id: "leads", icon: Phone, label: "Leads" },
+              { id: "config", icon: Settings, label: "Configurações" },
+            ].map(tab => {
+              const isActive = activeTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  style={{ padding: "12px 16px", borderRadius: "20px" }}
+                  className={`flex items-center justify-center gap-2 text-sm font-bold whitespace-nowrap shrink-0 transition-all focus:outline-none select-none cursor-pointer ${
+                    isActive
+                      ? "bg-[#FE8330] text-white shadow-md shadow-[#FE8330]/20"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  <tab.icon className="w-4 h-4 shrink-0" />
+                  <span>{tab.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
 
         <TabsContent value="hero" activeValue={activeTab}>
           <div className="bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl border border-gray-100 space-y-6">

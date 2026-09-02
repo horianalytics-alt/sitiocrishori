@@ -25,6 +25,7 @@ export type Database = {
           mapa_texto: string | null
           preco_base_festa: number | null
           preco_base_fim_semana: number | null
+          fim_semana_tipo_preco: string | null
           updated_at: string
           whatsapp_contato: string | null
         }
@@ -38,6 +39,7 @@ export type Database = {
           mapa_texto?: string | null
           preco_base_festa?: number | null
           preco_base_fim_semana?: number | null
+          fim_semana_tipo_preco?: string | null
           updated_at?: string
           whatsapp_contato?: string | null
         }
@@ -51,6 +53,7 @@ export type Database = {
           mapa_texto?: string | null
           preco_base_festa?: number | null
           preco_base_fim_semana?: number | null
+          fim_semana_tipo_preco?: string | null
           updated_at?: string
           whatsapp_contato?: string | null
         }

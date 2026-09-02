@@ -442,31 +442,40 @@ export const updateConfigSite = createServerFn({ method: "POST" })
       countdown_mensagem?: string;
       datas_quase_lotadas?: string;
       instagram_usuario?: string;
+      instagram_token?: string;
       whatsapp_contato?: string;
+      preco_base_festa?: number;
+      preco_base_fim_semana?: number;
+      fim_semana_tipo_preco?: "fixo" | "por_pessoa";
+      mapa_embed_url?: string;
+      mapa_texto?: string;
     }) => data,
   )
   .handler(async ({ data, context }) => {
     await verifyAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const payload = {
+      countdown_mensagem: data.countdown_mensagem ?? null,
+      datas_quase_lotadas: data.datas_quase_lotadas ?? null,
+      instagram_usuario: data.instagram_usuario ?? null,
+      instagram_token: data.instagram_token ?? null,
+      whatsapp_contato: data.whatsapp_contato ?? null,
+      preco_base_festa: Number(data.preco_base_festa ?? 0),
+      preco_base_fim_semana: Number(data.preco_base_fim_semana ?? 0),
+      fim_semana_tipo_preco: data.fim_semana_tipo_preco ?? "fixo",
+      mapa_embed_url: data.mapa_embed_url ?? null,
+      mapa_texto: data.mapa_texto ?? null,
+      updated_at: new Date().toISOString(),
+    };
+
     if (data.id) {
       const { error } = await (supabaseAdmin as any)
         .from("config_site")
-        .update({
-          countdown_mensagem: data.countdown_mensagem,
-          datas_quase_lotadas: data.datas_quase_lotadas,
-          instagram_usuario: data.instagram_usuario,
-          whatsapp_contato: data.whatsapp_contato,
-          updated_at: new Date().toISOString(),
-        })
+        .update(payload)
         .eq("id", data.id);
       if (error) throw error;
     } else {
-      const { error } = await (supabaseAdmin as any).from("config_site").insert({
-        countdown_mensagem: data.countdown_mensagem,
-        datas_quase_lotadas: data.datas_quase_lotadas,
-        instagram_usuario: data.instagram_usuario,
-        whatsapp_contato: data.whatsapp_contato,
-      });
+      const { error } = await (supabaseAdmin as any).from("config_site").insert(payload);
       if (error) throw error;
     }
     return { success: true };
@@ -579,7 +588,7 @@ export const getConfigSitePublica = createServerFn({ method: "GET" }).handler(as
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await (supabaseAdmin as any)
     .from("config_site")
-    .select("id, countdown_mensagem, datas_quase_lotadas, instagram_usuario, whatsapp_contato, preco_base_festa, preco_base_fim_semana, mapa_embed_url, mapa_texto")
+    .select("id, countdown_mensagem, datas_quase_lotadas, instagram_usuario, whatsapp_contato, preco_base_festa, preco_base_fim_semana, fim_semana_tipo_preco, mapa_embed_url, mapa_texto")
     .limit(1)
     .maybeSingle();
   if (error) throw error;
