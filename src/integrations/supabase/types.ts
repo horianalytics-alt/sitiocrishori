@@ -23,7 +23,11 @@ export type Database = {
           id: string
           instagram_token: string | null
           instagram_usuario: string | null
+          mapa_cidade: string | null
+          mapa_distancia: string | null
           mapa_embed_url: string | null
+          mapa_link_direto: string | null
+          mapa_tempo: string | null
           mapa_texto: string | null
           preco_base_festa: number | null
           preco_base_fim_semana: number | null
@@ -38,7 +42,11 @@ export type Database = {
           id?: string
           instagram_token?: string | null
           instagram_usuario?: string | null
+          mapa_cidade?: string | null
+          mapa_distancia?: string | null
           mapa_embed_url?: string | null
+          mapa_link_direto?: string | null
+          mapa_tempo?: string | null
           mapa_texto?: string | null
           preco_base_festa?: number | null
           preco_base_fim_semana?: number | null
@@ -53,7 +61,11 @@ export type Database = {
           id?: string
           instagram_token?: string | null
           instagram_usuario?: string | null
+          mapa_cidade?: string | null
+          mapa_distancia?: string | null
           mapa_embed_url?: string | null
+          mapa_link_direto?: string | null
+          mapa_tempo?: string | null
           mapa_texto?: string | null
           preco_base_festa?: number | null
           preco_base_fim_semana?: number | null

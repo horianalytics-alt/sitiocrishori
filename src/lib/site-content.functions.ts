@@ -449,6 +449,10 @@ export const updateConfigSite = createServerFn({ method: "POST" })
       fim_semana_tipo_preco?: "fixo" | "por_pessoa";
       mapa_embed_url?: string;
       mapa_texto?: string;
+      mapa_cidade?: string | null;
+      mapa_distancia?: string | null;
+      mapa_tempo?: string | null;
+      mapa_link_direto?: string | null;
       foto_fallback?: string | null;
     }) => data,
   )
@@ -466,6 +470,10 @@ export const updateConfigSite = createServerFn({ method: "POST" })
       fim_semana_tipo_preco: data.fim_semana_tipo_preco ?? "fixo",
       mapa_embed_url: data.mapa_embed_url ?? null,
       mapa_texto: data.mapa_texto ?? null,
+      mapa_cidade: data.mapa_cidade ?? null,
+      mapa_distancia: data.mapa_distancia ?? null,
+      mapa_tempo: data.mapa_tempo ?? null,
+      mapa_link_direto: data.mapa_link_direto ?? null,
       foto_fallback: data.foto_fallback ?? null,
       updated_at: new Date().toISOString(),
     };

@@ -33,6 +33,8 @@ import { NossosPacotes, type PacotePublico } from "@/components/NossosPacotes";
 import { LeadCapturePopup } from "@/components/LeadCapturePopup";
 import { InstagramGrid } from "@/components/InstagramGrid";
 import { ReservaFormModal } from "@/components/ReservaFormModal";
+import { TourVideoPlayer } from "@/components/TourVideoPlayer";
+import { ComoChegarSection } from "@/components/ComoChegarSection";
 
 const SITE_URL = "https://sitiocrishori.lovable.app";
 const HERO_IMAGE = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000";
@@ -213,6 +215,29 @@ function Index() {
           </div>
         </section>
 
+        {/* Seção Conheça o Sítio (Tour Virtual na Hero) */}
+        {tourVideo && (
+          <section id="conheca-o-sitio" className="py-16 md:py-24 bg-[#FAF8F5] border-b border-orange-100/60 overflow-hidden">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-8">
+              <div className="text-center space-y-3 max-w-2xl mx-auto" data-aos="fade-up">
+                <span className="text-xs font-black tracking-widest uppercase text-[#FE8330]">
+                  Tour Virtual
+                </span>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#1E2229] tracking-tight">
+                  Conheça o Sítio
+                </h2>
+                <p className="text-base sm:text-lg text-muted-foreground font-medium">
+                  Dê um play e faça um tour completo pelos nossos espaços antes mesmo de chegar.
+                </p>
+              </div>
+
+              <div className="relative rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-2xl bg-black border-4 border-white aspect-video group w-full" data-aos="fade-up" data-aos-delay="100">
+                <TourVideoPlayer videoUrl={tourVideo.url} />
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Disponibilidade & Calendario */}
         <section id="calendario" className="py-20 md:py-28 px-4 md:px-6 max-w-6xl mx-auto overflow-hidden">
           <div className="bg-white p-6 sm:p-10 md:p-14 rounded-[2.5rem] md:rounded-[3.5rem] shadow-xl border border-gray-100 space-y-8" data-aos="fade-up">
@@ -339,32 +364,6 @@ function Index() {
           </div>
         </section>
 
-        {/* Tour Virtual */}
-        {tourVideo && (
-          <section className="py-20 md:py-32 bg-[#FAF8F5] relative">
-            <div className="max-w-5xl mx-auto px-4 md:px-6">
-              <div className="text-center mb-10 md:mb-16 space-y-4">
-                <div className="w-16 h-16 bg-[#FE8330]/10 rounded-2xl flex items-center justify-center text-[#FE8330] mx-auto">
-                  <PlayCircle className="w-8 h-8" />
-                </div>
-                <h2 className="text-2xl md:text-5xl font-black tracking-tight" data-aos="fade-up">Tour Virtual</h2>
-                <p className="text-base md:text-lg text-muted-foreground font-medium max-w-[60ch] mx-auto" data-aos="fade-up" data-aos-delay="100">
-                  Sinta-se aqui antes mesmo de chegar. Dê um play e conheça o espaço.
-                </p>
-              </div>
-              <div className="rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl bg-black border-[4px] border-white relative aspect-video" data-aos="fade-up">
-                <video 
-                  src={tourVideo.url}
-                  className="w-full h-full object-cover"
-                  controls
-                  controlsList="nodownload"
-                  preload="metadata"
-                />
-              </div>
-            </div>
-          </section>
-        )}
-
         {/* Gallery Section com Filtros */}
         <section id="galeria" className="py-20 md:py-32 bg-white px-4 md:px-6 overflow-hidden">
           <div className="max-w-7xl mx-auto space-y-12 md:space-y-16">
@@ -469,35 +468,8 @@ function Index() {
           </div>
         </section>
 
-        {/* Mapa e Como Chegar */}
-        {config?.mapa_embed_url && (
-          <section className="py-20 md:py-32 bg-white relative">
-            <div className="max-w-7xl mx-auto px-4 md:px-6">
-              <div className="bg-[#1E2229] rounded-[2.5rem] md:rounded-[4rem] overflow-hidden flex flex-col lg:flex-row shadow-2xl">
-                <div className="flex-1 p-10 md:p-16 lg:p-24 flex flex-col justify-center space-y-8 text-white">
-                  <div className="w-16 h-16 bg-[#FE8330]/20 rounded-2xl flex items-center justify-center text-[#FE8330]">
-                    <MapPin className="w-8 h-8" />
-                  </div>
-                  <h2 className="text-3xl md:text-5xl font-black tracking-tight">Como Chegar</h2>
-                  <p className="text-gray-300 text-lg leading-relaxed max-w-[40ch]">
-                    {config.mapa_texto || "Nossa localização privilegiada garante o isolamento e tranquilidade que você busca, com fácil acesso pela rodovia principal."}
-                  </p>
-                </div>
-                <div className="w-full lg:w-[50%] h-[400px] lg:h-auto bg-gray-200">
-                  <iframe 
-                    src={config.mapa_embed_url} 
-                    width="100%" 
-                    height="100%" 
-                    style={{ border: 0 }} 
-                    allowFullScreen 
-                    loading="lazy" 
-                    referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
+        {/* Seção Como Chegar (Google Maps) */}
+        <ComoChegarSection config={config} />
 
         {/* Instagram Grid */}
         <InstagramGrid />

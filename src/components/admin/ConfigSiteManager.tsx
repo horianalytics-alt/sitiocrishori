@@ -17,6 +17,10 @@ type ConfigForm = {
   fim_semana_tipo_preco: "fixo" | "por_pessoa"
   mapa_embed_url: string
   mapa_texto: string
+  mapa_cidade: string
+  mapa_distancia: string
+  mapa_tempo: string
+  mapa_link_direto: string
   foto_fallback: string
 }
 
@@ -31,6 +35,10 @@ const EMPTY_FORM: ConfigForm = {
   fim_semana_tipo_preco: "fixo",
   mapa_embed_url: "",
   mapa_texto: "",
+  mapa_cidade: "Ibiúna, SP",
+  mapa_distancia: "65 km de São Paulo",
+  mapa_tempo: "50 min de viagem",
+  mapa_link_direto: "",
   foto_fallback: "",
 }
 
@@ -58,6 +66,10 @@ export function ConfigSiteManager() {
         fim_semana_tipo_preco: ((config as any).fim_semana_tipo_preco as "fixo" | "por_pessoa") || "fixo",
         mapa_embed_url: (config as any).mapa_embed_url ?? "",
         mapa_texto: (config as any).mapa_texto ?? "",
+        mapa_cidade: (config as any).mapa_cidade ?? "Ibiúna, SP",
+        mapa_distancia: (config as any).mapa_distancia ?? "65 km de São Paulo",
+        mapa_tempo: (config as any).mapa_tempo ?? "50 min de viagem",
+        mapa_link_direto: (config as any).mapa_link_direto ?? "",
         foto_fallback: (config as any).foto_fallback ?? "",
       })
     }
@@ -266,24 +278,86 @@ export function ConfigSiteManager() {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Google Maps Embed URL</label>
-          <input
-            className="w-full p-4 rounded-2xl border focus:outline-none focus:ring-2 ring-[#FE8330]/20"
-            placeholder="Link do iframe do Google Maps"
-            value={form.mapa_embed_url}
-            onChange={e => setForm(f => ({ ...f, mapa_embed_url: e.target.value }))}
-          />
-        </div>
+        {/* Seção Como Chegar / Google Maps */}
+        <div className="p-6 bg-gray-50 rounded-3xl border border-gray-200/80 space-y-5">
+          <div>
+            <h3 className="text-lg font-black text-[#1E2229] flex items-center gap-2">
+              📍 Localização & Como Chegar (Google Maps)
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">
+              Configure o mapa interativo exibido na homepage e as informações de viagem para os visitantes.
+            </p>
+          </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-bold uppercase tracking-wider text-gray-400">Texto de Localização / Distância</label>
-          <textarea
-            className="w-full p-4 rounded-2xl border focus:outline-none focus:ring-2 ring-[#FE8330]/20 min-h-[80px]"
-            placeholder="Ex: Apenas 40 min de SP..."
-            value={form.mapa_texto}
-            onChange={e => setForm(f => ({ ...f, mapa_texto: e.target.value }))}
-          />
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-gray-800">
+              Link do Google Maps (embed) *
+            </label>
+            <p className="text-xs text-gray-500 font-medium">
+              💡 Abra o Google Maps, encontre o local, clique em Compartilhar → Incorporar um mapa, e cole o link aqui
+            </p>
+            <input
+              className="w-full min-h-[52px] px-4 py-3 rounded-2xl border bg-white text-base focus:outline-none focus:ring-2 ring-[#FE8330]/30 font-medium"
+              placeholder="Ex: https://www.google.com/maps/embed?pb=... ou cole a tag <iframe>"
+              value={form.mapa_embed_url}
+              onChange={e => {
+                const raw = e.target.value
+                const match = raw.match(/src=["']([^"']+)["']/)
+                setForm(f => ({ ...f, mapa_embed_url: match && match[1] ? match[1] : raw.trim() }))
+              }}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-gray-800">
+              Link direto do Google Maps (para abrir no app/celular)
+            </label>
+            <input
+              className="w-full min-h-[52px] px-4 py-3 rounded-2xl border bg-white text-base focus:outline-none focus:ring-2 ring-[#FE8330]/30 font-medium"
+              placeholder="Ex: https://maps.app.goo.gl/... ou https://maps.google.com/?q=..."
+              value={form.mapa_link_direto}
+              onChange={e => setForm(f => ({ ...f, mapa_link_direto: e.target.value.trim() }))}
+            />
+          </div>
+
+          {/* Três informações em linha configuráveis */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
+                📍 Cidade
+              </label>
+              <input
+                className="w-full min-h-[48px] px-4 py-2.5 rounded-2xl border bg-white text-sm font-bold focus:outline-none focus:ring-2 ring-[#FE8330]/30"
+                placeholder="Ex: Ibiúna, SP"
+                value={form.mapa_cidade}
+                onChange={e => setForm(f => ({ ...f, mapa_cidade: e.target.value }))}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
+                🚗 Distância de São Paulo
+              </label>
+              <input
+                className="w-full min-h-[48px] px-4 py-2.5 rounded-2xl border bg-white text-sm font-bold focus:outline-none focus:ring-2 ring-[#FE8330]/30"
+                placeholder="Ex: 65 km de São Paulo"
+                value={form.mapa_distancia}
+                onChange={e => setForm(f => ({ ...f, mapa_distancia: e.target.value }))}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
+                ⏱️ Tempo médio
+              </label>
+              <input
+                className="w-full min-h-[48px] px-4 py-2.5 rounded-2xl border bg-white text-sm font-bold focus:outline-none focus:ring-2 ring-[#FE8330]/30"
+                placeholder="Ex: 50 min de viagem"
+                value={form.mapa_tempo}
+                onChange={e => setForm(f => ({ ...f, mapa_tempo: e.target.value }))}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Foto de Reserva (Fallback) */}
