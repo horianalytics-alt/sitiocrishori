@@ -15,6 +15,7 @@ import {
   Luggage,
   ShieldCheck,
   Navigation,
+  Sun,
   Loader2 
 } from 'lucide-react'
 
@@ -206,13 +207,23 @@ function ClientArea() {
 
           {/* Tipo de Evento */}
           <div className="bg-white p-5 rounded-[2rem] border border-gray-100 shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
-              <PartyPopper className="w-6 h-6" />
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
+              reserva.tipo_evento === 'day_use' ? 'bg-amber-100 text-amber-600' : 'bg-purple-100 text-purple-600'
+            }`}>
+              {reserva.tipo_evento === 'day_use' ? (
+                <Sun className="w-6 h-6" />
+              ) : (
+                <PartyPopper className="w-6 h-6" />
+              )}
             </div>
             <div>
               <span className="text-xs font-bold text-gray-400 uppercase block">Tipo de Locação</span>
               <span className="text-lg font-black text-gray-900">
-                {reserva.tipo_evento === 'final_de_semana' ? 'Final de Semana' : 'Festa / Evento'}
+                {reserva.tipo_evento === 'day_use'
+                  ? 'Day Use'
+                  : reserva.tipo_evento === 'final_de_semana'
+                    ? 'Final de Semana'
+                    : 'Festa / Evento'}
               </span>
             </div>
           </div>

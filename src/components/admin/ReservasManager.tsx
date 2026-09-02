@@ -18,6 +18,7 @@ const STATUS_CONFIG: Record<string, { label: string; badge: string; color: strin
 const TIPO_LABELS: Record<string, string> = {
   final_de_semana: "🌿 Final de Semana",
   festa: "🎉 Festa & Eventos",
+  day_use: "☀️ Day Use",
 }
 
 export function ReservasManager() {

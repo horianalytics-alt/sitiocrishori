@@ -506,11 +506,11 @@ const reservaPublicaSchema = z
   .object({
     cliente_nome: z.string().trim().min(2).max(120),
     whatsapp: z.string().trim().min(8).max(20),
-    data_evento: z
-      .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
+    data_evento: z.string().optional().nullable(),
+    data_inicio: z.string().optional().nullable(),
+    data_fim: z.string().optional().nullable(),
     num_convidados: z.coerce.number().int().min(1).max(500),
-    tipo_evento: z.enum(["festa", "fim_semana", "day_use"]),
+    tipo_evento: z.enum(["festa", "fim_semana", "final_de_semana", "day_use"]),
     mensagem: z.string().trim().max(1000).optional(),
     email: z.string().trim().email().max(160).optional(),
   })
@@ -520,13 +520,16 @@ export const criarReservaPublica = createServerFn({ method: "POST" })
   .validator((data: unknown) => reservaPublicaSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const primaryDate = data.data_evento || data.data_inicio || new Date().toISOString().slice(0, 10);
     // Whitelist explícita: nada vindo do cliente pode definir status/valores.
     const payload = {
       cliente_nome: data.cliente_nome,
       nome: data.cliente_nome,
       whatsapp: data.whatsapp,
       cliente_telefone: data.whatsapp,
-      data_evento: data.data_evento,
+      data_evento: primaryDate,
+      data_inicio: data.data_inicio || primaryDate,
+      data_fim: data.data_fim || data.data_inicio || primaryDate,
       num_convidados: data.num_convidados,
       tipo_evento: data.tipo_evento,
       mensagem: data.mensagem ?? null,

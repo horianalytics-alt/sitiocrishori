@@ -512,7 +512,11 @@ function Index() {
             setSelectedPacote(null);
           }}
           initialData={{
-            tipo_evento: selectedPacote?.nome.toLowerCase().includes('semana') ? 'final_de_semana' : 'festa',
+            tipo_evento: selectedPacote?.nome.toLowerCase().includes('day')
+              ? 'day_use'
+              : selectedPacote?.nome.toLowerCase().includes('semana')
+                ? 'final_de_semana'
+                : 'festa',
             num_convidados: selectedPacote?.num_pessoas || 30,
             data_evento: selectedRange?.from || null,
             pacote_nome: selectedPacote?.nome,
