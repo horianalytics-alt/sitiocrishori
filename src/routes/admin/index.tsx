@@ -274,12 +274,20 @@ function AdminDashboard() {
               <div key={idx} className="bg-white p-6 rounded-[2rem] border shadow-sm space-y-4">
                 <input className="w-full text-xl font-bold bg-transparent" value={item.title || ""} onChange={e => { const f = [...(infraForm || [])]; if (f[idx]) f[idx].title = e.target.value; setInfraForm(f) }} />
                 <textarea className="w-full text-sm text-muted-foreground bg-transparent" value={item.description || ""} onChange={e => { const f = [...(infraForm || [])]; if (f[idx]) f[idx].description = e.target.value; setInfraForm(f) }} />
-                <div className="flex gap-2">
-                  <input className="flex-1 text-xs p-2 bg-gray-50 rounded-lg" value={item.image || ""} onChange={e => { const f = [...(infraForm || [])]; if (f[idx]) f[idx].image = e.target.value; setInfraForm(f) }} />
-                  <label className="cursor-pointer bg-gray-100 p-3 min-h-11 min-w-11 flex items-center justify-center rounded-lg" aria-label="Enviar imagem">
-                    <Upload className="w-4 h-4" />
-                    <input type="file" className="hidden" onChange={e => handleFileUpload(e, 'infra', idx)} />
-                  </label>
+                <div className="space-y-3">
+                  <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Fotos do card (passam em loop no site)</span>
+                  <MediaManager
+                    items={(item.images && item.images.length ? item.images : [item.image].filter(Boolean)).map(u => ({ url: u, tag: "ambos" as const, tipo: "foto" as const }))}
+                    onChange={(list) => {
+                      const urls = list.map(m => m.url)
+                      const f = [...(infraForm || [])]
+                      if (f[idx]) f[idx] = { ...f[idx]!, images: urls, image: urls[0] || "" }
+                      setInfraForm(f)
+                    }}
+                    folder="estrutura"
+                    showTags={false}
+                    onUploadingChange={setMediaUploading}
+                  />
                 </div>
                 <button onClick={() => setInfraForm((infraForm || []).filter((_, i) => i !== idx))} className="text-red-500 text-xs font-bold uppercase tracking-widest py-3 min-h-11">Excluir Card</button>
               </div>

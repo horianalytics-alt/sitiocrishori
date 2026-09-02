@@ -14,6 +14,7 @@ import { format, isWithinInterval, startOfDay } from "date-fns";
 import "react-day-picker/dist/style.css";
 import { useDayNight } from "@/hooks/useDayNight";
 import { DayNightToggle } from "@/components/DayNightToggle";
+import { InfraImageLoop } from "@/components/InfraImageLoop";
 import { GalleryPhotoCard } from "@/components/GalleryPhotoCard";
 import { normalizeGallery, filterByMode, AMBIENTE_OPTIONS, type AmbienteTag } from "@/lib/gallery";
 import { SimuladorOrcamento } from "@/components/SimuladorOrcamento";
