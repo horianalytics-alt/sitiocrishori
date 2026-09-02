@@ -27,10 +27,15 @@ export function normalizeGallery(data: unknown): GalleryPhoto[] {
         const url = (item as any).url as string;
         const tag = (item as any).tag;
         const tipo = (item as any).tipo;
+        const ambiente = (item as any).ambiente;
+        const validAmbiente = AMBIENTE_OPTIONS.some((o) => o.value === ambiente)
+          ? (ambiente as AmbienteTag)
+          : undefined;
         return {
           url,
           tag: tag === "dia" || tag === "noite" ? tag : "ambos",
           tipo: tipo === "video" || tipo === "foto" ? tipo : isVideoUrl(url) ? "video" : "foto",
+          ...(validAmbiente ? { ambiente: validAmbiente } : {}),
         };
       }
       return null;
